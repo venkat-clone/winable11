@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "398784461305",
+    "project_id": "winable-16c54",
+    "storage_bucket": "winable-16c54.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:398784461305:android:8d4398ef23a83578282528",
+        "android_client_info": {
+          "package_name": "com.winable.winable"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "398784461305-8i1vfn68nsuj7fnm9vff2dqtp9hgqolo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsyhDG5NQyxDawig6llDeXX1cVYa6cHkk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "398784461305-8fr0fu7p10oj4ghu7frlqg1r71sg12dt.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "398784461305-a49q61hfrmvf05tofurkkoh0mh6m1osu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.newsports"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
