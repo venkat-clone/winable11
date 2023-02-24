@@ -16,7 +16,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
   User? user = FirebaseAuth.instance.currentUser;
 
   @override
@@ -59,8 +58,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                     CircleAvatar(
                                       radius: 24,
                                       backgroundColor: Colors.white,
-                                      backgroundImage:NetworkImage(
-                                        FirebaseAuth.instance.currentUser?.photoURL??"",
+                                      backgroundImage: NetworkImage(
+                                        FirebaseAuth.instance.currentUser
+                                                ?.photoURL ??
+                                            "",
                                       ),
                                     ),
                                     InkWell(
@@ -83,7 +84,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Row(
                                   children: [
                                     Text(
-                                      user?.displayName ?? "unDefined",
+                                      user?.displayName ?? " ",
                                       style: Theme.of(context)
                                           .textTheme
                                           .caption!
@@ -223,14 +224,15 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Text(
                             AppLocalizations.of(
                                 'To progress to a level 13 Champion'),
-                            style: Theme.of(context).textTheme.caption!.copyWith(
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .headline6!
-                                      .color,
-                                  letterSpacing: 0.6,
-                                  fontSize: 12,
-                                ),
+                            style:
+                                Theme.of(context).textTheme.caption!.copyWith(
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .headline6!
+                                          .color,
+                                      letterSpacing: 0.6,
+                                      fontSize: 12,
+                                    ),
                           ),
                         ),
                         SizedBox(
@@ -628,8 +630,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: Text(
                           AppLocalizations.of('Playing History'),
                           style: Theme.of(context).textTheme.caption!.copyWith(
-                                color:
-                                    Theme.of(context).textTheme.headline6!.color,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .headline6!
+                                    .color,
                                 letterSpacing: 0.6,
                                 fontSize: 14,
                               ),

@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+
 import 'package:newsports/constance/constance.dart';
 import 'package:newsports/constance/themes.dart';
 import 'package:newsports/modules/home/home.dart';
@@ -55,7 +56,8 @@ class _MyAppState extends State<MyApp> {
     } else {
       setState(() {
         constance.colorsIndex = index;
-        constance.primaryColorString = ConstanceData().colors[constance.colorsIndex];
+        constance.primaryColorString =
+            ConstanceData().colors[constance.colorsIndex];
         constance.secondaryColorString = constance.primaryColorString;
       });
     }
@@ -75,11 +77,15 @@ class _MyAppState extends State<MyApp> {
     constance.locale = locale;
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness: AppTheme.isLightTheme ? Brightness.dark : Brightness.light,
-      statusBarBrightness: AppTheme.isLightTheme ? Brightness.light : Brightness.dark,
-      systemNavigationBarColor: AppTheme.isLightTheme ? Colors.white : Colors.black,
+      statusBarIconBrightness:
+          AppTheme.isLightTheme ? Brightness.dark : Brightness.light,
+      statusBarBrightness:
+          AppTheme.isLightTheme ? Brightness.light : Brightness.dark,
+      systemNavigationBarColor:
+          AppTheme.isLightTheme ? Colors.white : Colors.black,
       systemNavigationBarDividerColor: Colors.grey,
-      systemNavigationBarIconBrightness: AppTheme.isLightTheme ? Brightness.dark : Brightness.light,
+      systemNavigationBarIconBrightness:
+          AppTheme.isLightTheme ? Brightness.dark : Brightness.light,
     ));
     return MaterialApp(
       title: 'Winable 11',

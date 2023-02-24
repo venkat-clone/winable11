@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
@@ -24,37 +25,34 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends StateMVC<LoginScreen> {
   TextEditingController _userNameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-  String errorString="";
+  String errorString = "";
   late AuthController _con;
-  _LoginScreenState():super(AuthController()){
+  _LoginScreenState() : super(AuthController()) {
     _con = controller as AuthController;
   }
 
   bool loading = false;
-  setLoading(bool loading)=> setState(() => this.loading = loading);
-  startLoading()=>setLoading(true);
-  stopLoading()=>setLoading(false);
+  setLoading(bool loading) => setState(() => this.loading = loading);
+  startLoading() => setLoading(true);
+  stopLoading() => setLoading(false);
 
-  setError(String error)=>setState(()=>errorString = error);
+  setError(String error) => setState(() => errorString = error);
 
-
-  bool validateTextField(){
-    final text  = _userNameController.value.text;
-    if(text.isEmpty && text.length<=3) return false;
+  bool validateTextField() {
+    final text = _userNameController.value.text;
+    if (text.isEmpty && text.length <= 3) return false;
     return true;
   }
+
   bool validatePassword() => _passwordController.text.isNotEmpty;
 
-  bool validateData()=> validateTextField() && validatePassword();
-
-
+  bool validateData() => validateTextField() && validatePassword();
 
   @override
   void initState() {
     super.initState();
   }
-  
-  
+
   @override
   Widget build(BuildContext context) {
     return AbsorbPointer(
@@ -113,7 +111,8 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                             padding: EdgeInsets.zero,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(left: 20, right: 20),
+                                padding:
+                                    const EdgeInsets.only(left: 20, right: 20),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -135,25 +134,52 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                                     SizedBox(
                                       height: 10,
                                     ),
-                                    Text(errorString,style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Theme.of(context).colorScheme.error,
-                                    ),),
+                                    Text(
+                                      errorString,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .error,
+                                          ),
+                                    ),
                                     SizedBox(
                                       height: 10,
                                     ),
                                     Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 5, right: 5),
+                                      padding: const EdgeInsets.only(
+                                          left: 5, right: 5),
                                       child: CustomButton(
                                         text: AppLocalizations.of('Login'),
                                         onTap: () {
                                           setError("");
-                                          if(!validateData()) return setError("Invalid UserName or Password");
+                                          if (!validateData())
+                                            return setError(
+                                                "Invalid UserName or Password");
                                           startLoading();
-                                          _con.login(_userNameController.text.trim(), _passwordController.text.trim()).then((value){
+                                          _con
+                                              .login(
+                                                  _userNameController.text
+                                                      .trim(),
+                                                  _passwordController.text
+                                                      .trim())
+                                              .then((value) {
                                             stopLoading();
                                             print("isLongedIn=$value");
-                                            if(value) Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(),),);
+                                            if (value)
+                                              Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      HomeScreen(),
+                                                ),
+                                              ).then((value) {
+                                                print(value);
+                                                Navigator.popUntil(
+                                                    context, (route) => false);
+                                              });
                                             else {
                                               // show Toast
                                             }
@@ -171,11 +197,13 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                                             .textTheme
                                             .bodyText2!
                                             .copyWith(
-                                              color: Theme.of(context).primaryColor,
+                                              color: Theme.of(context)
+                                                  .primaryColor,
                                               fontWeight: FontWeight.bold,
                                               letterSpacing: 0.6,
                                               fontSize: 16,
-                                              decoration: TextDecoration.underline,
+                                              decoration:
+                                                  TextDecoration.underline,
                                             ),
                                       ),
                                     ),
@@ -196,10 +224,11 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
               ],
             ),
           ),
-          if(loading) Container(
-            color: Colors.grey.shade50.withOpacity(0.4),
-            child: Center(child: CircularProgressIndicator()),
-          ),
+          if (loading)
+            Container(
+              color: Colors.grey.shade50.withOpacity(0.4),
+              child: Center(child: CircularProgressIndicator()),
+            ),
         ],
       ),
     );
@@ -223,12 +252,12 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
 
                     _con.loginWithFacebook().then((value) {
                       setState(() => loading = false);
-                      if(value) Navigator.of(context).pushNamed(Routes.HOME);
+                      if (value)
+                        Navigator.of(context).pushNamed(Routes.HOME);
                       else {
                         // set State Loading False
                       }
                     });
-
                   },
                   child: Container(
                     height: 45,
@@ -250,12 +279,13 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                           ),
                           Text(
                             AppLocalizations.of('Facebook'),
-                            style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 0.6,
-                                  fontSize: 16,
-                                ),
+                            style:
+                                Theme.of(context).textTheme.bodyText2!.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0.6,
+                                      fontSize: 16,
+                                    ),
                           ),
                         ],
                       ),
@@ -276,17 +306,16 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                 ),
                 child: InkWell(
                   onTap: () async {
+                    setState(() => loading = true);
 
-                   setState(() => loading = true);
-
-                   _con.loginWithGoogle().then((value) {
-                     setState(() => loading = false);
-                     if(value) Navigator.of(context).pushNamed(Routes.HOME);
-                     else {
-                      // set State Loading False
-                     }
+                    _con.loginWithGoogle().then((value) {
+                      setState(() => loading = false);
+                      if (value) if (value)
+                        Navigator.of(context).pushNamed(Routes.HOME);
+                      else {
+                        // set State Loading False
+                      }
                     });
-
                   },
                   child: Container(
                     height: 45,
@@ -308,12 +337,13 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                           ),
                           Text(
                             AppLocalizations.of('Google'),
-                            style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 0.6,
-                                  fontSize: 16,
-                                ),
+                            style:
+                                Theme.of(context).textTheme.bodyText2!.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0.6,
+                                      fontSize: 16,
+                                    ),
                           ),
                         ],
                       ),
