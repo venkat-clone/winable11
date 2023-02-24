@@ -40,8 +40,10 @@ dependencies:
   firebase_auth: ^4.2.5
   google_sign_in: ^5.4.0
   mvc_pattern: ^8.11.0
-  flutter_facebook_auth : ^5.0.0
+  flutter_facebook_auth: ^5.0.0
   http: ^0.13.3
+
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

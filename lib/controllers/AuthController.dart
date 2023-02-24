@@ -26,6 +26,26 @@ class AuthController extends ControllerMVC {
     final isMobile = RegExp(Constants.mobileRegX).hasMatch(uName);
     print("isEmail=$isEmail");
     // return false;
+    if (isEmail)
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: uName, password: password)
+          .then((value) {
+        print("loged in with email");
+        longedIn = true;
+
+        // we get Firebase User
+      }).onError((error, stackTrace) {
+        print(error);
+        print(stackTrace);
+      });
+    else if (isMobile)
+      await FirebaseAuth.instance.signInWithPhoneNumber(uName).then((value) {
+        longedIn = true;
+        // we get Firebase User
+      }).onError((error, stackTrace) {
+        print(error);
+        print(stackTrace);
+      });
     if(isEmail) await FirebaseAuth.instance.signInWithEmailAndPassword(email: uName, password: password).then((value) async {
       print("loged in with email");
       // await FirebaseAuth.instance.currentUser?.updateDisplayName("User 19001");
@@ -49,16 +69,12 @@ class AuthController extends ControllerMVC {
 
     setUpLocalUser();
     return longedIn;
-
-
   }
 
-
   Future<bool> loginWithGoogle() async {
-
     final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
 
-    if(gUser==null) return false;
+    if (gUser == null) return false;
     final GoogleSignInAuthentication aAuth = await gUser.authentication;
     final credential = GoogleAuthProvider.credential(
         accessToken: aAuth.accessToken,
@@ -129,6 +145,7 @@ class AuthController extends ControllerMVC {
 
     // await wait(10);
     // return true;
+    print(user.email);
 
     await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: user.email, password: user.password)
@@ -182,11 +199,11 @@ class AuthController extends ControllerMVC {
 
   Future<bool> validatePhoneOTP(int Token,String sms) async{
     bool OTPSend = false;
-    final credential = await PhoneAuthProvider.credentialFromToken(Token,smsCode:sms );
-
-    await FirebaseAuth.instance.currentUser?.linkWithCredential(credential).then((value) => {
-      OTPSend = true
-    });
+    final credential =
+        await PhoneAuthProvider.credentialFromToken(Token, smsCode: sms);
+    await FirebaseAuth.instance.currentUser
+        ?.linkWithCredential(credential)
+        .then((value) => {OTPSend = true});
     return OTPSend;
   }
 

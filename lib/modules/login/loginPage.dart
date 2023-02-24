@@ -150,7 +150,7 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                                           setError("");
                                           if(!validateData()) return setError("Invalid UserName or Password");
                                           startLoading();
-                                          _con.login(_userNameController.text, _passwordController.text).then((value){
+                                          _con.login(_userNameController.text.trim(), _passwordController.text.trim()).then((value){
                                             stopLoading();
                                             print("isLongedIn=$value");
                                             if(value) Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(),),);

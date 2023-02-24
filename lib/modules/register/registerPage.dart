@@ -1,5 +1,5 @@
 // ignore_for_file: deprecated_member_use
-
+import 'package:intl/intl.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/constance/constance.dart';
@@ -21,9 +21,10 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends StateMVC<RegisterPage> {
   TextEditingController _mobileController = TextEditingController();
-  TextEditingController _userNameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _dobController = TextEditingController();
   bool loading = false;
   String errorString="";
 
@@ -135,8 +136,77 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                       height: 15,
                                     ),
                                     CustomTextField(
-                                      controller: _userNameController,
-                                      hintText: AppLocalizations.of('User Name'),
+                                      controller: _usernameController,
+                                      hintText: AppLocalizations.of('Username'),
+                                    ),
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Row(
+                                        children: [
+                                          Card(
+                                            shadowColor: Theme.of(context)
+                                                .textTheme
+                                                .headline6!
+                                                .color,
+                                            elevation: 5,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                  color: (Theme.of(context)
+                                                      .textTheme
+                                                      .headline6!
+                                                      .color)!,
+                                                ),
+                                              ),
+                                              child: IconButton(
+                                                  onPressed: () async {
+                                                    DateTime? pickedDate =
+                                                        await showDatePicker(
+                                                            context: context,
+                                                            initialDate:
+                                                                DateTime.now(),
+                                                            firstDate:
+                                                                DateTime(1950),
+                                                            lastDate:
+                                                                DateTime(2100));
+                                                    if (pickedDate != null) {
+                                                      String formattedDate =
+                                                          DateFormat(
+                                                                  'yyyy-MM-dd')
+                                                              .format(
+                                                                  pickedDate);
+
+                                                      setState(() {
+                                                        _dobController.text =
+                                                            formattedDate; //set output date to TextField value.
+                                                      });
+                                                    } else {}
+                                                  },
+                                                  icon: Icon(
+                                                      Icons.calendar_month)),
+                                            ),
+                                          ),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width -
+                                                100,
+                                            child: CustomTextField(
+                                              controller: _dobController,
+                                              hintText: AppLocalizations.of(
+                                                  'Pick DOB'),
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                     SizedBox(
                                       height: 15,
@@ -192,7 +262,7 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                             // Navigator.pushNamed(context, Routes.LOGIN);
                                             else {
                                               // Toast or Error
-
+                                              debugPrint("error");
                                             }
                                           });
 

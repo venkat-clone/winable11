@@ -8,6 +8,7 @@ import 'package:newsports/modules/splash/spalshPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:newsports/constance/constance.dart' as constance;
+import 'package:newsports/utils/shared_preference_services.dart';
 
 import 'firebase_options.dart';
 import 'modules/login/otp.dart';
@@ -90,7 +91,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   var routes = <String, WidgetBuilder>{
-    // Routes.SPLASH: (BuildContext context) => OTPScreen(),
+    // Routes.SPLASH: (BuildContext context) => OnboardingScreen(),
     Routes.SPLASH: (BuildContext context) => SplashScreen(),
     Routes.LOGIN: (BuildContext context) => LoginScreen(),
     Routes.REGISTER: (BuildContext context) => RegisterPage(),
