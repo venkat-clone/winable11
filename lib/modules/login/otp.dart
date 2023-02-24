@@ -13,73 +13,55 @@ import '../../controllers/AuthController.dart';
 import '../../utils/default_loading.dart';
 
 class OTPScreen extends StatefulWidget {
-
   final String? email;
   String? phone;
-  OTPScreen({
-    Key? key,
-    this.email,
-    this.phone
-  }):super(key:key);
+  OTPScreen({Key? key, this.email, this.phone}) : super(key: key);
 
   @override
   _OTPScreenState createState() => _OTPScreenState();
 }
 
 class _OTPScreenState extends StateMVC<OTPScreen> {
-
   bool loading = false;
-  setLoading(bool loading)=> setState(() => this.loading = loading);
-  startLoading()=>setLoading(true);
-  stopLoading()=>setLoading(false);
+  setLoading(bool loading) => setState(() => this.loading = loading);
+  startLoading() => setLoading(true);
+  stopLoading() => setLoading(false);
 
   late AuthController _con;
-  late bool isMobileNumberAuth ;
-  _OTPScreenState():super(AuthController()){
+  late bool isMobileNumberAuth;
+  _OTPScreenState() : super(AuthController()) {
     _con = controller as AuthController;
-    isMobileNumberAuth = widget.phone!=null;
+    isMobileNumberAuth = widget.phone != null;
   }
 
-  Future<bool> sendMobileOTP(String mobile) async{
+  Future<bool> sendMobileOTP(String mobile) async {
     bool OTPSend = false;
     await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: mobile,
-        verificationCompleted: (cred){
+        verificationCompleted: (cred) {
           OTPSend = true;
         },
-        verificationFailed: (exception){
-
-        },
-        codeSent: (id,token){
+        verificationFailed: (exception) {},
+        codeSent: (id, token) {
           // save ID someWare
-
         },
-        codeAutoRetrievalTimeout: (id){
-
-        }
-    );
+        codeAutoRetrievalTimeout: (id) {});
     return OTPSend;
   }
 
-
-  void sendOTP(){
-    if(isMobileNumberAuth){
+  void sendOTP() {
+    if (isMobileNumberAuth) {
       // mobile
       _con.sendMobileOTP(widget.phone!);
-    }
-    else{
+    } else {
       // email
-
     }
   }
-
 
   @override
   void initState() {
     super.initState();
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +78,8 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    AppLocalizations.of('OTP sent to ${widget.email??widget.phone??""}'),
+                    AppLocalizations.of(
+                        'OTP sent to ${widget.email ?? widget.phone ?? ""}'),
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(
                           color: Colors.white,
                           letterSpacing: 0.6,

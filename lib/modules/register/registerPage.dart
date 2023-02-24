@@ -1,5 +1,5 @@
 // ignore_for_file: deprecated_member_use
-
+import 'package:intl/intl.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/constance/constance.dart';
@@ -23,43 +23,48 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
   TextEditingController _mobileController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _dobController = TextEditingController();
   bool loading = false;
-  String errorString="";
+  String errorString = "";
 
-  setLoading(bool loading)=> setState(() => this.loading = loading);
-  startLoading()=>setLoading(true);
-  stopLoading()=>setLoading(false);
+  setLoading(bool loading) => setState(() => this.loading = loading);
+  startLoading() => setLoading(true);
+  stopLoading() => setLoading(false);
 
-  setError(String error)=>setState(()=>errorString = error);
+  setError(String error) => setState(() => errorString = error);
 
   late AuthController _con;
-  _RegisterPageState():super(AuthController()){
+  _RegisterPageState() : super(AuthController()) {
     _con = controller as AuthController;
   }
 
   bool validateEmail() {
-    if(!RegExp(Constants.emailRegX).hasMatch(_emailController.text)){
+    if (!RegExp(Constants.emailRegX).hasMatch(_emailController.text)) {
       setError("Please Provide A Valid Email");
       return false;
     }
     return true;
   }
-  bool validatePassword(){
+
+  bool validatePassword() {
     final password = _passwordController.text;
-    if(password.isEmpty){
+    if (password.isEmpty) {
       setError("Password cannot be Empty");
       return false;
     }
     return true;
   }
-  bool validateMobile(){
-    if(!RegExp(Constants.mobileRegX).hasMatch(_mobileController.text)){
+
+  bool validateMobile() {
+    if (!RegExp(Constants.mobileRegX).hasMatch(_mobileController.text)) {
       setError("Invalid Mobile Number");
     }
     return true;
   }
 
-  bool validateData()=> validatePassword() && validateEmail()  && validateMobile();
+  bool validateData() =>
+      validatePassword() && validateEmail() && validateMobile();
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +123,8 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                             padding: EdgeInsets.zero,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(left: 20, right: 20),
+                                padding:
+                                    const EdgeInsets.only(left: 20, right: 20),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -126,8 +132,85 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                       height: 15,
                                     ),
                                     CustomTextField(
+                                      controller: _usernameController,
+                                      hintText: AppLocalizations.of('Username'),
+                                    ),
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Row(
+                                        children: [
+                                          Card(
+                                            shadowColor: Theme.of(context)
+                                                .textTheme
+                                                .headline6!
+                                                .color,
+                                            elevation: 5,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                  color: (Theme.of(context)
+                                                      .textTheme
+                                                      .headline6!
+                                                      .color)!,
+                                                ),
+                                              ),
+                                              child: IconButton(
+                                                  onPressed: () async {
+                                                    DateTime? pickedDate =
+                                                        await showDatePicker(
+                                                            context: context,
+                                                            initialDate:
+                                                                DateTime.now(),
+                                                            firstDate:
+                                                                DateTime(1950),
+                                                            lastDate:
+                                                                DateTime(2100));
+                                                    if (pickedDate != null) {
+                                                      String formattedDate =
+                                                          DateFormat(
+                                                                  'yyyy-MM-dd')
+                                                              .format(
+                                                                  pickedDate);
+
+                                                      setState(() {
+                                                        _dobController.text =
+                                                            formattedDate; //set output date to TextField value.
+                                                      });
+                                                    } else {}
+                                                  },
+                                                  icon: Icon(
+                                                      Icons.calendar_month)),
+                                            ),
+                                          ),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width -
+                                                100,
+                                            child: CustomTextField(
+                                              controller: _dobController,
+                                              hintText: AppLocalizations.of(
+                                                  'Pick DOB'),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    CustomTextField(
                                       controller: _mobileController,
-                                      hintText: AppLocalizations.of('Mobile No.'),
+                                      hintText:
+                                          AppLocalizations.of('Mobile No.'),
                                     ),
                                     SizedBox(
                                       height: 15,
@@ -143,32 +226,50 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                       controller: _passwordController,
                                       hintText: AppLocalizations.of('Password'),
                                     ),
-                                    Text(errorString,style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Theme.of(context).colorScheme.error,
-                                    ),),
+                                    Text(
+                                      errorString,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .error,
+                                          ),
+                                    ),
                                     SizedBox(
                                       height: 16,
                                     ),
                                     Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 5, right: 5),
+                                      padding: const EdgeInsets.only(
+                                          left: 5, right: 5),
                                       child: CustomButton(
                                         text: AppLocalizations.of('Register'),
                                         onTap: () {
                                           setError("");
-                                          if(!validateData()) return ;
+                                          if (!validateData()) return;
 
-                                          final user = AuthUser(mobile: _mobileController.text,password: _passwordController.text,email: _emailController.text);
+                                          final user = AuthUser(
+                                              mobile: _mobileController.text,
+                                              password: _passwordController.text
+                                                  .trim(),
+                                              email: _emailController.text
+                                                  .trim()
+                                                  .toString());
                                           setState(() => loading = true);
                                           _con.registerUser(user).then((value) {
                                             setState(() => loading = false);
-                                            if(value) Navigator.push(context, MaterialPageRoute(builder: (c)=>OTPScreen()));
+                                            if (value)
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (c) =>
+                                                          OTPScreen()));
                                             else {
                                               // Toast or Error
-
+                                              debugPrint("error");
                                             }
                                           });
-
                                         },
                                       ),
                                     ),
@@ -189,10 +290,11 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
               ],
             ),
           ),
-          if(loading) Container(
-            color: Colors.grey.shade50.withOpacity(0.4),
-            child: Center(child: CircularProgressIndicator()),
-          ),
+          if (loading)
+            Container(
+              color: Colors.grey.shade50.withOpacity(0.4),
+              child: Center(child: CircularProgressIndicator()),
+            ),
         ],
       ),
     );
@@ -216,12 +318,12 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
 
                     _con.loginWithFacebook().then((value) {
                       setState(() => loading = false);
-                      if(value) Navigator.of(context).pushNamed(Routes.HOME);
+                      if (value)
+                        Navigator.of(context).pushNamed(Routes.HOME);
                       else {
                         // set State Loading False
                       }
                     });
-
                   },
                   child: Container(
                     height: 45,
@@ -243,12 +345,13 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                           ),
                           Text(
                             AppLocalizations.of('Facebook'),
-                            style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.6,
-                              fontSize: 16,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodyText2!.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0.6,
+                                      fontSize: 16,
+                                    ),
                           ),
                         ],
                       ),
@@ -269,17 +372,16 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                 ),
                 child: InkWell(
                   onTap: () async {
-
                     setState(() => loading = true);
 
                     _con.loginWithGoogle().then((value) {
                       setState(() => loading = false);
-                      if(value) Navigator.of(context).pushNamed(Routes.HOME);
+                      if (value)
+                        Navigator.of(context).pushNamed(Routes.HOME);
                       else {
                         // set State Loading False
                       }
                     });
-
                   },
                   child: Container(
                     height: 45,
@@ -301,12 +403,13 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                           ),
                           Text(
                             AppLocalizations.of('Google'),
-                            style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.6,
-                              fontSize: 16,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodyText2!.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0.6,
+                                      fontSize: 16,
+                                    ),
                           ),
                         ],
                       ),
