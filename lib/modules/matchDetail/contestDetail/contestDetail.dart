@@ -258,7 +258,7 @@ class _ContestDetailPageState extends State<ContestDetailPage> {
                             ),
                             Center(
                               child: Text(
-                                "₹31",
+                                "₹0",
                                 style: Theme.of(context).textTheme.caption!.copyWith(
                                       color: Theme.of(context).textTheme.headline6!.color,
                                       letterSpacing: 0.6,
@@ -308,7 +308,7 @@ class _ContestDetailPageState extends State<ContestDetailPage> {
                               endIndent: 14,
                             ),
                             row(AppLocalizations.of('Amount Added'), "₹0"),
-                            row(AppLocalizations.of('Winnings'), "₹31"),
+                            row(AppLocalizations.of('Winnings'), "₹0"),
                             row(AppLocalizations.of('Cash Bonus'), "₹0"),
                             SizedBox(
                               height: 10,

@@ -72,7 +72,7 @@ class _MyBalancePageState extends State<MyBalancePage> {
                         ),
                         Center(
                           child: Text(
-                            "₹31",
+                            "₹0",
                             style: Theme.of(context).textTheme.caption!.copyWith(
                                   color: Theme.of(context)
                                       .textTheme
@@ -193,7 +193,7 @@ class _MyBalancePageState extends State<MyBalancePage> {
                                     height: 5,
                                   ),
                                   Text(
-                                    "₹31",
+                                    "₹0",
                                     style: Theme.of(context)
                                         .textTheme
                                         .caption!

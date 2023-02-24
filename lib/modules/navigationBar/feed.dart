@@ -48,7 +48,7 @@ class _FeedPageState extends State<FeedPage> {
           ),
         ],
       ),
-      body: ListView(
+      body: false?ListView(
         padding: EdgeInsets.zero,
         children: [
           SizedBox(
@@ -652,6 +652,8 @@ class _FeedPageState extends State<FeedPage> {
             ],
           ),
         ],
+      ):Center(
+        child:Text("No posts for now")
       ),
     );
   }

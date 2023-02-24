@@ -44,15 +44,15 @@ class _KYCFormState extends StateMVC<KYCForm> {
           children: [
             Scaffold(
               appBar: AppBar(
-                foregroundColor: Colors.green,
-                title: Text('My Form',),
-                leading: InkWell(child: Icon(Icons.arrow_back),),
+                automaticallyImplyLeading: true,
+                backgroundColor: Theme.of(context).primaryColor,
+                title: Text('Kyc Form',),
 
               ),
               body: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: SingleChildScrollView(
-                    child: Form(
+                    child: requested?Form(
                         key: _formKey,
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -326,7 +326,9 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                   child: Text('Submit'),
                                 ),
                               ),
-                            ])),
+                            ])):Center(
+                      child: Text("Kyc Details uploaded",style: Theme.of(context).textTheme.titleMedium!.copyWith(),),
+                    ),
                   )),
             ),
             if(loading) Container(

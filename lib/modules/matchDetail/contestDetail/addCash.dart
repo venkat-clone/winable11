@@ -107,7 +107,7 @@ class _AddCashPageState extends State<AddCashPage> {
                   ),
                   Expanded(child: SizedBox()),
                   Text(
-                    "₹31",
+                    "₹0",
                     style: Theme.of(context).textTheme.caption!.copyWith(
                           color: Theme.of(context).textTheme.headline6!.color,
                           letterSpacing: 0.6,

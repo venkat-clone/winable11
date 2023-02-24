@@ -21,6 +21,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends StateMVC<RegisterPage> {
   TextEditingController _mobileController = TextEditingController();
+  TextEditingController _userNameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   bool loading = false;
@@ -37,6 +38,13 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
     _con = controller as AuthController;
   }
 
+  bool validateUName(){
+    if(_userNameController.text.length<3){
+      setError("PLease Enter A valid userName");
+      return false;
+    }
+    return true;
+  }
   bool validateEmail() {
     if(!RegExp(Constants.emailRegX).hasMatch(_emailController.text)){
       setError("Please Provide A Valid Email");
@@ -55,11 +63,12 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
   bool validateMobile(){
     if(!RegExp(Constants.mobileRegX).hasMatch(_mobileController.text)){
       setError("Invalid Mobile Number");
+      return false;
     }
     return true;
   }
 
-  bool validateData()=> validatePassword() && validateEmail()  && validateMobile();
+  bool validateData()=> validatePassword() && validateEmail()  && validateMobile() && validateUName();
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +112,7 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                 radius: 40,
                                 backgroundColor: Colors.white,
                                 backgroundImage: AssetImage(
-                                  ConstanceData.palyerProfilePic,
+                                  ConstanceData.appLogo,
                                 ),
                               ),
                             ],
@@ -122,6 +131,13 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    CustomTextField(
+                                      controller: _userNameController,
+                                      hintText: AppLocalizations.of('User Name'),
+                                    ),
                                     SizedBox(
                                       height: 15,
                                     ),
@@ -158,11 +174,22 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                           setError("");
                                           if(!validateData()) return ;
 
-                                          final user = AuthUser(mobile: _mobileController.text,password: _passwordController.text,email: _emailController.text);
+                                          final user = AuthUser(
+                                              uName: _userNameController.text,
+                                              mobile: _mobileController.text,
+                                              password: _passwordController.text,
+                                              email: _emailController.text
+                                          );
                                           setState(() => loading = true);
                                           _con.registerUser(user).then((value) {
                                             setState(() => loading = false);
-                                            if(value) Navigator.push(context, MaterialPageRoute(builder: (c)=>OTPScreen()));
+                                            if(value) {
+                                              String phone = _mobileController.text;
+                                              if(phone.length<=10) phone ="+91"+phone;
+                                              Navigator.push(context, MaterialPageRoute(
+                                                  builder: (c) => OTPScreen(phone: phone,)));
+                                            }
+                                            // Navigator.pushNamed(context, Routes.LOGIN);
                                             else {
                                               // Toast or Error
 

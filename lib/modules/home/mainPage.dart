@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/modules/home/drawer/profile/notification.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,15 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
   int pageNumber = 0;
   late PageController _pageController;
 
+
+  void closeDrawer()=>
+      setState(() {
+        xOffset = 0;
+        yOffset = 0;
+        scaleFactor = 1;
+        isDrawerOpen = false;}
+      );
+
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
@@ -60,136 +70,143 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
         color: Theme.of(context).appBarTheme.color,
         borderRadius: BorderRadius.circular(isDrawerOpen ? 40 : 0.0),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: MediaQuery.of(context).padding.top,
-            color: Theme.of(context).primaryColor,
-          ),
-          Container(
-            height: AppBar().preferredSize.height,
-            color: Theme.of(context).primaryColor,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Row(
-                children: [
-                  isDrawerOpen
-                      ? InkWell(
-                          onTap: () {
-                            setState(() {
-                              xOffset = 0;
-                              yOffset = 0;
-                              scaleFactor = 1;
-                              isDrawerOpen = false;
-                            });
-                          },
-                          child: Icon(
-                            Icons.arrow_back,
-                            size: 26,
-                            color: Colors.white,
-                          ),
-                        )
-                      : Stack(
-                          alignment: Alignment.bottomRight,
-                          children: [
-                            CircleAvatar(
-                              radius: 18,
-                              backgroundColor: Colors.white,
-                              backgroundImage: AssetImage(
-                                ConstanceData.palyerProfilePic,
-                              ),
-                            ),
-                            InkWell(
+      child: InkWell(
+        onTap: (){
+          closeDrawer();
+        },
+        child: AbsorbPointer(
+          absorbing: isDrawerOpen,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: MediaQuery.of(context).padding.top,
+                color: Theme.of(context).primaryColor,
+              ),
+              Container(
+                height: AppBar().preferredSize.height,
+                color: Theme.of(context).primaryColor,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Row(
+                    children: [
+                      isDrawerOpen
+                          ? InkWell(
                               onTap: () {
                                 setState(() {
-                                  xOffset = 230;
-                                  yOffset = 150;
-                                  scaleFactor = 0.6;
-                                  isDrawerOpen = true;
+                                  xOffset = 0;
+                                  yOffset = 0;
+                                  scaleFactor = 1;
+                                  isDrawerOpen = false;
                                 });
                               },
-                              child: CircleAvatar(
-                                radius: 10,
-                                backgroundColor: Colors.white,
-                                child: Icon(
-                                  Icons.sort,
-                                  size: 15,
-                                  color: Colors.black,
-                                ),
+                              child: Icon(
+                                Icons.arrow_back,
+                                size: 26,
+                                color: Colors.white,
                               ),
                             )
-                          ],
-                        ),
-                  Expanded(child: SizedBox()),
-                  Text(
-                    AppLocalizations.of('Fantacy Sports'),
-                    style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                          : Stack(
+                              alignment: Alignment.bottomRight,
+                              children: [
+                                CircleAvatar(
+                                  radius: 18,
+                                  backgroundColor: Colors.white,
+                                  backgroundImage:NetworkImage(FirebaseAuth.instance.currentUser?.photoURL??""),
+
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      xOffset = 230;
+                                      yOffset = 150;
+                                      scaleFactor = 0.6;
+                                      isDrawerOpen = true;
+                                    });
+                                  },
+                                  child: CircleAvatar(
+                                    radius: 10,
+                                    backgroundColor: Colors.white,
+                                    child: Icon(
+                                      Icons.sort,
+                                      size: 15,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                      Expanded(child: SizedBox()),
+                      Text(
+                        "Winable 11",
+                        style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.6,
+                              fontSize: 22,
+                            ),
+                      ),
+                      Expanded(child: SizedBox()),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NotificationPage(),
+                            ),
+                          );
+                        },
+                        child: Icon(
+                          Icons.notifications_outlined,
                           color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 0.6,
-                          fontSize: 22,
+                          size: 24,
                         ),
+                      ),
+                    ],
                   ),
-                  Expanded(child: SizedBox()),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => NotificationPage(),
-                        ),
-                      );
-                    },
-                    child: Icon(
-                      Icons.notifications_outlined,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
+              Container(
+                height: AppBar().preferredSize.height,
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: tabBar(),
+              ),
+              // SizedBox(
+              //   height: MediaQuery.of(context).size.height*0.74,
+              //   child: TabBarView(
+              //     controller: tabController,
+              //       children: [
+              //         CricketPage(),
+              //         FootballPage(),
+              //         // BasketballPage(),
+              //         // BaseballPage(),
+              //         // NFLPage(),
+              //         // HandballPage(),
+              //         // HandballPage(),
+              //         // HandballPage(),
+              //         // HandballPage(),
+              //         // HandballPage(),
+              //         // HandballPage(),
+              //         // HandballPage()
+              //       ]),
+              // ),
+              //
+              isCricket
+                  ? CricketPage()
+                  : isFootball
+                      ? FootballPage()
+                      : isBasketball
+                          ? BasketballPage()
+                          : isBaseball
+                              ? BaseballPage()
+                              : isNFL
+                                  ? NFLPage()
+                                  : isHandball
+                                      ? HandballPage()
+                                      : SizedBox(),
+            ],
           ),
-          Container(
-            height: AppBar().preferredSize.height,
-            color: Theme.of(context).scaffoldBackgroundColor,
-            child: tabBar(),
-          ),
-          // SizedBox(
-          //   height: MediaQuery.of(context).size.height*0.74,
-          //   child: TabBarView(
-          //     controller: tabController,
-          //       children: [
-          //         CricketPage(),
-          //         FootballPage(),
-          //         // BasketballPage(),
-          //         // BaseballPage(),
-          //         // NFLPage(),
-          //         // HandballPage(),
-          //         // HandballPage(),
-          //         // HandballPage(),
-          //         // HandballPage(),
-          //         // HandballPage(),
-          //         // HandballPage(),
-          //         // HandballPage()
-          //       ]),
-          // ),
-          //
-          isCricket
-              ? CricketPage()
-              : isFootball
-                  ? FootballPage()
-                  : isBasketball
-                      ? BasketballPage()
-                      : isBaseball
-                          ? BaseballPage()
-                          : isNFL
-                              ? NFLPage()
-                              : isHandball
-                                  ? HandballPage()
-                                  : SizedBox(),
-        ],
+        ),
       ),
     );
   }

@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:newsports/constance/constance.dart' as constance;
 
 import '../../utils/shared_preference_services.dart';
+import '../../utils/value_notifiers.dart';
 import '../welcome/welcome_page.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -39,12 +40,14 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     myContext = context;
     _loadNextScreen();
+    initValueNotifiers();
     super.initState();
     Future.delayed(const Duration(seconds: 3), () async {
-      // if(await SharedPreferenceService.getLoggedIn())
-      //   Navigator.of(context).pushReplacementNamed(Routes.HOME);
-      // else
+      final isLongedIn =await SharedPreferenceService.getLoggedIn();
+      if(!isLongedIn)
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (con)=>WelcomePage()));
+      else
+        Navigator.of(context).pushReplacementNamed(Routes.HOME);
 
     });
   }
@@ -56,7 +59,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Center(
-            child:Image.asset("assets/img/logo.png",
+            child:Image.asset(ConstanceData.appLogo,
               fit: BoxFit.cover,
             )
         ),

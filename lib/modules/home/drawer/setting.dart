@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/widget/customButton.dart';
 import 'package:newsports/widget/customTextField.dart';
@@ -7,26 +8,45 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../models/user.dart';
+import '../../../utils/shared_preference_services.dart';
+import '../../../utils/value_notifiers.dart';
+
 class SettingPage extends StatefulWidget {
   @override
   _SettingPageState createState() => _SettingPageState();
 }
 
 class _SettingPageState extends State<SettingPage> {
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
+
+  LocalUser user = currentUser.value;
+
+  TextEditingController _nameController = TextEditingController(text:currentUser.value.name);
+  TextEditingController _emailController = TextEditingController(text:currentUser.value.email);
   TextEditingController _passwordController = TextEditingController();
-  TextEditingController _birthDateController = TextEditingController();
-  TextEditingController _numberController = TextEditingController();
-  TextEditingController _addressController = TextEditingController();
-  TextEditingController _cityController = TextEditingController();
-  TextEditingController _pinCodeController = TextEditingController();
-  TextEditingController _stateController = TextEditingController();
-  TextEditingController _countryController = TextEditingController();
-  bool isMale = true;
-  bool isFemale = false;
+  TextEditingController _birthDateController = TextEditingController(text:currentUser.value.dob);
+  TextEditingController _numberController = TextEditingController(text:currentUser.value.mobile);
+  TextEditingController _addressController = TextEditingController(text:currentUser.value.address);
+  TextEditingController _cityController = TextEditingController(text:currentUser.value.city);
+  TextEditingController _pinCodeController = TextEditingController(text:currentUser.value.pincode);
+  TextEditingController _stateController = TextEditingController(text:currentUser.value.state);
+  TextEditingController _countryController = TextEditingController(text:currentUser.value.country);
+  bool isMale = currentUser.value.gender=="male";
+  bool isFemale = currentUser.value.gender=="female";
   bool isSwitched1 = false;
   bool isSwitched2 = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  setupSwitches() async {
+
+    isSwitched1 = await SharedPreferenceService.allowSmsNotification();
+    isSwitched2 = await SharedPreferenceService.getDiscoverable();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -363,15 +383,19 @@ class _SettingPageState extends State<SettingPage> {
                       SizedBox(
                         height: 5,
                       ),
-                      Text(
-                        AppLocalizations.of(
-                            'Friends can find and follow you when they sync their\nphone contacts'),
-                        style: Theme.of(context).textTheme.caption!.copyWith(
-                              color: Colors.black26,
-                              letterSpacing: 0.6,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      SizedBox(
+                        width: 200,
+                        child: Text(
+                          AppLocalizations.of(
+                              'Friends can find and follow you when they sync their phone contacts'),
+                          style: Theme.of(context).textTheme.caption!.copyWith(
+                                color: Colors.black26,
+                                letterSpacing: 0.6,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                          softWrap: true,
+                        ),
                       ),
                     ],
                   ),
@@ -503,20 +527,26 @@ class _SettingPageState extends State<SettingPage> {
                 ),
                 Row(
                   children: [
-                    Icon(
-                      Icons.exit_to_app,
-                      size: 18,
+                    InkWell(
+                      onTap: ()=>logout(),
+                      child: Icon(
+                        Icons.exit_to_app,
+                        size: 18,
+                      ),
                     ),
                     SizedBox(
                       width: 5,
                     ),
-                    Text(
-                      AppLocalizations.of('Logout'),
-                      style: Theme.of(context).textTheme.caption!.copyWith(
-                            letterSpacing: 0.6,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
+                    InkWell(
+                      onTap: ()=>logout(),
+                      child: Text(
+                        AppLocalizations.of('Logout'),
+                        style: Theme.of(context).textTheme.caption!.copyWith(
+                              letterSpacing: 0.6,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
                     ),
                     Expanded(child: SizedBox()),
                     Text(
@@ -534,6 +564,25 @@ class _SettingPageState extends State<SettingPage> {
                 ),
                 CustomButton(
                   text: AppLocalizations.of('Update Profile'),
+                  onTap: () async {
+                    final user = LocalUser(
+                      name : _nameController.value.text,
+                    email : _emailController.value.text,
+                    dob : _birthDateController.value.text,
+                    mobile : _numberController.value.text,
+                    address : _addressController.value.text,
+                    city : _cityController.value.text,
+                    pincode : _pinCodeController.value.text,
+                    state : _stateController.value.text,
+                    country : _countryController.value.text,
+                      gender: isMale?"male":"female",
+                    );
+                    updateToFirebase(user);
+                    SharedPreferenceService.setAllowSmsNotification(isSwitched1);
+                    SharedPreferenceService.setDiscoverable(isSwitched1);
+                    SharedPreferenceService.setUser(user);
+
+                  },
                 ),
               ],
             ),
@@ -545,4 +594,63 @@ class _SettingPageState extends State<SettingPage> {
       ),
     );
   }
+  
+  updateToFirebase(LocalUser user) async{
+    if(user.email!=currentUser.value.email){
+      // update Email
+      print("email Updateing..");
+      await FirebaseAuth.instance.currentUser?.updateEmail(user.email);
+      print("email Updated");
+    }
+    if(user.name!=currentUser.value.name){
+      // update name
+      await FirebaseAuth.instance.currentUser?.updateDisplayName(user.name);
+    }
+
+    currentUser.value = user;
+
+  }
+
+
+  logout(){
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Logout'),
+          content: Text('Are you sure you want to logout?',
+              style:Theme.of(context).textTheme.bodyText2!.copyWith(
+                color: Colors.grey.shade600,
+              )),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Logout', style: TextStyle(color: Colors.blue)),
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+                SharedPreferenceService.initSharedPreferences(login: false);
+                Navigator.of(context).popUntil((route) => !route.isFirst,);
+                Navigator.pushReplacementNamed(context, "/");
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: TextButton(
+                child: Text('Cancel', style: TextStyle(color: Colors.white)),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+  }
+  
+  
+  
 }

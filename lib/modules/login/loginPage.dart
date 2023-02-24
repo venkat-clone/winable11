@@ -98,7 +98,7 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                                 radius: 50,
                                 backgroundColor: Colors.white,
                                 backgroundImage: AssetImage(
-                                  ConstanceData.palyerProfilePic,
+                                  ConstanceData.appLogo,
                                 ),
                               ),
                             ],

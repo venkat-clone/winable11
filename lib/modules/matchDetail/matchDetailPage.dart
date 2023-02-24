@@ -369,7 +369,7 @@ class _MatchDetailPageState extends State<MatchDetailPage> {
                                         ),
                                         Center(
                                           child: Text(
-                                            "₹31",
+                                            "₹0",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .caption!
@@ -434,7 +434,7 @@ class _MatchDetailPageState extends State<MatchDetailPage> {
                                         row(AppLocalizations.of('Amount Added'),
                                             "₹0"),
                                         row(AppLocalizations.of('Winnings'),
-                                            "₹31"),
+                                            "₹0"),
                                         row(AppLocalizations.of('Cash Bonus'),
                                             "₹0"),
                                         SizedBox(

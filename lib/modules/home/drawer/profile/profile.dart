@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/modules/home/drawer/profile/tournamentLeaderboard.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../../../../constance/constance.dart';
+import '../../../../utils/value_notifiers.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -14,6 +16,9 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+
+  User? user = FirebaseAuth.instance.currentUser;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
             SliverAppBar(
               backgroundColor: Theme.of(context).primaryColor,
               automaticallyImplyLeading: false,
-              expandedHeight: 160.0,
+              expandedHeight: 180.0,
               floating: false,
               pinned: false,
               flexibleSpace: FlexibleSpaceBar(
@@ -54,8 +59,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     CircleAvatar(
                                       radius: 24,
                                       backgroundColor: Colors.white,
-                                      backgroundImage: AssetImage(
-                                        ConstanceData.palyerProfilePic,
+                                      backgroundImage:NetworkImage(
+                                        FirebaseAuth.instance.currentUser?.photoURL??"",
                                       ),
                                     ),
                                     InkWell(
@@ -78,7 +83,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Row(
                                   children: [
                                     Text(
-                                      AppLocalizations.of('PARTHD37OQR'),
+                                      user?.displayName ?? "unDefined",
                                       style: Theme.of(context)
                                           .textTheme
                                           .caption!
@@ -135,7 +140,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 height: 3,
                               ),
                               Text(
-                                "12",
+                                "0",
                                 style: Theme.of(context)
                                     .textTheme
                                     .caption!
@@ -187,7 +192,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Padding(
                       padding: const EdgeInsets.only(left: 14, right: 14),
                       child: LinearPercentIndicator(
-                        percent: 0.4,
+                        percent: 0.0,
                         progressColor: Colors.yellow,
                         backgroundColor: Theme.of(context).disabledColor,
                       ),
@@ -217,7 +222,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         Center(
                           child: Text(
                             AppLocalizations.of(
-                                'To progress to alevel 13 Champion'),
+                                'To progress to a level 13 Champion'),
                             style: Theme.of(context).textTheme.caption!.copyWith(
                                   color: Theme.of(context)
                                       .textTheme
@@ -546,7 +551,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         Column(
                           children: [
                             Text(
-                              "1",
+                              "0",
                               style:
                                   Theme.of(context).textTheme.caption!.copyWith(
                                         color: Colors.blue,
@@ -643,13 +648,13 @@ class _ProfilePageState extends State<ProfilePage> {
                           column(
                             Icons.dock_outlined,
                             Colors.orange,
-                            "30",
+                            currentUser.value.contests.toString(),
                             AppLocalizations.of('Contests'),
                           ),
                           column(
                             Icons.backup_sharp,
                             Colors.blue,
-                            "21",
+                            currentUser.value.matches.toString(),
                             AppLocalizations.of('Matches'),
                           ),
                         ],
@@ -667,13 +672,13 @@ class _ProfilePageState extends State<ProfilePage> {
                           column(
                             Icons.badge,
                             Colors.green,
-                            "12",
+                            currentUser.value.series.toString(),
                             AppLocalizations.of('Series'),
                           ),
                           column(
                             FontAwesomeIcons.trophy,
                             Colors.orange,
-                            "30",
+                            currentUser.value.wins.toString(),
                             AppLocalizations.of('Wins'),
                           ),
                         ],

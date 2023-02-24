@@ -1,6 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/main.dart';
@@ -10,12 +13,15 @@ import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
 
 import '../../controllers/AuthController.dart';
+import '../../firebase_options.dart';
 import '../../utils/default_loading.dart';
+import '../../utils/shared_preference_services.dart';
+import '../../widget/customTextField.dart';
 
 class OTPScreen extends StatefulWidget {
 
   final String? email;
-  String? phone;
+  String? phone ;
   OTPScreen({
     Key? key,
     this.email,
@@ -28,44 +34,78 @@ class OTPScreen extends StatefulWidget {
 
 class _OTPScreenState extends StateMVC<OTPScreen> {
 
+  String OTP = "";
+
   bool loading = false;
   setLoading(bool loading)=> setState(() => this.loading = loading);
   startLoading()=>setLoading(true);
   stopLoading()=>setLoading(false);
 
+  String error = "";
+  setError(String error)=>setState(()=>this.error =error);
+
+  int token = -1;
+  updateToken(int token)=>setState(()=>this.token=token);
+
+  int times =0;
+  int remainingTime = 0;
+  updateTime(int remaining)=>setState(()=>this.remainingTime=remaining);
+
   late AuthController _con;
   late bool isMobileNumberAuth ;
   _OTPScreenState():super(AuthController()){
     _con = controller as AuthController;
-    isMobileNumberAuth = widget.phone!=null;
   }
 
-  Future<bool> sendMobileOTP(String mobile) async{
-    bool OTPSend = false;
+  startTimer(){
+    const duration = Duration(seconds: 30);
+    setState(() {
+      remainingTime= duration.inSeconds;
+    });
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      print(remainingTime);
+      setState(() {
+        remainingTime--;
+      });
+      if (remainingTime < 1) {
+        timer.cancel();
+      }
+    });
+  }
+
+
+  sendMobileOTP(String mobile) async{
+    startLoading();
+    // await Firebase.initializeApp(
+    //   options: DefaultFirebaseOptions.currentPlatform,
+    // );
+    print("loading compleated");
     await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: mobile,
         verificationCompleted: (cred){
-          OTPSend = true;
+          print("credintical $cred");
         },
         verificationFailed: (exception){
-
+          setError("un expected Error occurred try again");
         },
         codeSent: (id,token){
-          // save ID someWare
-
+          stopLoading();
+          updateToken(token??-1);
+          startTimer();
         },
         codeAutoRetrievalTimeout: (id){
-
+          print("time Out");
         }
     );
-    return OTPSend;
+    stopLoading();
   }
 
 
-  void sendOTP(){
+  void sendOTP() async {
     if(isMobileNumberAuth){
       // mobile
-      _con.sendMobileOTP(widget.phone!);
+      print(widget.phone!);
+      sendMobileOTP(widget.phone!);
     }
     else{
       // email
@@ -74,11 +114,35 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
   }
 
 
+
   @override
   void initState() {
+    isMobileNumberAuth = !(widget.phone == null);
     super.initState();
-
+    sendOTP();
   }
+
+  validateOTP() async {
+    startLoading();
+    print(OTP);
+    final credential = PhoneAuthProvider.credentialFromToken(token,smsCode:OTP );
+
+    await FirebaseAuth.instance.currentUser?.linkWithCredential(credential).then((value)  async {
+      stopLoading();
+      await FirebaseAuth.instance.signOut();
+      SharedPreferenceService.initSharedPreferences(login: false);
+      Navigator.pushReplacementNamed(context, Routes.LOGIN);
+    }).onError((error, stackTrace) async{
+      print(error);
+      print(stackTrace);
+      await FirebaseAuth.instance.signOut();
+      SharedPreferenceService.initSharedPreferences(login: false);
+      Navigator.pushReplacementNamed(context, Routes.LOGIN);
+
+    });
+    stopLoading();
+  }
+
 
 
   @override
@@ -95,7 +159,7 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(
+                  if(token>0) Text(
                     AppLocalizations.of('OTP sent to ${widget.email??widget.phone??""}'),
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(
                           color: Colors.white,
@@ -132,17 +196,8 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
                             ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(bottom: 16),
-                        child: OTPTextField(
-                          length: 4,
-                          width: MediaQuery.of(context).size.width,
-                          textFieldAlignment: MainAxisAlignment.center,
-                          obscureText: false,
-                          fieldStyle: FieldStyle.underline,
-                          keyboardType: TextInputType.number,
-                          outlineBorderRadius: 15,
-                          style: TextStyle(fontSize: 17),
-                        ),
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: oTPTextWidget(),
                       ),
                     ],
                   ),
@@ -151,7 +206,8 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
               SizedBox(
                 height: 20,
               ),
-              Row(
+              remainingTime>0?
+                Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
@@ -167,7 +223,7 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
                     width: 5,
                   ),
                   Text(
-                    AppLocalizations.of('28 Second..'),
+                    '$remainingTime Second..',
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(
                           color: Color(0xffD30001),
                           letterSpacing: 0.6,
@@ -176,6 +232,13 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
                         ),
                   ),
                 ],
+              ):
+              Align(
+                alignment: Alignment.centerRight,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Text("Resend Otp",style: TextStyle(fontSize: 16,color: Colors.white),),
+                ),
               ),
               SizedBox(
                 height: 40,
@@ -183,7 +246,11 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
               CustomButton(
                 text: AppLocalizations.of('Next'),
                 onTap: () {
-                  Navigator.pushReplacementNamed(context, Routes.HOME);
+                  if(OTP.length==6){
+                    validateOTP();
+                  }else{
+                    setError("Plase Provide A valid OTP");
+                  }
                 },
               ),
             ],
@@ -192,4 +259,71 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
       ),
     );
   }
+
+  List<TextEditingController> controllers = List.generate(6, (index)=>TextEditingController());
+  List<FocusNode> focusNodes = List.generate(6, (index) => FocusNode());
+
+  Widget oTPTextWidget()=>Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      otpNumberField(0),
+      SizedBox(width: 10,),
+      otpNumberField(1),
+      SizedBox(width: 10,),
+      otpNumberField(2),
+      SizedBox(width: 10,),
+      otpNumberField(3),
+      SizedBox(width: 10,),
+      otpNumberField(4),
+      SizedBox(width: 10,),
+      otpNumberField(5)
+    ],
+  );
+
+  Widget otpNumberField(int index)=>SizedBox(
+    width: 40,
+    child: TextFormField(
+      controller: controllers[index],
+      focusNode: focusNodes[index],
+      maxLength: 1,
+      buildCounter: (context, {currentLength =0, isFocused= false, maxLength}) {},
+      keyboardType: TextInputType.number,
+      maxLengthEnforcement: null,
+      textAlignVertical: TextAlignVertical.center,
+      textAlign: TextAlign.center,
+      onChanged: (s){
+        if(s.length==0){
+          if(index-1>-1){
+            focusNodes[index-1].requestFocus();
+          }
+        }else{
+          if(index+1<controllers.length ) {
+            print(s);
+            focusNodes[index+1].requestFocus();
+          }else{
+            // validate OTP
+            final otp =controllers.fold("", (previousValue, element) => previousValue+element.text);
+            if(otp.length==6){
+              setState(() {this.OTP=otp;});
+              validateOTP();
+            }
+          }
+        }
+      },
+      decoration: InputDecoration(
+        hintText: "x",
+        contentPadding: EdgeInsets.zero,
+        hintStyle: Theme.of(context).textTheme.headline6!.copyWith(
+          color: Theme.of(context).textTheme.caption!.color,
+          letterSpacing: 0.6,
+          fontSize: 20,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    ),
+  );
+
+
 }

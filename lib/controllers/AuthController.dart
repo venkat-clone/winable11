@@ -7,8 +7,10 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/models/AuthUser.dart';
 import 'package:newsports/repository/auth_repository.dart';
 
+import '../models/user.dart';
 import '../utils/constants.dart';
 import '../utils/shared_preference_services.dart';
+import '../utils/value_notifiers.dart';
 
 class AuthController extends ControllerMVC {
 
@@ -24,10 +26,10 @@ class AuthController extends ControllerMVC {
     final isMobile = RegExp(Constants.mobileRegX).hasMatch(uName);
     print("isEmail=$isEmail");
     // return false;
-    if(isEmail) await FirebaseAuth.instance.signInWithEmailAndPassword(email: uName, password: password).then((value) {
+    if(isEmail) await FirebaseAuth.instance.signInWithEmailAndPassword(email: uName, password: password).then((value) async {
       print("loged in with email");
+      // await FirebaseAuth.instance.currentUser?.updateDisplayName("User 19001");
           longedIn = true;
-
       // we get Firebase User
     }).onError((error, stackTrace) {
       print(error);
@@ -44,7 +46,8 @@ class AuthController extends ControllerMVC {
       // Sign In With UserId & Password
       // search user name with password if found get them and Login or se other ways
     }
-    SharedPreferenceService.setLoggedIn(longedIn);
+
+    setUpLocalUser();
     return longedIn;
 
 
@@ -73,7 +76,7 @@ class AuthController extends ControllerMVC {
 
     }
     SharedPreferenceService.setGoogleAccessToken(signIn.credential?.accessToken??"");
-    SharedPreferenceService.setLoggedIn(true);
+    setUpLocalUser();
     return true;
   }
 
@@ -104,9 +107,22 @@ class AuthController extends ControllerMVC {
 
     }
     SharedPreferenceService.setFaceBookAccessToken(signIn.credential?.accessToken??"");
-    SharedPreferenceService.setLoggedIn(true);
+    setUpLocalUser();
     return true;
   }
+
+  setUpLocalUser({LocalUser? localUser}){
+    SharedPreferenceService.initSharedPreferences(login: true);
+    final user = localUser??LocalUser(
+      email:FirebaseAuth.instance.currentUser?.email??"",
+      mobile: FirebaseAuth.instance.currentUser?.phoneNumber??"",
+      name:FirebaseAuth.instance.currentUser?.displayName??"",
+    );
+    SharedPreferenceService.setVerified(true);
+    SharedPreferenceService.setUser(user);
+    currentUser.value = user;
+  }
+
 
   Future<bool> registerUser(AuthUser user) async {
     bool UserCreated = false;
@@ -117,11 +133,17 @@ class AuthController extends ControllerMVC {
     await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: user.email, password: user.password)
         .then((value) async{
-          await FirebaseAuth.instance.currentUser?.linkWithPhoneNumber(user.mobile);
+      UserCreated = true;
+      print("user created");
+      await FirebaseAuth.instance.currentUser?.updateDisplayName(user.uName);
+      await FirebaseAuth.instance.currentUser?.linkWithPhoneNumber(user.mobile);
           await AuthRepository.registerUser(user).then((value) {
             UserCreated = true;
           });
-        })
+          final localUser = LocalUser(name: user.uName,mobile: user.mobile,email: user.email);
+          SharedPreferenceService.setUser(localUser);
+          currentUser.value = localUser;
+    })
         .onError((error, stackTrace) {
           // show Toast
         });
@@ -129,6 +151,13 @@ class AuthController extends ControllerMVC {
     return UserCreated;
 
   }
+  // call after OTP validation
+  updateUserToServer(AuthUser user) async{
+    await AuthRepository.registerUser(user).then((value) {
+
+    });
+  }
+
 
   Future<bool> sendMobileOTP(String mobile) async{
     bool OTPSend = false;
@@ -154,6 +183,7 @@ class AuthController extends ControllerMVC {
   Future<bool> validatePhoneOTP(int Token,String sms) async{
     bool OTPSend = false;
     final credential = await PhoneAuthProvider.credentialFromToken(Token,smsCode:sms );
+
     await FirebaseAuth.instance.currentUser?.linkWithCredential(credential).then((value) => {
       OTPSend = true
     });
@@ -166,7 +196,6 @@ class AuthController extends ControllerMVC {
     await FirebaseAuth.instance.currentUser?.sendEmailVerification(ActionCodeSettings(url: ""));
     return OTPSent;
   }
-
 
 
 }
