@@ -23,7 +23,7 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
   TextEditingController _mobileController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
-  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _userNameController = TextEditingController();
   TextEditingController _dobController = TextEditingController();
   bool loading = false;
   String errorString="";
@@ -136,7 +136,7 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                       height: 15,
                                     ),
                                     CustomTextField(
-                                      controller: _usernameController,
+                                      controller: _userNameController,
                                       hintText: AppLocalizations.of('Username'),
                                     ),
                                     SizedBox(
