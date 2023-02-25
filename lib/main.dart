@@ -1,5 +1,4 @@
 import 'package:firebase_core/firebase_core.dart';
-
 import 'package:newsports/constance/constance.dart';
 import 'package:newsports/constance/themes.dart';
 import 'package:newsports/modules/home/home.dart';
@@ -9,11 +8,7 @@ import 'package:newsports/modules/splash/spalshPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:newsports/constance/constance.dart' as constance;
-import 'package:newsports/utils/shared_preference_services.dart';
-
 import 'firebase_options.dart';
-import 'modules/login/otp.dart';
-import 'modules/welcome/feature_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +19,7 @@ void main() {
     Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
     runApp(new MyApp());
   });
 }

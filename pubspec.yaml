@@ -42,8 +42,8 @@ dependencies:
   mvc_pattern: ^8.11.0
   flutter_facebook_auth: ^5.0.0
   http: ^0.13.3
-
   intl: ^0.17.0
+  csc_picker: ^0.2.7
 
 dev_dependencies:
   flutter_test:

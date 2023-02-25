@@ -1,4 +1,5 @@
 // ignore_for_file: deprecated_member_use
+import 'package:csc_picker/csc_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
@@ -25,51 +26,61 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _userNameController = TextEditingController();
   TextEditingController _dobController = TextEditingController();
+  String? _countryName;
+  String? _stateName;
+  String? _cityName;
   bool loading = false;
-  String errorString="";
+  String errorString = "";
 
-  setLoading(bool loading)=> setState(() => this.loading = loading);
-  startLoading()=>setLoading(true);
-  stopLoading()=>setLoading(false);
+  setLoading(bool loading) => setState(() => this.loading = loading);
+  startLoading() => setLoading(true);
+  stopLoading() => setLoading(false);
 
-  setError(String error)=>setState(()=>errorString = error);
+  setError(String error) => setState(() => errorString = error);
 
   late AuthController _con;
-  _RegisterPageState():super(AuthController()){
+  _RegisterPageState() : super(AuthController()) {
     _con = controller as AuthController;
   }
 
-  bool validateUName(){
-    if(_userNameController.text.length<3){
+  bool validateUName() {
+    if (_userNameController.text.length < 3) {
       setError("PLease Enter A valid userName");
       return false;
     }
     return true;
   }
+
   bool validateEmail() {
-    if(!RegExp(Constants.emailRegX).hasMatch(_emailController.text)){
+    if (!RegExp(Constants.emailRegX).hasMatch(_emailController.text)) {
       setError("Please Provide A Valid Email");
       return false;
     }
     return true;
   }
-  bool validatePassword(){
+
+  bool validatePassword() {
     final password = _passwordController.text;
-    if(password.isEmpty){
+    if (password.isEmpty) {
       setError("Password cannot be Empty");
       return false;
     }
     return true;
   }
-  bool validateMobile(){
-    if(!RegExp(Constants.mobileRegX).hasMatch(_mobileController.text)){
+
+  bool validateMobile() {
+    if (!RegExp(Constants.mobileRegX).hasMatch(_mobileController.text)) {
       setError("Invalid Mobile Number");
       return false;
     }
     return true;
   }
 
-  bool validateData()=> validatePassword() && validateEmail()  && validateMobile() && validateUName();
+  bool validateData() =>
+      validatePassword() &&
+      validateEmail() &&
+      validateMobile() &&
+      validateUName();
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +139,8 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                             padding: EdgeInsets.zero,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(left: 20, right: 20),
+                                padding:
+                                    const EdgeInsets.only(left: 20, right: 20),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -211,9 +223,118 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                     SizedBox(
                                       height: 15,
                                     ),
+                                    CSCPicker(
+                                      showStates: true,
+                                      showCities: true,
+                                      flagState: CountryFlag.ENABLE,
+                                      dropdownDecoration: BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                              offset: Offset(2, 4),
+                                              blurRadius: 8,
+                                              color:
+                                                  Color.fromARGB(88, 0, 0, 0))
+                                        ],
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(30)),
+                                        color:
+                                            Theme.of(context).backgroundColor,
+                                        border: Border.all(
+                                          color: (Theme.of(context)
+                                              .textTheme
+                                              .caption!
+                                              .color!),
+                                        ),
+                                      ),
+                                      disabledDropdownDecoration: BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                              offset: Offset(2, 4),
+                                              blurRadius: 8,
+                                              color:
+                                                  Color.fromARGB(88, 0, 0, 0))
+                                        ],
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(30)),
+                                        color: Colors.grey.shade300,
+                                        border: Border.all(
+                                          color: (Theme.of(context)
+                                              .textTheme
+                                              .caption!
+                                              .color!),
+                                        ),
+                                      ),
+                                      countrySearchPlaceholder:
+                                          AppLocalizations.of("Country"),
+                                      stateSearchPlaceholder:
+                                          AppLocalizations.of("State"),
+                                      citySearchPlaceholder:
+                                          AppLocalizations.of("City"),
+                                      countryDropdownLabel: AppLocalizations.of(
+                                          _countryName ?? "Country"),
+                                      stateDropdownLabel: AppLocalizations.of(
+                                          _stateName ?? "State"),
+                                      cityDropdownLabel: AppLocalizations.of(
+                                          _cityName ?? "City"),
+                                      defaultCountry: CscCountry.India,
+                                      selectedItemStyle: Theme.of(context)
+                                          .textTheme
+                                          .headline6!
+                                          .copyWith(
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium!
+                                                .color,
+                                            letterSpacing: 0.6,
+                                            fontSize: 14,
+                                          ),
+                                      dropdownHeadingStyle: Theme.of(context)
+                                          .textTheme
+                                          .headline6!
+                                          .copyWith(
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .caption!
+                                                .color,
+                                            letterSpacing: 0.6,
+                                            fontSize: 14,
+                                          ),
+                                      dropdownItemStyle: Theme.of(context)
+                                          .textTheme
+                                          .headline6!
+                                          .copyWith(
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .caption!
+                                                .color,
+                                            letterSpacing: 0.6,
+                                            fontSize: 14,
+                                          ),
+                                      dropdownDialogRadius: 10.0,
+                                      searchBarRadius: 30.0,
+                                      onCountryChanged: (value) {
+                                        setState(() {
+                                          _countryName = value;
+                                        });
+                                      },
+                                      onStateChanged: (value) {
+                                        setState(() {
+                                          _stateName = value;
+                                        });
+                                      },
+                                      onCityChanged: (value) {
+                                        setState(() {
+                                          _cityName = value;
+                                        });
+                                      },
+                                    ),
+                                    SizedBox(
+                                      height: 15,
+                                    ),
                                     CustomTextField(
                                       controller: _mobileController,
-                                      hintText: AppLocalizations.of('Mobile No.'),
+                                      hintText:
+                                          AppLocalizations.of('Mobile No.'),
                                     ),
                                     SizedBox(
                                       height: 15,
@@ -229,35 +350,49 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                       controller: _passwordController,
                                       hintText: AppLocalizations.of('Password'),
                                     ),
-                                    Text(errorString,style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Theme.of(context).colorScheme.error,
-                                    ),),
+                                    Text(
+                                      errorString,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .error,
+                                          ),
+                                    ),
                                     SizedBox(
                                       height: 16,
                                     ),
                                     Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 5, right: 5),
+                                      padding: const EdgeInsets.only(
+                                          left: 5, right: 5),
                                       child: CustomButton(
                                         text: AppLocalizations.of('Register'),
                                         onTap: () {
                                           setError("");
-                                          if(!validateData()) return ;
+                                          if (!validateData()) return;
 
                                           final user = AuthUser(
                                               uName: _userNameController.text,
                                               mobile: _mobileController.text,
-                                              password: _passwordController.text,
-                                              email: _emailController.text
-                                          );
+                                              password:
+                                                  _passwordController.text,
+                                              email: _emailController.text);
                                           setState(() => loading = true);
                                           _con.registerUser(user).then((value) {
                                             setState(() => loading = false);
-                                            if(value) {
-                                              String phone = _mobileController.text;
-                                              if(phone.length<=10) phone ="+91"+phone;
-                                              Navigator.push(context, MaterialPageRoute(
-                                                  builder: (c) => OTPScreen(phone: phone,)));
+                                            if (value) {
+                                              String phone =
+                                                  _mobileController.text;
+                                              if (phone.length <= 10)
+                                                phone = "+91" + phone;
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (c) => OTPScreen(
+                                                            phone: phone,
+                                                          )));
                                             }
                                             // Navigator.pushNamed(context, Routes.LOGIN);
                                             else {
@@ -265,7 +400,6 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                               debugPrint("error");
                                             }
                                           });
-
                                         },
                                       ),
                                     ),
@@ -286,10 +420,11 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
               ],
             ),
           ),
-          if(loading) Container(
-            color: Colors.grey.shade50.withOpacity(0.4),
-            child: Center(child: CircularProgressIndicator()),
-          ),
+          if (loading)
+            Container(
+              color: Colors.grey.shade50.withOpacity(0.4),
+              child: Center(child: CircularProgressIndicator()),
+            ),
         ],
       ),
     );
@@ -313,12 +448,12 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
 
                     _con.loginWithFacebook().then((value) {
                       setState(() => loading = false);
-                      if(value) Navigator.of(context).pushNamed(Routes.HOME);
+                      if (value)
+                        Navigator.of(context).pushNamed(Routes.HOME);
                       else {
                         // set State Loading False
                       }
                     });
-
                   },
                   child: Container(
                     height: 45,
@@ -340,12 +475,13 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                           ),
                           Text(
                             AppLocalizations.of('Facebook'),
-                            style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.6,
-                              fontSize: 16,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodyText2!.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0.6,
+                                      fontSize: 16,
+                                    ),
                           ),
                         ],
                       ),
@@ -366,17 +502,16 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                 ),
                 child: InkWell(
                   onTap: () async {
-
                     setState(() => loading = true);
 
                     _con.loginWithGoogle().then((value) {
                       setState(() => loading = false);
-                      if(value) Navigator.of(context).pushNamed(Routes.HOME);
+                      if (value)
+                        Navigator.of(context).pushNamed(Routes.HOME);
                       else {
                         // set State Loading False
                       }
                     });
-
                   },
                   child: Container(
                     height: 45,
@@ -398,12 +533,13 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                           ),
                           Text(
                             AppLocalizations.of('Google'),
-                            style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.6,
-                              fontSize: 16,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodyText2!.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0.6,
+                                      fontSize: 16,
+                                    ),
                           ),
                         ],
                       ),
