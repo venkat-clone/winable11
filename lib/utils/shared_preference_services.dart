@@ -82,9 +82,9 @@ abstract class SharedPreferenceService {
     setUser(user ?? LocalUser());
     setAllowSmsNotification(false);
     setDiscoverable(false);
-    SharedPreferenceService.getKYC().then(
-      (value) => value ? setKYC(value) : setKYC(false),
-    );
+
+    // setKYC(false);
+
     setVerified(false);
   }
 }

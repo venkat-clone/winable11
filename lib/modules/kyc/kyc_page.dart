@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:newsports/controllers/AuthController.dart';
 import 'package:newsports/controllers/KYCController.dart';
 import 'package:newsports/utils/shared_preference_services.dart';
 import '../../models/KYC.dart';
@@ -18,6 +20,7 @@ class _KYCFormState extends StateMVC<KYCForm> {
   final aadharDOBController = TextEditingController();
   final panDOBController = TextEditingController();
 
+  AuthController _authController = AuthController();
   late KYCController _con;
   bool loading = false;
   bool requested = false;
@@ -330,6 +333,15 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                         print("started loading");
                                         final success =
                                             await _con.requestForKYC(kyc);
+
+                                        print(FirebaseAuth
+                                            .instance.currentUser!.uid
+                                            .toString());
+                                        _authController.upDateKYCStatus(
+                                            FirebaseAuth
+                                                .instance.currentUser!.uid,
+                                            true);
+
                                         stopLoading();
                                         print("loading stopped");
                                         setState(() => requested = success);
