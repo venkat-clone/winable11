@@ -1,7 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
+import 'package:newsports/controllers/MatchController.dart';
 import 'package:newsports/widget/cardView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
@@ -12,7 +14,7 @@ class CricketPage extends StatefulWidget {
   _CricketPageState createState() => _CricketPageState();
 }
 
-class _CricketPageState extends State<CricketPage> {
+class _CricketPageState extends StateMVC<CricketPage> {
   final List<String> imgList = [
     ConstanceData.slider1,
     ConstanceData.slider2,
@@ -20,9 +22,18 @@ class _CricketPageState extends State<CricketPage> {
     ConstanceData.slider4,
   ];
 
+  late MatchController _con ;
+  final scrollController  = ScrollController();
+  _CricketPageState():super(MatchController()){
+    _con = controller as MatchController;
+  }
+
+
   @override
   void initState() {
     super.initState();
+    _con.getMatches(context);
+    _con.getTeams(context);
   }
 
   @override
@@ -159,109 +170,63 @@ class _CricketPageState extends State<CricketPage> {
                 padding: const EdgeInsets.only(left: 16, right: 16),
                 child: Column(
                   children: [
-                    CardView(
-                      txt1: AppLocalizations.of('Cricket IPL'),
-                      txt2: AppLocalizations.of('Mumbai Indians'),
-                      txt3: AppLocalizations.of('Kolkata'),
-                      txt4: "MI",
-                      setTime: CountdownTimer(
-                        endTime: DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60,
-                        textStyle: TextStyle(
-                          fontSize: 14,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
+
+                    // InkWell(
+                    //   onTap:(){
+                    //     _con.getMatches(context);
+                    //     _con.getTeams(context);
+                    //   },
+                    //   child: Container(
+                    //     height: 40,
+                    //     width: 100,
+                    //     color: Colors.green,
+                    //   ),
+                    // ),
+                    Scrollbar(
+                      controller :scrollController,
+                      isAlwaysShown: true,
+                      child: ListView.separated(
+                        controller: scrollController,
+                        shrinkWrap: true,
+                        itemCount: _con.matchList.length,
+                          itemBuilder: (c,index){
+                          final match = _con.matchList[index];
+                          final teamA = _con.teams[match.teamid1];
+                          final teamB = _con.teams[match.teamid2];
+                            return CardView(
+                              txt1: AppLocalizations.of(match.title),
+                              txt2: AppLocalizations.of(teamA?.teamName??""),
+                              txt3: AppLocalizations.of(teamB?.teamName??""),
+                              txt4: teamA?.teamShortName??"",
+                              // setTime: CountdownTimer(
+                              //   endTime: DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60,
+                              //   textStyle: TextStyle(
+                              //     fontSize: 14,
+                              //     color: Colors.red,
+                              //     fontWeight: FontWeight.bold,
+                              //   ),
+                              // ),
+                              setTime: Text(match.matchDateTime,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                              ),
+                              txt6: teamB?.teamShortName??"",
+                              txt7: AppLocalizations.of('1 Team'),
+                              image1: Image.network(
+                                teamA?.teamImage??"",
+                                fit: BoxFit.cover,
+                              ),
+                              image2: Image.network(
+                                teamB?.teamImage??"",
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          }, separatorBuilder: (BuildContext context, int index) =>SizedBox(
+                        height: 15,
                       ),
-                      txt6: "KOL",
-                      txt7: AppLocalizations.of('1 Team'),
-                      image1: Image.asset(
-                        ConstanceData.mumbaiIndians,
-                        fit: BoxFit.cover,
-                      ),
-                      image2: Image.asset(
-                        ConstanceData.kolkata,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    CardView(
-                      txt1: AppLocalizations.of('Cricket IPL'),
-                      txt2: AppLocalizations.of('Delhi Capital'),
-                      txt3: AppLocalizations.of('Hyderabad'),
-                      txt4: "DC",
-                      setTime: CountdownTimer(
-                        endTime: DateTime.now().millisecondsSinceEpoch + 1000 * 30 * 30,
-                        textStyle: TextStyle(
-                          fontSize: 14,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      txt6: "HD",
-                      txt7: AppLocalizations.of('1 Team'),
-                      image1: Image.asset(
-                        ConstanceData.delhiCapital,
-                        fit: BoxFit.cover,
-                      ),
-                      image2: Image.asset(
-                        ConstanceData.hyderabad,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    CardView(
-                      txt1: AppLocalizations.of('Cricket IPL'),
-                      txt2: AppLocalizations.of('Channai'),
-                      txt3: AppLocalizations.of('Banglore'),
-                      txt4: "BT",
-                      setTime: CountdownTimer(
-                        endTime: DateTime.now().millisecondsSinceEpoch + 1000 * 90 * 90,
-                        textStyle: TextStyle(
-                          fontSize: 14,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      txt6: "BG",
-                      txt7: AppLocalizations.of('1 Team'),
-                      image1: Image.asset(
-                        ConstanceData.channai,
-                        fit: BoxFit.cover,
-                      ),
-                      image2: Image.asset(
-                        ConstanceData.banglore,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    CardView(
-                      txt1: AppLocalizations.of('Cricket IPL'),
-                      txt2: AppLocalizations.of('Mumbai Indians'),
-                      txt3: AppLocalizations.of('Delhi Capital'),
-                      txt4: "MI",
-                      setTime: CountdownTimer(
-                        endTime: DateTime.now().millisecondsSinceEpoch + 1000 * 180 * 30,
-                        textStyle: TextStyle(
-                          fontSize: 14,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      txt6: "DC",
-                      txt7: AppLocalizations.of('1 Team'),
-                      image1: Image.asset(
-                        ConstanceData.mumbaiIndians,
-                        fit: BoxFit.cover,
-                      ),
-                      image2: Image.asset(
-                        ConstanceData.delhiCapital,
-                        fit: BoxFit.cover,
                       ),
                     ),
                   ],
