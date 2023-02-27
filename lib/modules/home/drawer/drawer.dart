@@ -64,9 +64,18 @@ class _DrawerScreenState extends State<DrawerScreen> {
                           CircleAvatar(
                             radius: 24,
                             backgroundColor: Colors.white,
-                            backgroundImage:NetworkImage(FirebaseAuth.instance.currentUser?.photoURL??""),
+                            backgroundImage: NetworkImage(
+                                FirebaseAuth.instance.currentUser?.photoURL ??
+                                    ""),
+                            child:
+                                FirebaseAuth.instance.currentUser?.photoURL ==
+                                        null
+                                    ? Text(FirebaseAuth
+                                        .instance.currentUser!.displayName
+                                        .toString()[0]
+                                        .toUpperCase())
+                                    : SizedBox(),
                           ),
-
                           InkWell(
                             child: CircleAvatar(
                               radius: 8,
@@ -74,8 +83,10 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                   Theme.of(context).appBarTheme.color,
                               child: Icon(
                                 Icons.camera_alt,
-                                color:
-                                    Theme.of(context).textTheme.headline6!.color,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .headline6!
+                                    .color,
                                 size: 12,
                               ),
                             ),
@@ -90,7 +101,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            FirebaseAuth.instance.currentUser?.displayName??"",
+                            FirebaseAuth.instance.currentUser?.displayName ??
+                                "",
                             style:
                                 Theme.of(context).textTheme.bodyText2!.copyWith(
                                       color: Theme.of(context)
@@ -106,7 +118,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                             height: 5,
                           ),
                           Text(
-                            AppLocalizations.of('Level')+" ${currentUser.value.level}",
+                            AppLocalizations.of('Level') +
+                                " ${currentUser.value.level}",
                             style:
                                 Theme.of(context).textTheme.bodyText2!.copyWith(
                                       color: Theme.of(context)
@@ -153,7 +166,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                         customRow(
                           AppLocalizations.of('KYC'),
                           Icons.account_balance,
-                              () {
+                          () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -287,8 +300,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                         customRow(
                           AppLocalizations.of('Logout'),
                           Icons.logout_rounded,
-                              () {
-                                logout();
+                          () {
+                            logout();
                           },
                         ),
                         SizedBox(
@@ -507,23 +520,25 @@ class _DrawerScreenState extends State<DrawerScreen> {
   bool selectFifthColor = false;
   bool selectSixthColor = false;
 
-  logout(){
+  logout() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Logout'),
           content: Text('Are you sure you want to logout?',
-              style:Theme.of(context).textTheme.bodyText2!.copyWith(
-                color: Colors.grey.shade600,
-              )),
+              style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                    color: Colors.grey.shade600,
+                  )),
           actions: <Widget>[
             TextButton(
               child: Text('Logout', style: TextStyle(color: Colors.blue)),
               onPressed: () async {
                 await FirebaseAuth.instance.signOut();
                 SharedPreferenceService.initSharedPreferences(login: false);
-                Navigator.of(context).popUntil((route) => !route.isFirst,);
+                Navigator.of(context).popUntil(
+                  (route) => !route.isFirst,
+                );
                 Navigator.pushReplacementNamed(context, "/");
               },
             ),
@@ -532,7 +547,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
               child: TextButton(
                 child: Text('Cancel', style: TextStyle(color: Colors.white)),
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -543,7 +559,6 @@ class _DrawerScreenState extends State<DrawerScreen> {
         );
       },
     );
-
   }
 
   changeColor(BuildContext context, int color) {

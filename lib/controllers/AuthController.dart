@@ -51,6 +51,7 @@ class AuthController extends ControllerMVC {
           .signInWithEmailAndPassword(email: uName, password: password)
           .then((value) async {
         print("loged in with email");
+        setKYCStatus(FirebaseAuth.instance.currentUser!.uid, false);
         // await FirebaseAuth.instance.currentUser?.updateDisplayName("User 19001");
         longedIn = true;
         // we get Firebase User
@@ -70,7 +71,7 @@ class AuthController extends ControllerMVC {
       // Sign In With UserId & Password
       // search user name with password if found get them and Login or se other ways
     }
-    setKYCStatus(FirebaseAuth.instance.currentUser!.uid, false);
+
     setUpLocalUser();
     return longedIn;
   }

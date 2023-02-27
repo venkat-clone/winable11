@@ -613,10 +613,19 @@ class _SettingPageState extends State<SettingPage> {
                             gender: isMale ? "male" : "female",
                           );
                           startLoading();
+                          if (_passwordController.text.isNotEmpty) {
+                            updatePassword(_passwordController.text.trim())
+                                .then((value) {
+                              value
+                                  ? showToast("Update password successful")
+                                  : showToast("Update password failed");
+                            }).whenComplete(() {});
+                          }
+
                           updateToFirebase(user).then((value) {
                             value
-                                ? showToast("Update successful", true)
-                                : showToast("Update failed", false);
+                                ? showToast("Update successful")
+                                : showToast("Update failed");
                           }).whenComplete(() => stopLoading());
                           SharedPreferenceService.setAllowSmsNotification(
                               isSwitched1);
@@ -643,7 +652,7 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-  showToast(text, isSuccess) {
+  showToast(text) {
     return Fluttertoast.showToast(
         msg: text,
         toastLength: Toast.LENGTH_SHORT,
@@ -654,13 +663,20 @@ class _SettingPageState extends State<SettingPage> {
 
   updateToFirebase(LocalUser user) async {
     bool isUpdated = false;
+
     if (user.email != currentUser.value.email) {
       // update Email
       print("email Updateing..");
       await FirebaseAuth.instance.currentUser
-          ?.updateEmail(user.email)
-          .whenComplete(() => isUpdated = true)
-          .onError((error, stackTrace) => isUpdated = false);
+          ?.updateEmail(user.email.trim())
+          .whenComplete(() {
+        isUpdated = true;
+
+        print("Email updated successfull");
+      }).onError((error, stackTrace) {
+        isUpdated = false;
+        print(error.toString());
+      });
       print("email Updated");
     }
     if (user.name != currentUser.value.name) {
@@ -673,6 +689,25 @@ class _SettingPageState extends State<SettingPage> {
 
     currentUser.value = user;
     return isUpdated;
+  }
+
+  updatePassword(password) async {
+    bool isUpdate = false;
+    if (password != null) {
+      await FirebaseAuth.instance.currentUser!
+          .updatePassword(password)
+          .whenComplete(() {
+        print("password upadet successful");
+
+        isUpdate = true;
+      }).onError((error, stackTrace) {
+        isUpdate = false;
+        print(error.toString());
+      });
+    } else {
+      print("password null");
+    }
+    return isUpdate;
   }
 
   logout() {

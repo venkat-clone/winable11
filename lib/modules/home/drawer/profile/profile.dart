@@ -63,6 +63,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 ?.photoURL ??
                                             "",
                                       ),
+                                      child: FirebaseAuth.instance.currentUser
+                                                  ?.photoURL ==
+                                              null
+                                          ? Text(user!.displayName
+                                              .toString()[0]
+                                              .toUpperCase())
+                                          : SizedBox(),
                                     ),
                                     InkWell(
                                       child: CircleAvatar(
