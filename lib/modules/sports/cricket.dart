@@ -182,7 +182,20 @@ class _CricketPageState extends StateMVC<CricketPage> {
                     //     color: Colors.green,
                     //   ),
                     // ),
+                    if(false) Scrollbar(
+                      controller :scrollController,
+                      isAlwaysShown: true,
+                      child: ListView.separated(
+                        controller: scrollController,
+                        shrinkWrap: true, itemCount: 3,
+                        itemBuilder: (BuildContext context, int index) {
+                          return CardShimmer();
+                        },
+                        separatorBuilder: (BuildContext context, int index)=>SizedBox(height: 15,),
+                      ),
+                    ),
                     Scrollbar(
+
                       controller :scrollController,
                       isAlwaysShown: true,
                       child: ListView.separated(
@@ -224,9 +237,7 @@ class _CricketPageState extends StateMVC<CricketPage> {
                                 fit: BoxFit.cover,
                               ),
                             );
-                          }, separatorBuilder: (BuildContext context, int index) =>SizedBox(
-                        height: 15,
-                      ),
+                          }, separatorBuilder: (BuildContext context, int index) =>SizedBox(height: 15,),
                       ),
                     ),
                   ],
@@ -239,3 +250,222 @@ class _CricketPageState extends StateMVC<CricketPage> {
     );
   }
 }
+
+class CardShimmer extends StatelessWidget {
+  const CardShimmer({Key? key}) : super(key: key);
+  static const _shimmerGradient = LinearGradient(
+    colors: [
+      Color(0xFFEBEBF4),
+      Color(0xFFF4F4F4),
+      Color(0xFFEBEBF4),
+    ],
+    stops: [
+      0.1,
+      0.3,
+      0.4,
+    ],
+    begin: Alignment(-1.0, -0.3),
+    end: Alignment(1.0, 0.3),
+    tileMode: TileMode.clamp,
+  );
+  @override
+  Widget build(BuildContext context) {
+
+    return ShaderMask(
+      blendMode: BlendMode.srcATop,
+      shaderCallback: (bounds) {
+        return _shimmerGradient.createShader(bounds);
+      },
+      child: Card(
+        child: Container(
+          height: 150,
+          decoration: BoxDecoration(
+            color: Theme.of(context).appBarTheme.color!.withOpacity(0.5),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 100,height: 30,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+
+    return Card(
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Container(
+        height: 150,
+        decoration: BoxDecoration(
+          color: Theme.of(context).appBarTheme.color!.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 100,
+                    height: 20,
+                    color: Colors.grey,
+                  ),
+                  Expanded(child: SizedBox()),
+                  Container(
+                    width: 30,
+                    height: 30,
+                    color: Colors.grey,
+                  ),
+                ],
+              ),
+            ),
+            Divider(),
+            Container(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 10,
+                      right: 10,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 100,
+                          height: 20,
+                          color: Colors.grey,
+                        ),
+                        Expanded(child: SizedBox()),
+                        Container(
+                          width: 100,
+                          height: 20,
+                          color: Colors.grey,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5, right: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 35,
+                          width: 35,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Container(
+                          width: 100,
+                          height: 20,
+                          color: Colors.grey,
+                        ),
+                        Expanded(child: SizedBox()),
+                        Container(
+                          width: 100,
+                          height: 20,
+                          color: Colors.grey,
+                        ),
+                        Expanded(child: SizedBox()),
+                        Container(
+                          width: 100,
+                          height: 20,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Container(
+                          height: 35,
+                          width: 35,
+                          color: Colors.grey,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(child: SizedBox()),
+            Container(
+              height: 35,
+              decoration: BoxDecoration(
+                color: Theme.of(context).disabledColor.withOpacity(0.2),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 10,
+                  right: 10,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                      Container(
+                      width: 100,
+                      height: 20,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Container(
+                      height: 25,
+                      width: 60,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Mega",
+                          style: Theme.of(context).textTheme.caption!.copyWith(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.6,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(child: SizedBox()),
+                    Icon(
+                      Icons.outbox,
+                      color: Theme.of(context).primaryColor,
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+
+    );
+  }
+}
+
