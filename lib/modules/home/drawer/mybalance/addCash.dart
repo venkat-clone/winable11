@@ -1,0 +1,268 @@
+import 'dart:ffi';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:newsports/controllers/PaymentController.dart';
+import 'package:newsports/models/payment.dart';
+import 'package:newsports/widget/customTextField.dart';
+import 'package:upi_india/upi_india.dart';
+
+import '../../../../Language/appLocalizations.dart';
+
+class AddCash extends StatefulWidget {
+  @override
+  _AddCashState createState() => _AddCashState();
+}
+
+class _AddCashState extends State<AddCash> {
+  Future<UpiResponse>? _transaction;
+  UpiIndia _upiIndia = UpiIndia();
+  List<UpiApp>? apps;
+  String _amount = "1";
+  PaymentController _addCashController = PaymentController();
+  late String txnId;
+  late String resCode;
+  late String txnRef;
+  late String status;
+  late String approvalRef;
+  bool isPaymentAdded = false;
+
+  TextStyle header = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+  );
+
+  TextStyle value = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 14,
+  );
+
+  @override
+  void initState() {
+    _upiIndia.getAllUpiApps(mandatoryTransactionId: false).then((value) {
+      setState(() {
+        apps = value;
+      });
+    }).catchError((e) {
+      apps = [];
+    });
+    super.initState();
+  }
+
+  Future<UpiResponse> initiateTransaction(UpiApp app, amount) async {
+    return _upiIndia.startTransaction(
+      app: app,
+      receiverUpiId: "dhruv.singh45-1@okaxis",
+      receiverName: 'Anil sahu',
+      transactionRefId: 'Test payment',
+      transactionNote: 'payment',
+      amount: double.parse(_amount.trim()),
+    );
+  }
+
+  Widget displayUpiApps(amount) {
+    if (apps == null)
+      return Center(child: CircularProgressIndicator());
+    else if (apps!.length == 0)
+      return Center(
+        child: Text(
+          "No Upi Apps found.",
+          style: header,
+        ),
+      );
+    else
+      return Align(
+        alignment: Alignment.topCenter,
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Wrap(
+            children: apps!.map<Widget>((UpiApp app) {
+              return GestureDetector(
+                onTap: () {
+                  _transaction = initiateTransaction(app, amount);
+                  setState(() {});
+                },
+                child: Container(
+                  height: 100,
+                  width: 100,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Image.memory(
+                        app.icon,
+                        height: 60,
+                        width: 60,
+                      ),
+                      Text(app.name),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      );
+  }
+
+  String _upiErrorHandler(error) {
+    switch (error) {
+      case UpiIndiaAppNotInstalledException:
+        return 'Requested app not installed on device';
+      case UpiIndiaUserCancelledException:
+        return 'You cancelled the transaction';
+      case UpiIndiaNullResponseException:
+        return 'Requested app didn\'t return any response';
+      case UpiIndiaInvalidParametersException:
+        return 'Requested app cannot handle the transaction';
+      default:
+        return 'An Unknown error has occurred';
+    }
+  }
+
+  void _checkTxnStatus(String status) {
+    switch (status) {
+      case UpiPaymentStatus.SUCCESS:
+        Payment _payment = Payment(amount: _amount, transactionID: txnId);
+        if (isPaymentAdded == false)
+          _addCashController.addCash(
+              FirebaseAuth.instance.currentUser!.uid, _payment);
+        isPaymentAdded = true;
+
+        print('Transaction Successful');
+        break;
+      case UpiPaymentStatus.SUBMITTED:
+        print('Transaction Submitted');
+        break;
+      case UpiPaymentStatus.FAILURE:
+        print('Transaction Failed');
+        break;
+      default:
+        print('Received an Unknown transaction status');
+    }
+  }
+
+  Widget displayTransactionData(title, body) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("$title: ", style: header),
+          Flexible(
+              child: Text(
+            body,
+            style: value,
+          )),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: false,
+        backgroundColor: Theme.of(context).primaryColor,
+        title: Text(
+          AppLocalizations.of('Add Cash'),
+          style: Theme.of(context).textTheme.caption!.copyWith(
+                color: Colors.white,
+                letterSpacing: 0.6,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        leading: InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      body: Column(
+        children: <Widget>[
+          SizedBox(
+            height: 50,
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width - 50,
+            child: TextField(
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(hintText: "Enter amount"),
+              onChanged: (value) {
+                setState(() {
+                  _amount = value;
+                });
+              },
+            ),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          Text(AppLocalizations.of("Available UPI option:")),
+          Expanded(
+            child: displayUpiApps(_amount),
+          ),
+          Expanded(
+            child: FutureBuilder(
+              future: _transaction,
+              builder:
+                  (BuildContext context, AsyncSnapshot<UpiResponse> snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        _upiErrorHandler(snapshot.error.runtimeType),
+                        style: header,
+                      ), // Print's text message on screen
+                    );
+                  }
+
+                  // If we have data then definitely we will have UpiResponse.
+                  // It cannot be null
+                  UpiResponse _upiResponse = snapshot.data!;
+
+                  // Data in UpiResponse can be null. Check before printing
+
+                  txnId = _upiResponse.transactionId ?? 'N/A';
+                  resCode = _upiResponse.responseCode ?? 'N/A';
+                  txnRef = _upiResponse.transactionRefId ?? 'N/A';
+                  status = _upiResponse.status ?? 'N/A';
+                  approvalRef = _upiResponse.approvalRefNo ?? 'N/A';
+
+                  _checkTxnStatus(status);
+
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          displayTransactionData('Transaction Id', txnId),
+                          displayTransactionData('Response Code', resCode),
+                          displayTransactionData('Reference Id', txnRef),
+                          displayTransactionData(
+                              'Status', status.toUpperCase()),
+                          displayTransactionData('Approval No', approvalRef),
+                        ],
+                      ),
+                    ),
+                  );
+                } else
+                  return Center(
+                    child: Text(''),
+                  );
+              },
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}

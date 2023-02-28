@@ -1,11 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:newsports/Language/appLocalizations.dart';
-import 'package:newsports/constance/constance.dart';
 import 'package:newsports/main.dart';
-import 'package:newsports/models/KYC.dart';
 import 'package:newsports/modules/home/drawer/inviteFriend.dart/inviteFriend.dart';
 import 'package:newsports/modules/home/drawer/more/more.dart';
 import 'package:newsports/modules/home/drawer/mybalance/myBalance.dart';
@@ -16,9 +13,11 @@ import 'package:newsports/modules/home/drawer/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:newsports/constance/constance.dart' as constance;
+
 import '../../../utils/shared_preference_services.dart';
 import '../../../utils/value_notifiers.dart';
 import '../../kyc/kyc_page.dart';
+import 'mybalance/addCash.dart';
 import 'profile/profile.dart';
 
 class DrawerScreen extends StatefulWidget {

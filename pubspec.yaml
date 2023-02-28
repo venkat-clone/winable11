@@ -45,6 +45,7 @@ dependencies:
   intl: ^0.17.0
   csc_picker: ^0.2.7
   cloud_firestore: ^4.4.3
+  upi_india: ^3.0.1
 
 dev_dependencies:
   flutter_test:

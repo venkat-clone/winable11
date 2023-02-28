@@ -1,7 +1,10 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:newsports/Language/appLocalizations.dart';
+import 'package:newsports/controllers/PaymentController.dart';
 import 'package:newsports/modules/home/drawer/mybalance/accountInfo.dart';
+import 'package:newsports/modules/home/drawer/mybalance/addCash.dart';
 import 'package:newsports/modules/home/drawer/mybalance/transaction.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +14,14 @@ class MyBalancePage extends StatefulWidget {
 }
 
 class _MyBalancePageState extends State<MyBalancePage> {
+  PaymentController _paymentController = PaymentController();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _paymentController.getCash(FirebaseAuth.instance.currentUser!.uid);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,15 +83,16 @@ class _MyBalancePageState extends State<MyBalancePage> {
                         ),
                         Center(
                           child: Text(
-                            "₹0",
-                            style: Theme.of(context).textTheme.caption!.copyWith(
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .headline6!
-                                      .color,
-                                  letterSpacing: 0.6,
-                                  fontSize: 12,
-                                ),
+                            "₹ ${_paymentController.totalBalance.toString()}",
+                            style:
+                                Theme.of(context).textTheme.caption!.copyWith(
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .headline6!
+                                          .color,
+                                      letterSpacing: 0.6,
+                                      fontSize: 12,
+                                    ),
                           ),
                         ),
                         SizedBox(
@@ -94,17 +106,24 @@ class _MyBalancePageState extends State<MyBalancePage> {
                                 color: Color(0xff317E2F),
                                 borderRadius: BorderRadius.circular(4)),
                             child: Center(
-                              child: Text(
-                                AppLocalizations.of('Add Cash'),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .caption!
-                                    .copyWith(
-                                      color: Colors.white,
-                                      letterSpacing: 0.6,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                          builder: (context) => AddCash()));
+                                },
+                                child: Text(
+                                  AppLocalizations.of('Add Cash'),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .caption!
+                                      .copyWith(
+                                        color: Colors.white,
+                                        letterSpacing: 0.6,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
                               ),
                             ),
                           ),
@@ -193,7 +212,7 @@ class _MyBalancePageState extends State<MyBalancePage> {
                                     height: 5,
                                   ),
                                   Text(
-                                    "₹0",
+                                    "₹31",
                                     style: Theme.of(context)
                                         .textTheme
                                         .caption!
