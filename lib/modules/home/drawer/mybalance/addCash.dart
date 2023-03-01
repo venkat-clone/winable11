@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:newsports/controllers/PaymentController.dart';
 import 'package:newsports/models/payment.dart';
 import 'package:newsports/widget/customTextField.dart';
@@ -53,9 +54,9 @@ class _AddCashState extends State<AddCash> {
     return _upiIndia.startTransaction(
       app: app,
       receiverUpiId: "dhruv.singh45-1@okaxis",
-      receiverName: 'Anil sahu',
+      receiverName: 'Prateek singh',
       transactionRefId: 'Test payment',
-      transactionNote: 'payment',
+      transactionNote: 'This is payment test',
       amount: double.parse(_amount.trim()),
     );
   }
@@ -64,10 +65,124 @@ class _AddCashState extends State<AddCash> {
     if (apps == null)
       return Center(child: CircularProgressIndicator());
     else if (apps!.length == 0)
-      return Center(
-        child: Text(
-          "No Upi Apps found.",
-          style: header,
+      return Expanded(
+        child: ListView(
+          children: [
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 14, right: 14),
+                  child: Card(
+                    elevation: 5,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            AppLocalizations.of(
+                                'We have not found active upi app'),
+                            style:
+                                Theme.of(context).textTheme.caption!.copyWith(
+                                      color: Colors.black87,
+                                      letterSpacing: 0.6,
+                                      fontSize: 14,
+                                    ),
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 42),
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 2,
+                                  backgroundColor: Colors.black54,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  AppLocalizations.of(
+                                      'Install UPI payment application'),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .caption!
+                                      .copyWith(
+                                        color: Colors.black54,
+                                        letterSpacing: 0.6,
+                                        fontSize: 12,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 42),
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 2,
+                                  backgroundColor: Colors.black54,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  AppLocalizations.of(
+                                      'Open app and Create UPI ID'),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .caption!
+                                      .copyWith(
+                                        color: Colors.black54,
+                                        letterSpacing: 0.6,
+                                        fontSize: 12,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 42),
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 2,
+                                  backgroundColor: Colors.black54,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  AppLocalizations.of(
+                                      'Activate your bank account'),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .caption!
+                                      .copyWith(
+                                        color: Colors.black54,
+                                        letterSpacing: 0.6,
+                                        fontSize: 12,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            )
+          ],
         ),
       );
     else
@@ -148,11 +263,22 @@ class _AddCashState extends State<AddCash> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("$title: ", style: header),
+          Text(
+            AppLocalizations.of("$title: "),
+            style: Theme.of(context).textTheme.caption!.copyWith(
+                  color: Colors.black54,
+                  letterSpacing: 0.6,
+                  fontSize: 12,
+                ),
+          ),
           Flexible(
               child: Text(
-            body,
-            style: value,
+            AppLocalizations.of(body),
+            style: Theme.of(context).textTheme.caption!.copyWith(
+                  color: Colors.black54,
+                  letterSpacing: 0.6,
+                  fontSize: 12,
+                ),
           )),
         ],
       ),

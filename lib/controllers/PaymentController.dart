@@ -13,27 +13,28 @@ class PaymentController extends ControllerMVC {
           .doc(authID)
           .collection("addedCash")
           .add(_payment.toJson())
-          .whenComplete(() => getCash(authID));
+          .whenComplete(() {});
     } catch (e) {
       print(e.toString());
     }
   }
 
-  getCash(authID) {
-    try {
-      FirebaseFirestore.instance
-          .collection("user")
-          .doc(authID)
-          .collection("addedCash")
-          .get()
-          .then((value) {
-        for (var i = 0; i < value.docs.length; i++) {
-          totalBalance = int.parse(value.docs[i]['amount']);
-          print(totalBalance);
-        }
-      });
-    } catch (e) {
-      print(e.toString());
-    }
-  }
+  // getCash(authID) {
+  //   try {
+  //     FirebaseFirestore.instance
+  //         .collection("user")
+  //         .doc(authID)
+  //         .collection("addedCash")
+  //         .snapshots()
+  //         .listen((event) {
+  //       for (var i = 0; i < event.docs.length; i++) {
+  //         totalBalance += int.parse(event.docs[i]['amount']);
+  //         print("-----------------------------------");
+  //         print(totalBalance);
+  //       }
+  //     });
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
 }

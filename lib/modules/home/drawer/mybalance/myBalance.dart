@@ -1,8 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:newsports/Language/appLocalizations.dart';
-import 'package:newsports/controllers/PaymentController.dart';
 import 'package:newsports/modules/home/drawer/mybalance/accountInfo.dart';
 import 'package:newsports/modules/home/drawer/mybalance/addCash.dart';
 import 'package:newsports/modules/home/drawer/mybalance/transaction.dart';
@@ -14,12 +14,32 @@ class MyBalancePage extends StatefulWidget {
 }
 
 class _MyBalancePageState extends State<MyBalancePage> {
-  PaymentController _paymentController = PaymentController();
+  int totalBalance = 0;
+
+  getCash(authID) {
+    totalBalance = 0;
+    try {
+      FirebaseFirestore.instance
+          .collection("user")
+          .doc(authID)
+          .collection("addedCash")
+          .get()
+          .then((event) {
+        for (var i = 0; i < event.docs.length; i++) {
+          setState(() {
+            totalBalance += int.parse(event.docs[i]['amount']);
+          });
+        }
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _paymentController.getCash(FirebaseAuth.instance.currentUser!.uid);
+    getCash(FirebaseAuth.instance.currentUser!.uid);
   }
 
   @override
@@ -49,285 +69,292 @@ class _MyBalancePageState extends State<MyBalancePage> {
           ),
         ),
       ),
-      body: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(6.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Center(
-                          child: Text(
-                            AppLocalizations.of('Total Balance'),
-                            style:
-                                Theme.of(context).textTheme.bodyText2!.copyWith(
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .bodyText2!
-                                          .color,
-                                      letterSpacing: 0.6,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          getCash(FirebaseAuth.instance.currentUser!.uid);
+        },
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: Text(
+                              AppLocalizations.of('Total Balance'),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2!
+                                  .copyWith(
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyText2!
+                                        .color,
+                                    letterSpacing: 0.6,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Center(
-                          child: Text(
-                            "₹ ${_paymentController.totalBalance.toString()}",
-                            style:
-                                Theme.of(context).textTheme.caption!.copyWith(
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .headline6!
-                                          .color,
-                                      letterSpacing: 0.6,
-                                      fontSize: 12,
-                                    ),
+                          SizedBox(
+                            height: 10,
                           ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Center(
-                          child: Container(
-                            height: 25,
-                            width: 80,
-                            decoration: BoxDecoration(
-                                color: Color(0xff317E2F),
-                                borderRadius: BorderRadius.circular(4)),
-                            child: Center(
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(
-                                          builder: (context) => AddCash()));
-                                },
-                                child: Text(
-                                  AppLocalizations.of('Add Cash'),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .caption!
-                                      .copyWith(
-                                        color: Colors.white,
+                          Center(
+                            child: Text(
+                              "₹ ${totalBalance.toString()}",
+                              style:
+                                  Theme.of(context).textTheme.caption!.copyWith(
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .headline6!
+                                            .color,
                                         letterSpacing: 0.6,
                                         fontSize: 12,
-                                        fontWeight: FontWeight.bold,
                                       ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Center(
+                            child: Container(
+                              height: 25,
+                              width: 80,
+                              decoration: BoxDecoration(
+                                  color: Color(0xff317E2F),
+                                  borderRadius: BorderRadius.circular(4)),
+                              child: Center(
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute(
+                                            builder: (context) => AddCash()));
+                                  },
+                                  child: Text(
+                                    AppLocalizations.of('Add Cash'),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption!
+                                        .copyWith(
+                                          color: Colors.white,
+                                          letterSpacing: 0.6,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Divider(),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8, right: 8),
-                          child: Row(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of('Amount Added'),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption!
-                                        .copyWith(
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyText2!
-                                              .color,
-                                          letterSpacing: 0.6,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    "₹0",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption!
-                                        .copyWith(
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .headline6!
-                                              .color,
-                                          letterSpacing: 0.6,
-                                          fontSize: 12,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                              Expanded(child: SizedBox()),
-                              Icon(
-                                Icons.error_outline,
-                                color: Colors.blue,
-                                size: 20,
-                              )
-                            ],
+                          SizedBox(
+                            height: 10,
                           ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Divider(),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8, right: 8),
-                          child: Row(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of('Winnings'),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption!
-                                        .copyWith(
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyText2!
-                                              .color,
-                                          letterSpacing: 0.6,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    "₹31",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption!
-                                        .copyWith(
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .headline6!
-                                              .color,
-                                          letterSpacing: 0.6,
-                                          fontSize: 12,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                              Expanded(child: SizedBox()),
-                              Icon(
-                                Icons.error_outline,
-                                color: Colors.blue,
-                                size: 20,
-                              )
-                            ],
+                          Divider(),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8, right: 8),
+                            child: Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of('Amount Added'),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .caption!
+                                          .copyWith(
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodyText2!
+                                                .color,
+                                            letterSpacing: 0.6,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      "₹0",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .caption!
+                                          .copyWith(
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .headline6!
+                                                .color,
+                                            letterSpacing: 0.6,
+                                            fontSize: 12,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                                Expanded(child: SizedBox()),
+                                Icon(
+                                  Icons.error_outline,
+                                  color: Colors.blue,
+                                  size: 20,
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Divider(),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8, right: 8),
-                          child: Row(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of('Cash Bonus'),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption!
-                                        .copyWith(
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyText2!
-                                              .color,
-                                          letterSpacing: 0.6,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    "₹0",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption!
-                                        .copyWith(
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .headline6!
-                                              .color,
-                                          letterSpacing: 0.6,
-                                          fontSize: 12,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                              Expanded(child: SizedBox()),
-                              Icon(
-                                Icons.error_outline,
-                                color: Colors.blue,
-                                size: 20,
-                              )
-                            ],
+                          SizedBox(
+                            height: 10,
                           ),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Divider(),
-                      ],
+                          Divider(),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8, right: 8),
+                            child: Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of('Winnings'),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .caption!
+                                          .copyWith(
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodyText2!
+                                                .color,
+                                            letterSpacing: 0.6,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      "₹31",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .caption!
+                                          .copyWith(
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .headline6!
+                                                .color,
+                                            letterSpacing: 0.6,
+                                            fontSize: 12,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                                Expanded(child: SizedBox()),
+                                Icon(
+                                  Icons.error_outline,
+                                  color: Colors.blue,
+                                  size: 20,
+                                )
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Divider(),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8, right: 8),
+                            child: Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of('Cash Bonus'),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .caption!
+                                          .copyWith(
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodyText2!
+                                                .color,
+                                            letterSpacing: 0.6,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      "₹0",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .caption!
+                                          .copyWith(
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .headline6!
+                                                .color,
+                                            letterSpacing: 0.6,
+                                            fontSize: 12,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                                Expanded(child: SizedBox()),
+                                Icon(
+                                  Icons.error_outline,
+                                  color: Colors.blue,
+                                  size: 20,
+                                )
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Divider(),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                container(AppLocalizations.of('My Recent Transactions'), () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TransactionPage(),
-                    ),
-                  );
-                }),
-                container(
-                  AppLocalizations.of('Manage Payments'),
-                  () {
+                  SizedBox(
+                    height: 20,
+                  ),
+                  container(AppLocalizations.of('My Recent Transactions'), () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AccountInfoPage(),
+                        builder: (context) => TransactionPage(),
                       ),
                     );
-                  },
-                ),
-                container(
-                  AppLocalizations.of('Refer and Earn'),
-                  () {},
-                )
-              ],
+                  }),
+                  container(
+                    AppLocalizations.of('Manage Payments'),
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AccountInfoPage(),
+                        ),
+                      );
+                    },
+                  ),
+                  container(
+                    AppLocalizations.of('Refer and Earn'),
+                    () {},
+                  )
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
