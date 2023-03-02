@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:newsports/constance/constance.dart' as constance;
 import 'firebase_options.dart';
+import 'repository/kyc_repository.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,6 +63,7 @@ class _MyAppState extends State<MyApp> {
   String locale = "en";
 
   setLanguage(String languageCode) {
+    KYCRepository.getKYCDetails();
     setState(() {
       locale = languageCode;
       constance.locale = languageCode;

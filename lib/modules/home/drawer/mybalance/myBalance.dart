@@ -125,33 +125,63 @@ class _MyBalancePageState extends State<MyBalancePage> {
                             height: 10,
                           ),
                           Center(
-                            child: Container(
-                              height: 25,
-                              width: 80,
-                              decoration: BoxDecoration(
-                                  color: Color(0xff317E2F),
-                                  borderRadius: BorderRadius.circular(4)),
-                              child: Center(
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).pushReplacement(
-                                        MaterialPageRoute(
-                                            builder: (context) => AddCash()));
-                                  },
-                                  child: Text(
-                                    AppLocalizations.of('Add Cash'),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption!
-                                        .copyWith(
-                                          color: Colors.white,
-                                          letterSpacing: 0.6,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  height: 25,
+                                  width: 80,
+                                  decoration: BoxDecoration(
+                                      color: Color(0xff317E2F),
+                                      borderRadius: BorderRadius.circular(4)),
+                                  child: Center(
+                                    child: InkWell(
+                                      onTap: () {},
+                                      child: Text(
+                                        AppLocalizations.of('Withdraw'),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .caption!
+                                            .copyWith(
+                                              color: Colors.white,
+                                              letterSpacing: 0.6,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
+                                Container(
+                                  height: 25,
+                                  width: 80,
+                                  decoration: BoxDecoration(
+                                      color: Color(0xff317E2F),
+                                      borderRadius: BorderRadius.circular(4)),
+                                  child: Center(
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).pushReplacement(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AddCash()));
+                                      },
+                                      child: Text(
+                                        AppLocalizations.of('Add Cash'),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .caption!
+                                            .copyWith(
+                                              color: Colors.white,
+                                              letterSpacing: 0.6,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           SizedBox(
