@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
@@ -25,7 +27,7 @@ class _KYCFormState extends StateMVC<KYCForm> {
 
   final aadharDOBController = TextEditingController();
   final panDOBController = TextEditingController();
-  var panCardPick;
+  String panCardPick = "";
   TextEditingController imgPath = TextEditingController();
   AuthController _authController = AuthController();
   late KYCController _con;
@@ -320,7 +322,7 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                     pickimages(context);
                                   },
                                   onSaved: (value) {
-                                    // kyc.PanCardIMAGE = value ?? "";
+                                    kyc.PanCardIMAGE = panCardPick;
                                   },
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -337,13 +339,11 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                     onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
                                         _formKey.currentState!.save();
-                                        KYCDetails _kycDetail = KYCDetails();
 
                                         startLoading();
                                         print("started loading");
                                         final success =
                                             await _con.requestForKYC(kyc);
-                                        // KYCRepository.requestKYC();
 
                                         _authController.upDateKYCStatus(
                                             FirebaseAuth
@@ -353,6 +353,11 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                         stopLoading();
                                         print("loading stopped");
                                         setState(() => requested = success);
+                                        success
+                                            ? showToast(
+                                                "KYC details uplodaed succeful")
+                                            : showToast(
+                                                "KYC details uplodaed succeful");
                                       }
                                     },
                                     child: Text('Submit'),
@@ -380,17 +385,33 @@ class _KYCFormState extends StateMVC<KYCForm> {
     );
   }
 
+  showToast(text) {
+    return Fluttertoast.showToast(
+        msg: text,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        fontSize: 16.0);
+  }
+
 //---------------------Pick Image---------------------------//
   Future getImages(imgSource) async {
     var _picker = ImagePicker();
     var img = await _picker.pickImage(
-      source: imgSource != "camera" ? ImageSource.gallery : ImageSource.camera,
+      source: imgSource ? ImageSource.camera : ImageSource.gallery,
     );
 
     setState(() {
       imgPath.text = img!.path;
-      panCardPick = File(imgPath.text);
+      panCardPick = convertIntoBase64(File(imgPath.text));
     });
+  }
+
+// ----------------------convert file into base64-----------------------//
+  String convertIntoBase64(File file) {
+    List<int> imageBytes = file.readAsBytesSync();
+    String base64File = base64Encode(imageBytes);
+    return base64File;
   }
 
 //---------------------pick imgae dailog----------------------------//
@@ -426,8 +447,7 @@ class _KYCFormState extends StateMVC<KYCForm> {
                     children: [
                       IconButton(
                           onPressed: () {
-                            var camera = "camera";
-                            getImages(camera);
+                            getImages(true);
                             Navigator.of(context).pop();
                           },
                           icon: Icon(Icons.camera_alt,
@@ -451,8 +471,7 @@ class _KYCFormState extends StateMVC<KYCForm> {
                     children: [
                       IconButton(
                           onPressed: () {
-                            var camera = "gallery";
-                            getImages(camera);
+                            getImages(false);
                             Navigator.of(context).pop();
                           },
                           icon: Icon(Icons.image,

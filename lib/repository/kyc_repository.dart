@@ -20,20 +20,4 @@ class KYCRepository {
     }
     return KYCDetails();
   }
-
-  static getKYCDetails() async {
-    final String url = '${Constants.BaseUrl}user/register/kyc';
-    try {
-      final client = new http.Client();
-      final streamedRest = await client.get(
-        Uri.parse(url),
-        headers: {HttpHeaders.contentTypeHeader: 'application/json'},
-        // body: json.encode(details.toJson()),
-      );
-      print(streamedRest.statusCode);
-      print(streamedRest.body);
-    } on Exception catch (error) {
-      print(error);
-    }
-  }
 }
