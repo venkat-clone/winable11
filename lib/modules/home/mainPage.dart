@@ -91,7 +91,6 @@ class _MainPageState extends State<MainPage>
   smimmersEffect() {
     return Container(
       height: MediaQuery.of(context).size.height - 204,
-      // padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
       child: Shimmer.fromColors(
         baseColor: Theme.of(context).disabledColor.withOpacity(0.5),
         highlightColor: Colors.white,

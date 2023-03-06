@@ -31,7 +31,7 @@ class MatchesRepository {
       List<MatchModel> upCommingMatchslist = [];
 
       (response['response'] as List<dynamic>).forEach((e) {
-        if (Constants.isMathchExpired(e['match_date_time'])) {
+        if (!Constants.isMathchExpired(e['match_date_time'])) {
           upCommingMatchslist
               .add(MatchModel.fromJson(e as Map<String, dynamic>));
         } else {
