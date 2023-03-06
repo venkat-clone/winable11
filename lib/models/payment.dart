@@ -1,9 +1,11 @@
 class Payment {
+  String totalBAlance = "";
   String amount = "";
   String transactionID = "";
   DateTime tDate = DateTime.now();
 
   Payment({
+    this.totalBAlance = "",
     this.amount = "",
     this.transactionID = "",
   });

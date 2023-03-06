@@ -1,12 +1,20 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/controllers/AuthController.dart';
 import 'package:newsports/controllers/KYCController.dart';
+
 import 'package:newsports/utils/shared_preference_services.dart';
 import '../../models/KYC.dart';
+import '../../repository/kyc_repository.dart';
 
 class KYCForm extends StatefulWidget {
   @override
@@ -19,7 +27,8 @@ class _KYCFormState extends StateMVC<KYCForm> {
 
   final aadharDOBController = TextEditingController();
   final panDOBController = TextEditingController();
-
+  String panCardPick = "";
+  TextEditingController imgPath = TextEditingController();
   AuthController _authController = AuthController();
   late KYCController _con;
   bool loading = false;
@@ -302,25 +311,26 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                 ),
                                 // Pancard Image Field
 
-                                // TextFormField(
-                                //   decoration: InputDecoration(
-                                //     labelText: 'Pancard Image',
-                                //     hintText: 'Select Image',
-                                //   ),
-                                //   onTap: () {
-                                //     // TODO: show image picker
-                                //   },
-                                //   onSaved: (value) {
-                                //
-                                //     // kyc.PanCardIMAGE = value ?? "";
-                                //   },
-                                //   validator: (value) {
-                                //     if (value == null || value.isEmpty) {
-                                //       return 'Please select an Image';
-                                //     }
-                                //     return null;
-                                //   },
-                                // ),
+                                TextFormField(
+                                  controller: imgPath,
+                                  decoration: InputDecoration(
+                                    labelText: 'Pancard Image',
+                                    hintText: 'Select Image',
+                                  ),
+                                  onTap: () {
+                                    // getImages("Camera");
+                                    pickimages(context);
+                                  },
+                                  onSaved: (value) {
+                                    kyc.PanCardIMAGE = panCardPick;
+                                  },
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please select an Image';
+                                    }
+                                    return null;
+                                  },
+                                ),
 
                                 // Submit Button
                                 Container(
@@ -329,14 +339,12 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                     onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
                                         _formKey.currentState!.save();
+
                                         startLoading();
                                         print("started loading");
                                         final success =
                                             await _con.requestForKYC(kyc);
 
-                                        print(FirebaseAuth
-                                            .instance.currentUser!.uid
-                                            .toString());
                                         _authController.upDateKYCStatus(
                                             FirebaseAuth
                                                 .instance.currentUser!.uid,
@@ -345,6 +353,11 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                         stopLoading();
                                         print("loading stopped");
                                         setState(() => requested = success);
+                                        success
+                                            ? showToast(
+                                                "KYC details uplodaed succeful")
+                                            : showToast(
+                                                "KYC details uplodaed succeful");
                                       }
                                     },
                                     child: Text('Submit'),
@@ -370,5 +383,118 @@ class _KYCFormState extends StateMVC<KYCForm> {
         ],
       ),
     );
+  }
+
+  showToast(text) {
+    return Fluttertoast.showToast(
+        msg: text,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        fontSize: 16.0);
+  }
+
+//---------------------Pick Image---------------------------//
+  Future getImages(imgSource) async {
+    var _picker = ImagePicker();
+    var img = await _picker.pickImage(
+      source: imgSource ? ImageSource.camera : ImageSource.gallery,
+    );
+
+    setState(() {
+      imgPath.text = img!.path;
+      panCardPick = convertIntoBase64(File(imgPath.text));
+    });
+  }
+
+// ----------------------convert file into base64-----------------------//
+  String convertIntoBase64(File file) {
+    List<int> imageBytes = file.readAsBytesSync();
+    String base64File = base64Encode(imageBytes);
+    return base64File;
+  }
+
+//---------------------pick imgae dailog----------------------------//
+  pickimages(context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            titlePadding: EdgeInsets.zero,
+            title: Expanded(
+              child: Container(
+                padding: EdgeInsets.all(20),
+                height: 70,
+                color: Theme.of(context).primaryColor,
+                child: Text(
+                  AppLocalizations.of("Pick or Capture Image"),
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.6,
+                        fontSize: 18,
+                      ),
+                ),
+              ),
+            ),
+            content: SizedBox(),
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Column(
+                    children: [
+                      IconButton(
+                          onPressed: () {
+                            getImages(true);
+                            Navigator.of(context).pop();
+                          },
+                          icon: Icon(Icons.camera_alt,
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .color)),
+                      Text(
+                        AppLocalizations.of("Camera"),
+                        style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                              color:
+                                  Theme.of(context).textTheme.headline6!.color,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.6,
+                              fontSize: 12,
+                            ),
+                      )
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      IconButton(
+                          onPressed: () {
+                            getImages(false);
+                            Navigator.of(context).pop();
+                          },
+                          icon: Icon(Icons.image,
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .color)),
+                      Text(
+                        AppLocalizations.of("Gallery"),
+                        style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                              color:
+                                  Theme.of(context).textTheme.headline6!.color,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.6,
+                              fontSize: 12,
+                            ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
   }
 }
