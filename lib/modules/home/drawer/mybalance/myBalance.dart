@@ -1,8 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
-import 'package:newsports/controllers/PaymentController.dart';
+import 'package:newsports/controllers/WalletController.dart';
 import 'package:newsports/modules/home/drawer/mybalance/accountInfo.dart';
 import 'package:newsports/modules/home/drawer/mybalance/addCash.dart';
 import 'package:newsports/modules/home/drawer/mybalance/transaction.dart';
@@ -13,13 +14,17 @@ class MyBalancePage extends StatefulWidget {
   _MyBalancePageState createState() => _MyBalancePageState();
 }
 
-class _MyBalancePageState extends State<MyBalancePage> {
-  PaymentController _paymentController = PaymentController();
+class _MyBalancePageState extends StateMVC<MyBalancePage> {
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _paymentController.getCash(FirebaseAuth.instance.currentUser!.uid);
+    // _paymentController.getCash(FirebaseAuth.instance.currentUser!.uid);
+    _walletController.getWalletBalance();
+  }
+  late WalletController _walletController ;
+  _MyBalancePageState():super(WalletController()){
+    _walletController = controller as WalletController;
   }
 
   @override
@@ -83,7 +88,7 @@ class _MyBalancePageState extends State<MyBalancePage> {
                         ),
                         Center(
                           child: Text(
-                            "₹ ${_paymentController.totalBalance.toString()}",
+                            "₹ ${_walletController.totalBalance.toString()}",
                             style:
                                 Theme.of(context).textTheme.caption!.copyWith(
                                       color: Theme.of(context)
@@ -107,10 +112,18 @@ class _MyBalancePageState extends State<MyBalancePage> {
                                 borderRadius: BorderRadius.circular(4)),
                             child: Center(
                               child: InkWell(
-                                onTap: () {
-                                  Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(
-                                          builder: (context) => AddCash()));
+                                onTap: () async {
+                                  _walletController.initiatePayment("909090909090", "session_tU6-n4GMmVLqxBiljnoy-bF-aI1W_ualmioxJqoGP75pAl9KlT-8BZCxjpu52I8ppFaGAD8Yf1bGmL1AL0ceDM4on8abuANfDhGowUtV8afj");
+                                  return;
+                                  final result = await _walletController.createTransaction(_walletController.createMocOrder());
+                                  if(result!=null && result.paymentSessionId!=null){
+                                    _walletController.initiatePayment(result.orderId, result.paymentSessionId!);
+                                  }else if(result!=null && result.paymentSessionId==null){
+                                    // display error
+                                  }
+                                  // Navigator.of(context).push(
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) => AddCash()));
                                 },
                                 child: Text(
                                   AppLocalizations.of('Add Cash'),
@@ -158,7 +171,7 @@ class _MyBalancePageState extends State<MyBalancePage> {
                                     height: 5,
                                   ),
                                   Text(
-                                    "₹0",
+                                    "₹${_walletController.totalBalance}",
                                     style: Theme.of(context)
                                         .textTheme
                                         .caption!
@@ -212,7 +225,7 @@ class _MyBalancePageState extends State<MyBalancePage> {
                                     height: 5,
                                   ),
                                   Text(
-                                    "₹31",
+                                    "₹0",
                                     style: Theme.of(context)
                                         .textTheme
                                         .caption!

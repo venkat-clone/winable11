@@ -12,7 +12,7 @@ class BaseController extends ControllerMVC {
   startLoading()=>setState(() {loading=true;});
   stopLoading()=>setState(() {loading=false;});
 
-  void lodeWhile( Future Function() function ) async{
+  Future<void> lodeWhile( Future Function() function ) async{
     startLoading();
     await function();
     stopLoading();

@@ -1,13 +1,14 @@
 import 'dart:ffi';
-
+import 'dart:math';
+import 'package:easy_upi_payment/easy_upi_payment.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:newsports/controllers/PaymentController.dart';
 import 'package:newsports/models/payment.dart';
 import 'package:newsports/widget/customTextField.dart';
 import 'package:upi_india/upi_india.dart';
 
 import '../../../../Language/appLocalizations.dart';
+import '../../../../controllers/WalletController.dart';
 
 class AddCash extends StatefulWidget {
   @override
@@ -18,8 +19,9 @@ class _AddCashState extends State<AddCash> {
   Future<UpiResponse>? _transaction;
   UpiIndia _upiIndia = UpiIndia();
   List<UpiApp>? apps;
-  String _amount = "1";
-  PaymentController _addCashController = PaymentController();
+  String _amount = "0";
+  // List<ApplicationMeta>? _apps;
+  WalletController _addCashController = WalletController();
   late String txnId;
   late String resCode;
   late String txnRef;
@@ -46,19 +48,58 @@ class _AddCashState extends State<AddCash> {
     }).catchError((e) {
       apps = [];
     });
+    Future.delayed(Duration(milliseconds: 0), () async {
+      // _apps = await UpiPay.getInstalledUpiApplications(
+      //     statusType: UpiApplicationDiscoveryAppStatusType.all);
+      setState(() {});
+    });
     super.initState();
   }
 
   Future<UpiResponse> initiateTransaction(UpiApp app, amount) async {
     return _upiIndia.startTransaction(
       app: app,
-      receiverUpiId: "dhruv.singh45-1@okaxis",
-      receiverName: 'Anil sahu',
-      transactionRefId: 'Test payment',
+      receiverUpiId:  "7905406363@kotak",
+      receiverName: 'Winable Platforms Private Limited',
+      // transactionRefId = userId
+      transactionRefId: FirebaseAuth.instance.currentUser?.uid??""+"",
       transactionNote: 'payment',
       amount: double.parse(_amount.trim()),
     );
   }
+
+  senMoney() async {
+    try{
+      final res = await EasyUpiPaymentPlatform.instance.startPayment(
+      EasyUpiPaymentModel(
+        payeeVpa: '7905406363@kotak',
+        payeeName: 'Venkey',
+        amount: 10.0,
+        description: 'Testing payment',
+      ),
+    );
+    // TODO: add your success logic here
+    print(res);
+    } on EasyUpiPaymentException {
+      // TODO: add your exception logic here
+    }
+  }
+
+
+
+
+  // Future<UpiTransactionResponse> initiateUPITransaction(ApplicationMeta app,String amount) async {
+  //   final transactionRef = FirebaseAuth.instance.currentUser?.uid??""+Random.secure().nextInt(1 << 32).toString();
+  //   return await UpiPay.initiateTransaction(
+  //     amount: amount,
+  //     app: app.upiApplication,
+  //     receiverName: 'Sharad',
+  //     receiverUpiAddress: "7905406363@kotak",
+  //     transactionRef: transactionRef,
+  //     transactionNote: 'UPI Payment',
+  //     // merchantCode: '7372',
+  //   );
+  // }
 
   Widget displayUpiApps(amount) {
     if (apps == null)
@@ -125,8 +166,7 @@ class _AddCashState extends State<AddCash> {
       case UpiPaymentStatus.SUCCESS:
         Payment _payment = Payment(amount: _amount, transactionID: txnId);
         if (isPaymentAdded == false)
-          _addCashController.addCash(
-              FirebaseAuth.instance.currentUser!.uid, _payment);
+          _addCashController.addCash(FirebaseAuth.instance.currentUser!.uid, _payment);
         isPaymentAdded = true;
 
         print('Transaction Successful');

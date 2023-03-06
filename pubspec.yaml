@@ -47,6 +47,11 @@ dependencies:
   cloud_firestore: ^4.4.3
   json_annotation: ^4.0.0
   upi_india: ^3.0.1
+  easy_upi_payment: ^0.1.3
+  flutter_cashfree_pg_sdk: ^2.0.7+10
+#  upi_pay: ^1.0.1
+#  upi_pay_x: ^0.0.8
+
 
 dev_dependencies:
   flutter_test:

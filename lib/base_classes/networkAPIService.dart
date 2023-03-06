@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import '../utils/app_execptions.dart';
 import 'baseApiService.dart';
@@ -9,11 +10,12 @@ class NetworkAPIService extends BaseApiServices {
 
 
   @override
-  Future getGetApiResponse(String url) async {
+  Future getGetApiResponse(String url,{Map<String,String>? headers}) async {
 
     dynamic responseJson ;
     try {
-      final response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 10));
+      if(kDebugMode) print("GET API call $url");
+      final response = await http.get(Uri.parse(url),headers: headers).timeout(const Duration(seconds: 10));
       responseJson = returnResponse(response);
     }on SocketException {
       throw FetchDataException('No Internet Connection');
@@ -25,14 +27,20 @@ class NetworkAPIService extends BaseApiServices {
 
 
   @override
-  Future getPostApiResponse(String url , dynamic data) async{
+  Future getPostApiResponse(String url , dynamic data, {Map<String,String>? headers,bool printJsonString = false}) async{
 
     dynamic responseJson ;
     try {
-      print("network call $url");
+      if(kDebugMode) {
+        print("post API call $url");
+        print("post Data for API Call :$data");
+        if(printJsonString)
+          print("data Json String :${jsonEncode(data)}");
+      }
       Response response = await post(
           Uri.parse(url),
-          body: data
+          body: jsonEncode(data),
+        headers: headers
       ).timeout(Duration(seconds: 10));
       responseJson = returnResponse(response);
     }on SocketException {
