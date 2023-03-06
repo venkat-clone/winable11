@@ -11,9 +11,9 @@ class Constants {
     var start = DateTime.parse(startDate);
     var toDay = DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.now()));
     if (start.difference(toDay).inDays > 0) {
-      return true;
-    } else {
       return false;
+    } else {
+      return true;
     }
   }
 }

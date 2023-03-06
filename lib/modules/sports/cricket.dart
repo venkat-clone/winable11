@@ -22,18 +22,19 @@ class _CricketPageState extends StateMVC<CricketPage> {
     ConstanceData.slider4,
   ];
 
-  late MatchController _con ;
-  final scrollController  = ScrollController();
-  _CricketPageState():super(MatchController()){
+  late MatchController _con;
+  final scrollController = ScrollController();
+  _CricketPageState() : super(MatchController()) {
     _con = controller as MatchController;
   }
-
 
   @override
   void initState() {
     super.initState();
-    _con.getMatches(context);
-    _con.getTeams(context);
+    // _con.getMatches(context);
+  
+    _con.getUpcommingMatches(context);
+     _con.getTeams(context);
   }
 
   @override
@@ -62,13 +63,17 @@ class _CricketPageState extends StateMVC<CricketPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 20, right: 20, top: 15),
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, top: 15),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(
                                 AppLocalizations.of('My Matches'),
-                                style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText2!
+                                    .copyWith(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                       letterSpacing: 0.6,
@@ -78,7 +83,10 @@ class _CricketPageState extends StateMVC<CricketPage> {
                               Expanded(child: SizedBox()),
                               Text(
                                 AppLocalizations.of('View All'),
-                                style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText2!
+                                    .copyWith(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                       letterSpacing: 0.6,
@@ -100,14 +108,16 @@ class _CricketPageState extends StateMVC<CricketPage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
+                    padding:
+                        const EdgeInsets.only(top: 50, left: 20, right: 20),
                     child: CardView(
                       txt1: AppLocalizations.of('Cricket IPL'),
                       txt2: AppLocalizations.of('Mumbai Indians'),
                       txt3: AppLocalizations.of('Kolkata'),
                       txt4: "MI",
                       setTime: CountdownTimer(
-                        endTime: DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60,
+                        endTime: DateTime.now().millisecondsSinceEpoch +
+                            1000 * 60 * 60,
                         textStyle: TextStyle(
                           fontSize: 14,
                           color: Colors.red,
@@ -155,7 +165,8 @@ class _CricketPageState extends StateMVC<CricketPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 15),
+                padding: const EdgeInsets.only(
+                    left: 20, right: 20, top: 20, bottom: 15),
                 child: Text(
                   AppLocalizations.of('Upcoming Matches'),
                   style: Theme.of(context).textTheme.headline6!.copyWith(
@@ -170,7 +181,6 @@ class _CricketPageState extends StateMVC<CricketPage> {
                 padding: const EdgeInsets.only(left: 16, right: 16),
                 child: Column(
                   children: [
-
                     // InkWell(
                     //   onTap:(){
                     //     _con.getMatches(context);
@@ -182,64 +192,84 @@ class _CricketPageState extends StateMVC<CricketPage> {
                     //     color: Colors.green,
                     //   ),
                     // ),
-                    if(false) Scrollbar(
-                      controller :scrollController,
-                      isAlwaysShown: true,
-                      child: ListView.separated(
+                    if (false)
+                      Scrollbar(
                         controller: scrollController,
-                        shrinkWrap: true, itemCount: 3,
-                        itemBuilder: (BuildContext context, int index) {
-                          return CardShimmer();
-                        },
-                        separatorBuilder: (BuildContext context, int index)=>SizedBox(height: 15,),
+                        isAlwaysShown: true,
+                        child: ListView.separated(
+                          controller: scrollController,
+                          shrinkWrap: true,
+                          itemCount: 3,
+                          itemBuilder: (BuildContext context, int index) {
+                            return CardShimmer();
+                          },
+                          separatorBuilder: (BuildContext context, int index) =>
+                              SizedBox(
+                            height: 15,
+                          ),
+                        ),
                       ),
-                    ),
-                    Scrollbar(
+                    _con.upCommingMatcheList.length > 0
+                        ? Scrollbar(
+                            controller: scrollController,
+                            isAlwaysShown: true,
+                            child: ListView.separated(
+                              controller: scrollController,
+                              shrinkWrap: true,
+                              itemCount: _con.upCommingMatcheList.length,
+                              itemBuilder: (c, index) {
+                                final match = _con.upCommingMatcheList[index];
+                                final teamA = _con.teams[match.teamid1];
+                                final teamB = _con.teams[match.teamid2];
 
-                      controller :scrollController,
-                      isAlwaysShown: true,
-                      child: ListView.separated(
-                        controller: scrollController,
-                        shrinkWrap: true,
-                        itemCount: _con.matchList.length,
-                          itemBuilder: (c,index){
-                          final match = _con.matchList[index];
-                          final teamA = _con.teams[match.teamid1];
-                          final teamB = _con.teams[match.teamid2];
-                            return CardView(
-                              txt1: AppLocalizations.of(match.title),
-                              txt2: AppLocalizations.of(teamA?.teamName??""),
-                              txt3: AppLocalizations.of(teamB?.teamName??""),
-                              txt4: teamA?.teamShortName??"",
-                              // setTime: CountdownTimer(
-                              //   endTime: DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60,
-                              //   textStyle: TextStyle(
-                              //     fontSize: 14,
-                              //     color: Colors.red,
-                              //     fontWeight: FontWeight.bold,
-                              //   ),
-                              // ),
-                              setTime: Text(match.matchDateTime,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold,
+                                return CardView(
+                                  txt1: AppLocalizations.of(match.title),
+                                  txt2: AppLocalizations.of(
+                                      teamA?.teamName ?? ""),
+                                  txt3: AppLocalizations.of(
+                                      teamB?.teamName ?? ""),
+                                  txt4: teamA?.teamShortName ?? "",
+                                  // setTime: CountdownTimer(
+                                  //   endTime: DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60,
+                                  //   textStyle: TextStyle(
+                                  //     fontSize: 14,
+                                  //     color: Colors.red,
+                                  //     fontWeight: FontWeight.bold,
+                                  //   ),
+                                  // ),
+                                  setTime: Text(
+                                    match.matchDateTime,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
+                                  txt6: teamB?.teamShortName ?? "",
+                                  txt7: AppLocalizations.of('1 Team'),
+                                  image1: Image.network(
+                                    teamA?.teamImage ?? "",
+                                    fit: BoxFit.cover,
+                                  ),
+                                  image2: Image.network(
+                                    teamB?.teamImage ?? "",
+                                    fit: BoxFit.cover,
+                                  ),
+                                );
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) => SizedBox(
+                                height: 15,
                               ),
-                              txt6: teamB?.teamShortName??"",
-                              txt7: AppLocalizations.of('1 Team'),
-                              image1: Image.network(
-                                teamA?.teamImage??"",
-                                fit: BoxFit.cover,
-                              ),
-                              image2: Image.network(
-                                teamB?.teamImage??"",
-                                fit: BoxFit.cover,
-                              ),
-                            );
-                          }, separatorBuilder: (BuildContext context, int index) =>SizedBox(height: 15,),
-                      ),
-                    ),
+                            ))
+                        : Center(
+                            child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Text(
+                              "No  Matches",
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          )),
                   ],
                 ),
               )
@@ -270,7 +300,6 @@ class CardShimmer extends StatelessWidget {
   );
   @override
   Widget build(BuildContext context) {
-
     return ShaderMask(
       blendMode: BlendMode.srcATop,
       shaderCallback: (bounds) {
@@ -287,7 +316,8 @@ class CardShimmer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 100,height: 30,
+                width: 100,
+                height: 30,
                 decoration: BoxDecoration(
                   color: Colors.black,
                   borderRadius: BorderRadius.circular(16),
@@ -314,7 +344,8 @@ class CardShimmer extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+              padding:
+                  const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -423,7 +454,7 @@ class CardShimmer extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                      Container(
+                    Container(
                       width: 100,
                       height: 20,
                       color: Colors.grey,
@@ -444,11 +475,11 @@ class CardShimmer extends StatelessWidget {
                         child: Text(
                           "Mega",
                           style: Theme.of(context).textTheme.caption!.copyWith(
-                            color: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.6,
-                            fontSize: 12,
-                          ),
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.6,
+                                fontSize: 12,
+                              ),
                         ),
                       ),
                     ),
@@ -464,8 +495,6 @@ class CardShimmer extends StatelessWidget {
           ],
         ),
       ),
-
     );
   }
 }
-
