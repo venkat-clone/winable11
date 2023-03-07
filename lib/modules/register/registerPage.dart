@@ -76,10 +76,35 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
     return true;
   }
 
-  bool validateData() =>
-      validatePassword() &&
+  bool validatePlace(){
+    if(_countryName!=null || _countryName==""){
+      setError("please select your Country");
+      return false;
+    }
+    if(_stateName!=null || _stateName==""){
+      setError("please select your State");
+      return false;
+    }
+    if(_cityName!=null || _cityName==""){
+      setError("please select your City");
+      return false;
+    }
+    return true;
+  }
+
+  bool dobValidator(){
+    if(_dobController.text.isEmpty){
+      setError("Please Enter your Date of Birth");
+      return false;
+    }
+    return true;
+  }
+
+  bool validateData() => validatePassword() &&
       validateEmail() &&
       validateMobile() &&
+      dobValidator() &&
+      validatePlace() &&
       validateUName();
 
   @override
@@ -132,7 +157,7 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                         ),
                       ),
                       Expanded(
-                        flex: 3,
+                        flex: 4,
                         child: Container(
                           width: MediaQuery.of(context).size.width,
                           child: ListView(
@@ -164,10 +189,7 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                                 .headline6!
                                                 .color,
                                             elevation: 5,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                            ),
+                                            shape: CircleBorder(),
                                             child: Container(
                                               decoration: BoxDecoration(
                                                 shape: BoxShape.circle,
@@ -183,19 +205,12 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                                     DateTime? pickedDate =
                                                         await showDatePicker(
                                                             context: context,
-                                                            initialDate:
-                                                                DateTime.now(),
-                                                            firstDate:
-                                                                DateTime(1950),
-                                                            lastDate:
-                                                                DateTime(2100));
+                                                            initialDate: DateTime.now(),
+                                                            firstDate: DateTime(1950),
+                                                            lastDate: DateTime(2100));
                                                     if (pickedDate != null) {
                                                       String formattedDate =
-                                                          DateFormat(
-                                                                  'yyyy-MM-dd')
-                                                              .format(
-                                                                  pickedDate);
-
+                                                          DateFormat('yyyy-MM-dd').format(pickedDate);
                                                       setState(() {
                                                         _dobController.text =
                                                             formattedDate; //set output date to TextField value.
@@ -264,12 +279,9 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                               .color!),
                                         ),
                                       ),
-                                      countrySearchPlaceholder:
-                                          AppLocalizations.of("Country"),
-                                      stateSearchPlaceholder:
-                                          AppLocalizations.of("State"),
-                                      citySearchPlaceholder:
-                                          AppLocalizations.of("City"),
+                                      countrySearchPlaceholder: AppLocalizations.of("Country"),
+                                      stateSearchPlaceholder: AppLocalizations.of("State"),
+                                      citySearchPlaceholder: AppLocalizations.of("City"),
                                       countryDropdownLabel: AppLocalizations.of(
                                           _countryName ?? "Country"),
                                       stateDropdownLabel: AppLocalizations.of(
@@ -277,10 +289,7 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                       cityDropdownLabel: AppLocalizations.of(
                                           _cityName ?? "City"),
                                       defaultCountry: CscCountry.India,
-                                      selectedItemStyle: Theme.of(context)
-                                          .textTheme
-                                          .headline6!
-                                          .copyWith(
+                                      selectedItemStyle: Theme.of(context).textTheme.headline6!.copyWith(
                                             color: Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium!
