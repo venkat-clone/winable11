@@ -17,7 +17,7 @@ import 'package:newsports/constance/constance.dart' as constance;
 import '../../../utils/shared_preference_services.dart';
 import '../../../utils/value_notifiers.dart';
 import '../../kyc/kyc_page.dart';
-import 'mybalance/addCash.dart';
+import 'mybalance/upi_Interface.dart';
 import 'profile/profile.dart';
 
 class DrawerScreen extends StatefulWidget {
@@ -63,16 +63,13 @@ class _DrawerScreenState extends State<DrawerScreen> {
                           CircleAvatar(
                             radius: 24,
                             backgroundColor: Colors.white,
-                            backgroundImage: NetworkImage(
-                                FirebaseAuth.instance.currentUser?.photoURL ??
-                                    ""),
-                            child:
-                                FirebaseAuth.instance.currentUser?.photoURL ==
-                                        null
-                                    ? Text(FirebaseAuth
-                                        .instance.currentUser!.displayName
-                                        .toString()[0]
-                                        .toUpperCase())
+                            backgroundImage: currentUser.value.photo !="" ?NetworkImage(
+                                currentUser.value.photo ?? ""):null,
+                            child: currentUser.value.photo == ""
+                                    ? Text(currentUser.value.getFirstLetter(),
+                            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                              color: Theme.of(context).primaryColor
+                            ),)
                                     : SizedBox(),
                           ),
                           InkWell(

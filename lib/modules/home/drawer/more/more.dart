@@ -1,11 +1,15 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:newsports/Language/appLocalizations.dart';
+import 'package:newsports/modules/home/drawer/more/Tarms.dart';
 import 'package:newsports/modules/home/drawer/more/help.dart';
 import 'package:newsports/modules/home/drawer/more/inviteCode.dart';
+import 'package:newsports/modules/home/drawer/more/privicyPolices.dart';
 import 'package:newsports/modules/home/drawer/more/whatsappUpdate.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'about_us.dart';
 
 class MorePage extends StatefulWidget {
   @override
@@ -47,7 +51,9 @@ class _MorePageState extends State<MorePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               container(AppLocalizations.of('Community Guidelines'),
-                  Icons.calendar_view_day_outlined, () {}),
+                  Icons.calendar_view_day_outlined, () {
+
+                  }),
               SizedBox(
                 height: 4,
               ),
@@ -93,29 +99,33 @@ class _MorePageState extends State<MorePage> {
                   );
                 },
               ),
-              SizedBox(
-                height: 4,
-              ),
-              container(
-                AppLocalizations.of('Jobs'),
-                Icons.backpack,
-                () {},
-              ),
+              // SizedBox(
+              //   height: 4,
+              // ),
+              // container(
+              //   AppLocalizations.of('Jobs'),
+              //   Icons.backpack,
+              //   () {},
+              // ),
               SizedBox(
                 height: 4,
               ),
               container(
                 AppLocalizations.of('About Us'),
                 FontAwesomeIcons.trophy,
-                () {},
+                () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AboutUs()));
+                },
               ),
               SizedBox(
                 height: 4,
               ),
               container(
-                AppLocalizations.of('Legaliyty'),
+                AppLocalizations.of('Legality'),
                 Icons.calendar_view_day_outlined,
-                () {},
+                () {
+
+                },
               ),
               SizedBox(
                 height: 4,
@@ -123,7 +133,19 @@ class _MorePageState extends State<MorePage> {
               container(
                 AppLocalizations.of('Terms and\tConditions'),
                 Icons.file_present,
-                () {},
+                () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TermsAndConditions()));
+                },
+              ),
+              SizedBox(
+                height: 4,
+              ),
+              container(
+                AppLocalizations.of('Privacy Polices'),
+                Icons.file_present,
+                () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>PrivacyPolices()));
+                },
               ),
             ],
           ),

@@ -2,17 +2,21 @@
 
 import 'package:flutter/material.dart';
 
-class TeamCardView extends StatelessWidget {
+import '../models/player.dart';
+
+class PlayerCardView extends StatelessWidget {
   final String? txt1;
   final String? txt2;
   final String? txt3;
   final String? txt4;
   final String? txt5;
   final String? txt6;
+  final ImageProvider? image1;
+  final bool selected ;
+  Player? player;
 
-  final AssetImage? image1;
 
-  const TeamCardView({
+  PlayerCardView({
     Key? key,
     this.txt1,
     this.txt2,
@@ -21,6 +25,8 @@ class TeamCardView extends StatelessWidget {
     this.txt5,
     this.txt6,
     this.image1,
+    this.player,
+    this.selected = false
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -155,10 +161,14 @@ class TeamCardView extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: Color(0xff317E2F),
+                        color:selected? Colors.red:Color(0xff317E2F),
                       ),
                     ),
-                    child: Icon(
+                    child: selected? Icon(
+                      Icons.remove,
+                      color: Colors.red,
+                      size: 22,
+                    ): Icon(
                       Icons.add,
                       color: Color(0xff317E2F),
                       size: 22,

@@ -1,40 +1,50 @@
 
 
 
-class AuthUser{
-  String uName="";
+import 'package:newsports/models/user.dart';
+
+class AuthUser extends AppUser{
+
   String password="";
-  String mobile="";
-  String email="";
+  // String mobile="";
+  // String email="";
   String AuthToken="";
-  String dob="";
   // Google/Facebook/Email
   String provider="";
   AuthUser({
-    this.uName = "",
+    super.name = "",
     this.password = "",
-    this.mobile = "",
-    this.email = "",
+    super.mobile = "",
+    super.email = "",
     this.AuthToken = "",
     this.provider = "",
+    super.user_id  = "",
+    super.dob  = "",
+    super.gender  = "",
+    super.address  = "",
+    super.city  = "",
+    super.pincode  = "",
+    super.state  = "",
+    super.country  = "",
+
   });
 
-  AuthUser.fromJSON(Map<String,String> json){
-    this.uName = json["name"]??"";
+  @override
+  AuthUser.fromJSON(Map<String,String> json):super.formJson(json){
     this.password = json["password"]??"";
-    this.mobile = json["mobile"]??"";
-    this.email = json["email"]??"";
     this.AuthToken = json["token"]??"";
     this.provider = json["provider"]??"";
   }
-  Map<String, dynamic> toJson() => {
-    "name" : uName,
-    "password" : password,
-    "mobile" : mobile,
-    "email" : email,
-    "token" : AuthToken,
-     "provider" :provider,
-  };
+  @override
+  Map<String, dynamic> toJson() {
+    final json = super.toJson();
+    json.addAll({
+      "password" : password,
+      "token" : AuthToken,
+      "provider" :provider,
+    });
+    return json;
+  }
 
 
 }

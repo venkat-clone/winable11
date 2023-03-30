@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
@@ -153,37 +154,30 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                                           left: 5, right: 5),
                                       child: CustomButton(
                                         text: AppLocalizations.of('Login'),
-                                        onTap: () {
+                                        onTap: () async {
                                           setError("");
                                           if (!validateData())
                                             return setError(
                                                 "Invalid UserName or Password");
                                           startLoading();
-                                          _con
-                                              .login(
-                                                  _userNameController.text
-                                                      .trim(),
-                                                  _passwordController.text
-                                                      .trim())
-                                              .then((value) {
-                                            stopLoading();
-                                            print("isLongedIn=$value");
-                                            if (value)
-                                              Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      HomeScreen(),
-                                                ),
-                                              ).then((value) {
-                                                print(value);
-                                                Navigator.popUntil(
-                                                    context, (route) => false);
-                                              });
-                                            else {
-                                              // show Toast
+
+
+                                          try{
+                                            await _con.loginToServer(_userNameController.text.trim(), _passwordController.text.trim(), context);
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => HomeScreen(),),
+                                            ).then((value) {
+                                              print(value);
+                                              Navigator.popUntil(
+                                                  context, (route) => false);
+                                            });
+                                          }catch (e){
+                                            if(kDebugMode){
+                                              print(e);
                                             }
-                                          });
+                                          }
+                                          stopLoading();
                                         },
                                       ),
                                     ),

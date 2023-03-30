@@ -5,7 +5,7 @@ import 'dart:io';
 import '../utils/constants.dart';
 
 class KYCRepository {
-  static Future<KYCDetails> requestKYC(KYCDetails details) async {
+  static Future<KYCDetails> requestKYC(KYCDetails details,File aadhaar,File panCard) async {
     final String url = '${Constants.BaseUrl}user/register/kyc';
     try {
       final client = new http.Client();

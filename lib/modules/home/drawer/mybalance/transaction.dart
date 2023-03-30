@@ -52,7 +52,7 @@ class _TransactionPageState extends State<TransactionPage> {
                     children: [
                       Text(
                         AppLocalizations.of(
-                            'Choose time period for emailling transaction\nstatement:'),
+                            'Choose time period for emailing transaction\nstatement:'),
                         style: Theme.of(context).textTheme.caption!.copyWith(
                               color:
                                   Theme.of(context).textTheme.headline6!.color,

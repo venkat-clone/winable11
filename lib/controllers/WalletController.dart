@@ -12,24 +12,87 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/base_classes/base_controller.dart';
 import 'package:newsports/models/CashFreeTransaction.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
+import 'package:upi_india/upi_india.dart';
+import 'package:upi_india/upi_response.dart';
 import '../models/CashFreeTransactionResponse.dart';
 import '../models/payment.dart';
+import '../models/payment_types.dart';
 import '../repository/wallet_repoditory.dart';
 
 class WalletController extends BaseController {
 
+  UpiResponse? _upiResponse;
+  UpiResponse? get upiResponse => _upiResponse;
+  List<UpiApp> apps = [];
   double totalBalance = 0;
 
   late CashFreeTransaction transaction ;
   CashFreeTransactionResponse? transactionResponse;
   WalletRepository _walletRepository = WalletRepository();
   var cfPaymentGatewayService = CFPaymentGatewayService();
+  UpiIndia _upiIndia = UpiIndia();
+
+  UpiIndia get upiIndia => _upiIndia;
+
+  WalletController(){
+    scaffoldKey = GlobalKey();
+  }
+
   @override
   void initState() {
     transaction = CashFreeTransaction();
     cfPaymentGatewayService.setCallback(verifyPayment, onError);
     super.initState();
   }
+
+
+  /// UPI Methods
+  /// Hello World
+  Future initiateUPITransaction(UpiApp app, String amount) async {
+    lodeWhile(() async{
+      try {
+        final salt = DateTime.now().millisecond;
+        final upiResponse = await _upiIndia.startTransaction(
+          app: app,
+          receiverUpiId: "7905406363@kotak",
+          receiverName: 'Winable Platforms Private Limited',
+          // transactionRefId = userId
+          transactionRefId: "$salt"+ (FirebaseAuth.instance.currentUser?.uid ?? "") ,
+          transactionNote: 'payment',
+          amount: double.parse(amount.trim()),
+        );
+        if(
+        upiResponse.status == UpiPaymentStatus.SUCCESS &&
+        upiResponse.approvalRefNo !=null
+        ){
+          final payment = Payment(amount: amount, transactionID: "");
+          await addCash(amount);
+        }
+        setState(() {
+          _upiResponse = upiResponse;
+        });
+      }catch (e,s){
+        print("Upi Transaction Error: $e\n$s");
+      }
+    });
+  }
+
+  Future getUPIApps() async {
+    lodeWhile(() async{
+      try{
+        final result =
+            await _upiIndia.getAllUpiApps(mandatoryTransactionId: false);
+          apps = result;
+          await Future.delayed(Duration(seconds: 1));
+        setState(() {
+        });
+        print("result:$result;apps:$apps");
+      }catch(e,s){
+        print(" getUPIApps Error $e \n $s");
+      }
+    });
+  }
+
 
 
 // Callback methods
@@ -44,17 +107,13 @@ class WalletController extends BaseController {
     // TODO display Error to UI
   }
 
-  addCash(authID, Payment _payment) async {
+  addCash(String amount) async {
     lodeWhile(() async {
       try {
-        await FirebaseFirestore.instance
-            .collection("user")
-            .doc(authID)
-            .collection("addedCash")
-            .add(_payment.toJson())
-            .whenComplete(() async {
-              await _setAccountBalance(double.parse(_payment.amount));
-            });
+        final cash = await _walletRepository.addCash(amount);
+        setState(() {
+          totalBalance = double.parse(cash);
+        });
       } catch (e) {
         print(e.toString());
       }
@@ -173,6 +232,20 @@ class WalletController extends BaseController {
         print(e.message);
       }
     });
+  }
+
+
+  // withdraw amount
+
+  // pay contest fee
+  payContestFee(double fee,String contestId){
+    /// PAY FEE
+    /// JOIN CONTEST
+  }
+
+  payWithWallet() async {
+    // call payment api for transaction
+
   }
 
 

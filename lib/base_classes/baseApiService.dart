@@ -5,6 +5,8 @@ abstract class BaseApiServices {
 
   Future<dynamic> getPostApiResponse(String url , dynamic data,{Map<String,String>? headers,bool printJsonString});
 
+  B typeCast<B>(dynamic result);
+
 }
 
 

@@ -1,5 +1,7 @@
 
 
+import 'package:flutter/foundation.dart';
+
 class AppException implements Exception {
 
   final _message ;
@@ -7,9 +9,13 @@ class AppException implements Exception {
   AppException([this._message , this._prefix]){
     print(_message);
   }
+  getMessage()=>_message;
 
   String toString(){
-    return '$_prefix$_message' ;
+    if(kDebugMode){
+      print("App Execution Occurred:$_message \n $_prefix");
+    }
+    return '$_prefix:$_message' ;
   }
 
 }
@@ -35,5 +41,15 @@ class UnauthorisedException extends AppException {
 
 class InvalidInputException extends AppException {
 
-  InvalidInputException([String? message]) : super(message, 'Invalid Inpit');
+  InvalidInputException([String? message]) : super(message, 'Invalid Input');
 }
+
+class InvalidResponseException extends AppException{
+
+  InvalidResponseException([String? message]):super(message,'Invalid Response');
+}
+
+class FileNotUploadedException extends AppException{
+  FileNotUploadedException([String? message]) :super(message,'Not Uploaded');
+}
+

@@ -19,7 +19,7 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-  LocalUser user = currentUser.value;
+  AppUser user = currentUser.value;
 
   TextEditingController _nameController =
       TextEditingController(text: currentUser.value.name);
@@ -600,7 +600,7 @@ class _SettingPageState extends State<SettingPage> {
                       CustomButton(
                         text: AppLocalizations.of('Update Profile'),
                         onTap: () async {
-                          final user = LocalUser(
+                          final user = AppUser(
                             name: _nameController.value.text,
                             email: _emailController.value.text,
                             dob: _birthDateController.value.text,
@@ -661,18 +661,18 @@ class _SettingPageState extends State<SettingPage> {
         fontSize: 16.0);
   }
 
-  updateToFirebase(LocalUser user) async {
+  updateToFirebase(AppUser user) async {
     bool isUpdated = false;
 
     if (user.email != currentUser.value.email) {
       // update Email
-      print("email Updateing..");
+      print("email Updating..");
       await FirebaseAuth.instance.currentUser
           ?.updateEmail(user.email.trim())
           .whenComplete(() {
         isUpdated = true;
 
-        print("Email updated successfull");
+        print("Email updated successfully");
       }).onError((error, stackTrace) {
         isUpdated = false;
         print(error.toString());
@@ -697,7 +697,7 @@ class _SettingPageState extends State<SettingPage> {
       await FirebaseAuth.instance.currentUser!
           .updatePassword(password)
           .whenComplete(() {
-        print("password upadet successful");
+        print("password upgrade successful");
 
         isUpdate = true;
       }).onError((error, stackTrace) {

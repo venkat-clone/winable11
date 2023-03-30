@@ -27,8 +27,10 @@ class _KYCFormState extends StateMVC<KYCForm> {
 
   final aadharDOBController = TextEditingController();
   final panDOBController = TextEditingController();
-  String panCardPick = "";
-  TextEditingController imgPath = TextEditingController();
+
+  String panCardPath = "";
+  String aadhaarCardPath ="";
+
   AuthController _authController = AuthController();
   late KYCController _con;
   bool loading = false;
@@ -38,9 +40,9 @@ class _KYCFormState extends StateMVC<KYCForm> {
     _con = controller as KYCController;
   }
 
-  setLoading(bool loading) => setState(() => this.loading = loading);
-  startLoading() => setLoading(true);
-  stopLoading() => setLoading(false);
+  // setLoading(bool loading) => setState(() => this.loading = loading);
+  // startLoading() => setLoading(true);
+  // stopLoading() => setLoading(false);
 
   @override
   void initState() {
@@ -59,7 +61,7 @@ class _KYCFormState extends StateMVC<KYCForm> {
               automaticallyImplyLeading: true,
               backgroundColor: Theme.of(context).primaryColor,
               title: Text(
-                'Kyc Form',
+                'KYC Form',
               ),
             ),
             body: Padding(
@@ -86,14 +88,14 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                 ),
                                 TextFormField(
                                   decoration:
-                                      InputDecoration(labelText: 'Pincode'),
+                                      InputDecoration(labelText: 'Pin Code'),
                                   keyboardType: TextInputType.number,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Please enter a pincode';
+                                      return 'Please enter a pin code';
                                     }
                                     if (int.tryParse(value) == null) {
-                                      return 'Please enter a valid pincode';
+                                      return 'Please enter a valid pin code';
                                     }
                                     return null;
                                   },
@@ -159,7 +161,7 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                 ),
                                 TextFormField(
                                   decoration:
-                                      InputDecoration(labelText: 'ifsc code'),
+                                      InputDecoration(labelText: 'IFSC Code'),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Please enter a ifsc code';
@@ -172,14 +174,14 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                 ),
                                 TextFormField(
                                   decoration: InputDecoration(
-                                      labelText: 'Aadher Number'),
+                                      labelText: 'Aadhaar Number'),
                                   keyboardType: TextInputType.number,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Please enter an Aadhar number';
+                                      return 'Please enter an Aadhaar number';
                                     }
                                     if (int.tryParse(value) == null) {
-                                      return 'Please enter a valid Aadhar number';
+                                      return 'Please enter a valid Aadhaar number';
                                     }
                                     return null;
                                   },
@@ -189,10 +191,10 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                 ),
                                 TextFormField(
                                   decoration: InputDecoration(
-                                      labelText: 'name on Aadhar card'),
+                                      labelText: 'Name on Aadhaar Card'),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Please enter the name on your Aadhar card';
+                                      return 'Please enter the name on your Aadhaar card';
                                     }
                                     return null;
                                   },
@@ -204,7 +206,7 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                   controller: aadharDOBController,
                                   readOnly: true,
                                   decoration: InputDecoration(
-                                    labelText: 'DOB on Aadhar card',
+                                    labelText: 'DOB on Aadhaar card',
                                     hintText: 'Select Date of Birth',
                                   ),
                                   onTap: () async {
@@ -237,10 +239,10 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                 ),
                                 TextFormField(
                                   decoration: InputDecoration(
-                                      labelText: 'aadhar card status'),
+                                      labelText: 'Aadhaar Card Status'),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Please enter a aadhar card status';
+                                      return 'Please enter a Aadhaar card status';
                                     }
                                     return null;
                                   },
@@ -251,7 +253,7 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                 TextFormField(
                                   decoration:
                                       InputDecoration(labelText: 'Pan Number'),
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: TextInputType.text,
                                   validator: (value) {
                                     if (value?.isEmpty == true) {
                                       return 'Please enter a PAN number';
@@ -264,7 +266,7 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                 ),
                                 TextFormField(
                                   decoration: InputDecoration(
-                                      labelText: 'Name on pan card'),
+                                      labelText: 'Name on Pan Card'),
                                   validator: (value) {
                                     if (value!.isEmpty) {
                                       return 'Please enter the name on your PAN card';
@@ -279,7 +281,7 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                   controller: panDOBController,
                                   readOnly: true,
                                   decoration: InputDecoration(
-                                    labelText: 'Pancard DOB',
+                                    labelText: 'Pan card DOB',
                                     hintText: 'Select Date of Birth',
                                   ),
                                   onTap: () async {
@@ -309,27 +311,62 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                     return null;
                                   },
                                 ),
-                                // Pancard Image Field
-
-                                TextFormField(
-                                  controller: imgPath,
-                                  decoration: InputDecoration(
-                                    labelText: 'Pancard Image',
-                                    hintText: 'Select Image',
+                                // Pan card Image Field
+                                SizedBox(height: 20,),
+                                if(aadhaarCardPath.isNotEmpty)
+                                  Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                    alignment: Alignment.center,
+                                    child: Image.file(File(aadhaarCardPath),height: 200,),
                                   ),
-                                  onTap: () {
-                                    // getImages("Camera");
-                                    pickimages(context);
-                                  },
-                                  onSaved: (value) {
-                                    kyc.PanCardIMAGE = panCardPick;
-                                  },
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please select an Image';
-                                    }
-                                    return null;
-                                  },
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: InkWell(
+                                    onTap: (){
+                                      pickImages(context,(file){
+                                        setState(() {
+                                          aadhaarCardPath = file.path;
+                                        });
+                                      });
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.green,
+                                        borderRadius: BorderRadius.circular(14)
+                                      ),
+                                      alignment: Alignment.center,
+                                      padding: EdgeInsets.all(15),
+                                      child: Text("Select Aadhaar Image",style: TextStyle(color: Colors.white,fontSize: 14,fontWeight: FontWeight.bold),),
+                                    ),
+                                  ),
+                                ),
+                                if(panCardPath.isNotEmpty)
+                                  Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                    alignment: Alignment.center,
+                                    child: Image.file(File(panCardPath),height: 200,),
+                                  ),
+                                Divider(),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: InkWell(
+                                    onTap: (){
+                                      pickImages(context,(file){
+                                          setState(() {
+                                            panCardPath = file.path;
+                                          });
+                                      });
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.green,
+                                          borderRadius: BorderRadius.circular(14)
+                                      ),
+                                      alignment: Alignment.center,
+                                      padding: EdgeInsets.all(15),
+                                      child: Text("Select Pan Card Image",style: TextStyle(color: Colors.white,fontSize: 14,fontWeight: FontWeight.bold),),
+                                    ),
+                                  ),
                                 ),
 
                                 // Submit Button
@@ -339,25 +376,15 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                     onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
                                         _formKey.currentState!.save();
-
-                                        startLoading();
                                         print("started loading");
-                                        final success =
-                                            await _con.requestForKYC(kyc);
+                                        final success = await _con.requestForKYC(kyc,File(aadhaarCardPath),File(panCardPath));
 
-                                        _authController.upDateKYCStatus(
-                                            FirebaseAuth
-                                                .instance.currentUser!.uid,
-                                            true);
+                                        _authController.upDateKYCStatus(FirebaseAuth.instance.currentUser!.uid, true);
 
-                                        stopLoading();
-                                        print("loading stopped");
                                         setState(() => requested = success);
                                         success
-                                            ? showToast(
-                                                "KYC details uplodaed succeful")
-                                            : showToast(
-                                                "KYC details uplodaed succeful");
+                                            ? showToast("KYC details uploaded successful")
+                                            : showToast("KYC details uploaded successful");
                                       }
                                     },
                                     child: Text('Submit'),
@@ -394,18 +421,6 @@ class _KYCFormState extends StateMVC<KYCForm> {
         fontSize: 16.0);
   }
 
-//---------------------Pick Image---------------------------//
-  Future getImages(imgSource) async {
-    var _picker = ImagePicker();
-    var img = await _picker.pickImage(
-      source: imgSource ? ImageSource.camera : ImageSource.gallery,
-    );
-
-    setState(() {
-      imgPath.text = img!.path;
-      panCardPick = convertIntoBase64(File(imgPath.text));
-    });
-  }
 
 // ----------------------convert file into base64-----------------------//
   String convertIntoBase64(File file) {
@@ -415,7 +430,7 @@ class _KYCFormState extends StateMVC<KYCForm> {
   }
 
 //---------------------pick imgae dailog----------------------------//
-  pickimages(context) async {
+  pickImages(context,Function(XFile) onComplete) async {
     return showDialog(
         context: context,
         builder: (context) {
@@ -446,9 +461,15 @@ class _KYCFormState extends StateMVC<KYCForm> {
                   Column(
                     children: [
                       IconButton(
-                          onPressed: () {
-                            getImages(true);
+                          onPressed: () async {
                             Navigator.of(context).pop();
+                            var _picker = ImagePicker();
+                            var img = await _picker.pickImage(
+                              source: ImageSource.camera ,
+                            );
+                            if(img!=null) {
+                              onComplete(img);
+                            }
                           },
                           icon: Icon(Icons.camera_alt,
                               color: Theme.of(context)
@@ -470,9 +491,13 @@ class _KYCFormState extends StateMVC<KYCForm> {
                   Column(
                     children: [
                       IconButton(
-                          onPressed: () {
-                            getImages(false);
+                          onPressed: () async {
                             Navigator.of(context).pop();
+                            var _picker = ImagePicker();
+                            var img = await _picker.pickImage(
+                              source: ImageSource.gallery,
+                            );
+
                           },
                           icon: Icon(Icons.image,
                               color: Theme.of(context)

@@ -1,3 +1,5 @@
+import 'package:newsports/models/Team.dart';
+
 class MatchModel {
   MatchModel({
       this.matchId = "" ,
@@ -24,7 +26,14 @@ class MatchModel {
       this.matchStatusNote = "",
       this.createdDate = "",
       this.modifiedDate = "",
+    required this.team1,
+    required this.team2,
   });
+
+
+  bool get isStarted{
+    return DateTime.parse(matchDateTime).difference(DateTime.now()).isNegative;
+  }
 
   MatchModel.fromJson(dynamic json) {
     matchId = json['match_id']??"";
@@ -51,6 +60,8 @@ class MatchModel {
     matchStatusNote = json['match_status_note']??"";
     createdDate = json['created_date']??"";
     modifiedDate = json['modified_date']??"";
+    team1 = Team.fromJson(json['team1']??{});
+    team2 = Team.fromJson(json['team2']??{});
   }
   String matchId ="";
   String uniqueId ="";
@@ -76,6 +87,9 @@ class MatchModel {
   String matchStatusNote ="";
   String createdDate ="";
   String modifiedDate ="";
+  Team team1 = Team();
+  Team team2 = Team();
+
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -103,6 +117,8 @@ class MatchModel {
     map['match_status_note'] = matchStatusNote;
     map['created_date'] = createdDate;
     map['modified_date'] = modifiedDate;
+    map['team1'] = team1.toJson();
+    map['team2'] = team2.toJson();
     return map;
   }
 

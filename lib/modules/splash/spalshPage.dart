@@ -40,15 +40,19 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     myContext = context;
     _loadNextScreen();
-    initValueNotifiers();
+
     super.initState();
     Future.delayed(const Duration(seconds: 3), () async {
       final isLongedIn =await SharedPreferenceService.getLoggedIn();
-      if(!isLongedIn)
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (con)=>WelcomePage()));
-      else
-        Navigator.of(context).pushReplacementNamed(Routes.HOME);
 
+      if(!isLongedIn) {
+        await SharedPreferenceService.initSharedPreferences(login: false);
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (con) => WelcomePage()));
+      } else {
+        await initValueNotifiers();
+        Navigator.of(context).pushReplacementNamed(Routes.HOME);
+      }
     });
   }
 

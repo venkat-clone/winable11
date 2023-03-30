@@ -6,22 +6,45 @@ class BaseController extends ControllerMVC {
   var scaffoldKey = GlobalKey<ScaffoldState>();
 
   bool loading = false;
+  int _loadFunctions =0;
 
   // void setState(VoidCallback fn) =>setState(fn);
 
-  startLoading()=>setState(() {loading=true;});
-  stopLoading()=>setState(() {loading=false;});
+  startLoading()=>setState(() {
+    _loadFunctions++;
+    loading=true;
+  });
+  stopLoading()=>setState(() {
+    _loadFunctions--;
+    loading= !(_loadFunctions==0);
+  });
 
   Future<void> lodeWhile( Future Function() function ) async{
     startLoading();
     await function();
+    await Future.delayed(Duration(seconds: 1),);
     stopLoading();
+    print("loadCompleted");
   }
 
-  snackBar(String message,BuildContext context){
+  errorSnackBar(String message,BuildContext context){
     return ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             backgroundColor: Colors.red,
+            content: Text(message ))
+    );
+  }
+  successSnackBar(String message,BuildContext context){
+    return ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            backgroundColor: Colors.green,
+            content: Text(message ))
+    );
+  }
+  workingSnackBar(String message,BuildContext context){
+    return ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            backgroundColor: Colors.orange,
             content: Text(message ))
     );
   }

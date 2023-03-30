@@ -42,6 +42,7 @@ class NetworkAPIService extends BaseApiServices {
           body: jsonEncode(data),
         headers: headers
       ).timeout(Duration(seconds: 10));
+      print(response.body);
       responseJson = returnResponse(response);
     }on SocketException {
       throw FetchDataException('No Internet Connection');
@@ -51,7 +52,7 @@ class NetworkAPIService extends BaseApiServices {
   }
 
   dynamic returnResponse (http.Response response){
-
+    print("response:${response.body}");
     switch(response.statusCode){
       case 200:
         dynamic responseJson = jsonDecode(response.body);
@@ -67,5 +68,25 @@ class NetworkAPIService extends BaseApiServices {
 
     }
   }
+  
+  dynamic getData(json){
+    try{
+      if(json['data']=="")
+        throw Exception();
+      return json['data'];
+    }catch(e){
+      throw InvalidResponseException(json['message']);
+    }
+  }
+
+  B typeCast<B>(dynamic result){
+    try{
+      return (result as B);
+    }catch (e){
+      throw InvalidResponseException("");
+    }
+  }
+  
+  
 
 }

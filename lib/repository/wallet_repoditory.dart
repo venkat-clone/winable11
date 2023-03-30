@@ -3,20 +3,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:newsports/base_classes/baseApiService.dart';
 import 'package:newsports/base_classes/networkAPIService.dart';
+import 'package:newsports/utils/shared_preference_services.dart';
 
 import '../models/CashFreeTransaction.dart';
 import '../models/CashFreeTransactionResponse.dart';
 
 class WalletRepository{
-  BaseApiServices apiServices = NetworkAPIService();
+  BaseApiServices _apiServices = NetworkAPIService();
   String _getUrl(String path)=>"https://admin.winable11.com/$path";
 
-  // should not be used in frontend since
-  // we should not use APP ID && SECRET KEY in frontend
-  // TODO remove this function from frontend
+  /// should not be used in frontend since
+  /// we should not use APP ID && SECRET KEY in frontend
+  /// TODO remove this function from frontend
   Future<CashFreeTransactionResponse> createTransaction(CashFreeTransaction cashFreeTransaction) async{
    try{
-     final jsonResponse = await apiServices.getPostApiResponse(
+     final jsonResponse = await _apiServices.getPostApiResponse(
        "https://sandbox.cashfree.com/pg/orders",
        cashFreeTransaction.toJson(),
        printJsonString: true,
@@ -38,5 +39,17 @@ class WalletRepository{
      throw e;
    }
   }
+
+  Future<String> addCash(String amount) async {
+    try{
+      final userId ="";
+      final url = _getUrl('wallet/add/$userId/$amount');
+      final result = await _apiServices.getGetApiResponse(url);
+      return SharedPreferenceService.cridetCash(double.parse(amount));
+    }catch(e,s){
+      rethrow;
+    }
+  }
+
 
 }

@@ -14,6 +14,7 @@ import 'package:otp_text_field/style.dart';
 
 import '../../controllers/AuthController.dart';
 import '../../firebase_options.dart';
+import '../../models/AuthUser.dart';
 import '../../utils/default_loading.dart';
 import '../../utils/shared_preference_services.dart';
 import '../../widget/customTextField.dart';
@@ -22,10 +23,12 @@ class OTPScreen extends StatefulWidget {
 
   final String? email;
   String? phone ;
+  AuthUser user;
   OTPScreen({
     Key? key,
     this.email,
-    this.phone
+    this.phone,
+    required this.user,
   }):super(key:key);
 
   @override
@@ -45,6 +48,7 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
   setError(String error)=>setState(()=>this.error =error);
 
   int token = -1;
+  String verificationId = "";
   updateToken(int token)=>setState(()=>this.token=token);
 
   int times =0;
@@ -79,17 +83,32 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
     // await Firebase.initializeApp(
     //   options: DefaultFirebaseOptions.currentPlatform,
     // );
-    print("loading compleated");
+
     await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: mobile,
         verificationCompleted: (cred){
-          print("credintical $cred");
+          stopLoading();
+          print("credential $cred");
+          Navigator.of(context).pushNamed(Routes.LOGIN);
         },
         verificationFailed: (exception){
-          setError("un expected Error occurred try again");
+          stopLoading();
+
+          if (exception.code == 'invalid-phone-number') {
+            _con.errorSnackBar('The provided phone number is not valid.',context);
+          }
+          else if (exception.code == 'too-many-requests') {
+            _con.errorSnackBar('To Many requests are being made.',context);
+          }
+          else{
+            print("verification Failed:${exception.code}");
+            _con.errorSnackBar('Verification failed',context);
+          }
+
         },
         codeSent: (id,token){
           stopLoading();
+          verificationId =id;
           updateToken(token??-1);
           startTimer();
         },
@@ -97,7 +116,7 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
           print("time Out");
         }
     );
-    stopLoading();
+
   }
 
 
@@ -124,22 +143,20 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
 
   validateOTP() async {
     startLoading();
-    print(OTP);
-    final credential = PhoneAuthProvider.credentialFromToken(token,smsCode:OTP );
-
-    await FirebaseAuth.instance.currentUser?.linkWithCredential(credential).then((value)  async {
-      stopLoading();
-      await FirebaseAuth.instance.signOut();
-      SharedPreferenceService.initSharedPreferences(login: false);
-      Navigator.pushReplacementNamed(context, Routes.LOGIN);
-    }).onError((error, stackTrace) async{
-      print(error);
-      print(stackTrace);
-      await FirebaseAuth.instance.signOut();
-      SharedPreferenceService.initSharedPreferences(login: false);
-      Navigator.pushReplacementNamed(context, Routes.LOGIN);
-
-    });
+    print("$OTP:$token");
+    try{
+      final credential =
+          PhoneAuthProvider.credential(verificationId: verificationId, smsCode: OTP);
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      print(credential.asMap());
+    }on FirebaseException catch(e,s){
+      if(e.code=='invalid-credential'){
+        _con.errorSnackBar("Invalid OTP ", context);
+      }else if(e.code=='session-expired'){
+        _con.errorSnackBar("OTP Time OUT", context);
+      }
+      print(e.code);
+    }
     stopLoading();
   }
 
@@ -188,7 +205,7 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
                         height: 10,
                       ),
                       Text(
-                        AppLocalizations.of('Enter the OTP you receivedtext'),
+                        AppLocalizations.of('Enter the OTP you received '),
                         style: Theme.of(context).textTheme.bodyText2!.copyWith(
                               color: Theme.of(context).textTheme.caption!.color,
                               letterSpacing: 0.6,
@@ -237,7 +254,11 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
                 alignment: Alignment.centerRight,
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Text("Resend Otp",style: TextStyle(fontSize: 16,color: Colors.white),),
+                  child: InkWell(
+                      onTap: (){
+                        sendOTP();
+                      },
+                      child: Text("Resend Otp",style: TextStyle(fontSize: 16,color: Colors.white),)),
                 ),
               ),
               SizedBox(
@@ -249,7 +270,7 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
                   if(OTP.length==6){
                     validateOTP();
                   }else{
-                    setError("Plase Provide A valid OTP");
+                    setError("Please Provide A valid OTP");
                   }
                 },
               ),

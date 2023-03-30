@@ -1,344 +1,98 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/constance/constance.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:newsports/models/player.dart';
+import '../../controllers/ContestController.dart';
+import '../../models/MatchModel.dart';
+import '../../models/my_team.dart';
+import '../../utils/designations.dart';
+import '../createTeam/teamPreview.dart';
 
 class MyTeamPage extends StatefulWidget {
+  final MatchModel match;
+  final ContestController con;
+  MyTeamPage({
+    required this.match,
+    required this.con,
+  });
   @override
-  _MyTeamPageState createState() => _MyTeamPageState();
+  _MyTeamPageState createState() => _MyTeamPageState(con: con);
 }
 
-class _MyTeamPageState extends State<MyTeamPage> {
+class _MyTeamPageState extends StateMVC<MyTeamPage> {
+
+  List<MyTeam> myTeams = [
+    MyTeam(
+        captain: Player(
+            name: "Hello",
+        ),
+        teamName: "New Team",
+        teamAScore: "0",
+        teamBScore: "0",
+        teamA: "A",
+        teamB: "B",
+        viceCaptain: Player(
+      name: "Hello 1"),
+      players: [
+        Player(
+          name: "Hello",
+          designationId: "1"
+        ),
+        Player(
+            name: "Hello",
+            designationId: "2"
+        ),
+        Player(
+            name: "Hello",
+            designationId: "4"
+        ),
+        Player(
+            name: "Hello",
+            designationId: "3"
+        ),
+      ]
+    )
+  ];
+
+  late ContestController _con ;
+
+  _MyTeamPageState({required ContestController con}):super(con){
+    _con = controller as ContestController;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView(
         children: [
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Card(
-                  elevation: 5,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    height: 150,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(4),
-                                topRight: Radius.circular(4),
-                              ),
-                            ),
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .headline6!
-                                        .color!
-                                        .withOpacity(0.1),
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(4),
-                                      topRight: Radius.circular(4),
-                                    ),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 20, right: 20),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          AppLocalizations.of(
-                                              'PARTH37OQR (T1)'),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .caption!
-                                              .copyWith(
-                                                color: Colors.white,
-                                                letterSpacing: 0.6,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 12,
-                                              ),
-                                        ),
-                                        Expanded(child: SizedBox()),
-                                        Icon(
-                                          Icons.edit,
-                                          color: Colors.white,
-                                          size: 18,
-                                        ),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Icon(
-                                          Icons.copy,
-                                          color: Colors.white,
-                                          size: 18,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 20, right: 20),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "RR",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption!
-                                                .copyWith(
-                                                  color: Colors.white,
-                                                  letterSpacing: 0.6,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 10,
-                                                ),
-                                          ),
-                                          Text(
-                                            "7",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption!
-                                                .copyWith(
-                                                  color: Colors.white,
-                                                  letterSpacing: 0.6,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14,
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        width: 50,
-                                      ),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "BLR",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption!
-                                                .copyWith(
-                                                  color: Colors.white,
-                                                  letterSpacing: 0.6,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 10,
-                                                ),
-                                          ),
-                                          Text(
-                                            "4",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption!
-                                                .copyWith(
-                                                  color: Colors.white,
-                                                  letterSpacing: 0.6,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14,
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                      Expanded(child: SizedBox()),
-                                      playerDetail(
-                                        AppLocalizations.of('J.Buttler'),
-                                        "C",
-                                        Image.asset(ConstanceData.buttler),
-                                      ),
-                                      SizedBox(
-                                        width: 15,
-                                      ),
-                                      playerDetail(
-                                        AppLocalizations.of('V.Kohali'),
-                                        "VC",
-                                        Image.asset(ConstanceData.cricketerPic),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .appBarTheme
-                                  .color!
-                                  .withOpacity(0.5),
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(4),
-                                bottomRight: Radius.circular(4),
-                              ),
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 16, right: 16),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    AppLocalizations.of('WK'),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption!
-                                        .copyWith(
-                                          color: Colors.black45,
-                                          letterSpacing: 0.6,
-                                          fontSize: 12,
-                                        ),
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    "3",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption!
-                                        .copyWith(
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .headline6!
-                                              .color,
-                                          letterSpacing: 0.6,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                        ),
-                                  ),
-                                  Expanded(child: SizedBox()),
-                                  Text(
-                                    AppLocalizations.of('BAT'),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption!
-                                        .copyWith(
-                                          color: Colors.black45,
-                                          letterSpacing: 0.6,
-                                          fontSize: 12,
-                                        ),
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    "3",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption!
-                                        .copyWith(
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .headline6!
-                                              .color,
-                                          letterSpacing: 0.6,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                        ),
-                                  ),
-                                  Expanded(child: SizedBox()),
-                                  Text(
-                                    AppLocalizations.of('AR'),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption!
-                                        .copyWith(
-                                          color: Colors.black45,
-                                          letterSpacing: 0.6,
-                                          fontSize: 12,
-                                        ),
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    "3",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption!
-                                        .copyWith(
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .headline6!
-                                              .color,
-                                          letterSpacing: 0.6,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                        ),
-                                  ),
-                                  Expanded(child: SizedBox()),
-                                  Text(
-                                    AppLocalizations.of('BOWL'),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption!
-                                        .copyWith(
-                                          color: Colors.black45,
-                                          letterSpacing: 0.6,
-                                          fontSize: 12,
-                                        ),
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    "3",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption!
-                                        .copyWith(
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .headline6!
-                                              .color,
-                                          letterSpacing: 0.6,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
+          ...myTeams.map((e) {
+            return MyTeamCard(team: e,sport: _con.sport,);
+          }),
         ],
       ),
     );
   }
 
+
+}
+
+
+class MyTeamCard extends StatefulWidget {
+  MyTeam team;
+  String sport;
+  MyTeamCard({Key? key,required this.team,required this.sport}) : super(key: key);
+
+  @override
+  State<MyTeamCard> createState() => _MyTeamCardState();
+}
+
+class _MyTeamCardState extends State<MyTeamCard> {
+
+  MyTeam get team=>widget.team;
   Widget playerDetail(String txt1, String txt2, Image image1) {
     return Stack(
       //alignment: Alignment.bottomCenter,
@@ -360,11 +114,11 @@ class _MyTeamPageState extends State<MyTeamPage> {
                   child: Text(
                     txt1,
                     style: Theme.of(context).textTheme.caption!.copyWith(
-                          color: Colors.black,
-                          letterSpacing: 0.6,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 10,
-                        ),
+                      color: Colors.black,
+                      letterSpacing: 0.6,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 10,
+                    ),
                   ),
                 ),
               ),
@@ -378,21 +132,350 @@ class _MyTeamPageState extends State<MyTeamPage> {
             shape: BoxShape.circle,
             color: Colors.white,
             border:
-                Border.all(color: (Theme.of(context).textTheme.headline6!.color!)),
+            Border.all(color: (Theme.of(context).textTheme.headline6!.color!)),
           ),
           child: Center(
             child: Text(
               txt2,
               style: Theme.of(context).textTheme.caption!.copyWith(
-                    color: Colors.black,
-                    letterSpacing: 0.6,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 8,
-                  ),
+                color: Colors.black,
+                letterSpacing: 0.6,
+                fontWeight: FontWeight.bold,
+                fontSize: 8,
+              ),
             ),
           ),
         )
       ],
     );
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20),
+      child: GestureDetector(
+        onTap: (){
+          Navigator.of(context).push(MaterialPageRoute(builder: (c)=>TeamPreViewPage(players: team.players,)));
+        },
+        child: Card(
+          elevation: 5,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            height: 150,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(4),
+                        topRight: Radius.circular(4),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context)
+                                .textTheme
+                                .headline6!
+                                .color!
+                                .withOpacity(0.1),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(4),
+                              topRight: Radius.circular(4),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 20, right: 20),
+                            child: Row(
+                              children: [
+                                Text(
+                                  AppLocalizations.of(team.teamName),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .caption!
+                                      .copyWith(
+                                    color: Colors.white,
+                                    letterSpacing: 0.6,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                Expanded(child: SizedBox()),
+                                Icon(
+                                  Icons.edit,
+                                  color: Colors.white,
+                                  size: 18,
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                InkWell(
+                                  onTap: () async{
+                                    await Clipboard.setData(ClipboardData(text: team.teamName));
+                                  },
+                                  child: Icon(
+                                    Icons.copy,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20),
+                          child: Row(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.center,
+                            children: [
+                              Column(
+                                mainAxisAlignment:
+                                MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    team.teamA,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption!
+                                        .copyWith(
+                                      color: Colors.white,
+                                      letterSpacing: 0.6,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                  Text(
+                                    team.teamBScore,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption!
+                                        .copyWith(
+                                      color: Colors.white,
+                                      letterSpacing: 0.6,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                width: 50,
+                              ),
+                              Column(
+                                mainAxisAlignment:
+                                MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    team.teamA,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption!
+                                        .copyWith(
+                                      color: Colors.white,
+                                      letterSpacing: 0.6,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                  Text(
+                                    team.teamAScore,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption!
+                                        .copyWith(
+                                      color: Colors.white,
+                                      letterSpacing: 0.6,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Expanded(child: SizedBox()),
+                              playerDetail(
+                                AppLocalizations.of(team.captain.name),
+                                "C",
+                                Image.asset(ConstanceData.buttler),
+                              ),
+                              SizedBox(
+                                width: 15,
+                              ),
+                              playerDetail(
+                                AppLocalizations.of(team.viceCaptain.name),
+                                "VC",
+                                Image.asset(ConstanceData.cricketerPic),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context)
+                          .appBarTheme
+                          .color!
+                          .withOpacity(0.5),
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(4),
+                        bottomRight: Radius.circular(4),
+                      ),
+                    ),
+                    child: Padding(
+                      padding:
+                      const EdgeInsets.only(left: 16, right: 16),
+                      child: Row(
+                        children: [
+                          Text(
+                            Designation.getDesignation(widget.sport, 4).shortName,
+                            style: Theme.of(context)
+                                .textTheme
+                                .caption!
+                                .copyWith(
+                              color: Colors.black45,
+                              letterSpacing: 0.6,
+                              fontSize: 12,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            team.players.where((element) => element.designationId=="4").length.toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .caption!
+                                .copyWith(
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .color,
+                              letterSpacing: 0.6,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                          Expanded(child: SizedBox()),
+                          Text(
+                              Designation.getDesignation(widget.sport, 1).shortName,
+                            style: Theme.of(context)
+                                .textTheme
+                                .caption!
+                                .copyWith(
+                              color: Colors.black45,
+                              letterSpacing: 0.6,
+                              fontSize: 12,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                              team.players.where((element) => element.designationId=="1").length.toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .caption!
+                                .copyWith(
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .color,
+                              letterSpacing: 0.6,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                          Expanded(child: SizedBox()),
+                          Text(
+                              Designation.getDesignation(widget.sport, 3).shortName,
+                            style: Theme.of(context)
+                                .textTheme
+                                .caption!
+                                .copyWith(
+                              color: Colors.black45,
+                              letterSpacing: 0.6,
+                              fontSize: 12,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            team.players.where((element) => element.designationId=="3").length.toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .caption!
+                                .copyWith(
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .color,
+                              letterSpacing: 0.6,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                          Expanded(child: SizedBox()),
+                          Text(
+                            Designation.getDesignation(widget.sport, 2).shortName,
+                            style: Theme.of(context)
+                                .textTheme
+                                .caption!
+                                .copyWith(
+                              color: Colors.black45,
+                              letterSpacing: 0.6,
+                              fontSize: 12,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            team.players.where((element) => element.designationId=="4").length.toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .caption!
+                                .copyWith(
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .color,
+                              letterSpacing: 0.6,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
+

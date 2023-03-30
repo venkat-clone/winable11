@@ -5,9 +5,12 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/controllers/WalletController.dart';
 import 'package:newsports/modules/home/drawer/mybalance/accountInfo.dart';
-import 'package:newsports/modules/home/drawer/mybalance/addCash.dart';
+import 'package:newsports/modules/home/drawer/mybalance/payment_methods.dart';
+import 'package:newsports/modules/home/drawer/mybalance/upi_Interface.dart';
 import 'package:newsports/modules/home/drawer/mybalance/transaction.dart';
 import 'package:flutter/material.dart';
+
+import '../../../matchDetail/contestDetail/addCash.dart';
 
 class MyBalancePage extends StatefulWidget {
   @override
@@ -20,6 +23,7 @@ class _MyBalancePageState extends StateMVC<MyBalancePage> {
   void initState() {
     super.initState();
     // _paymentController.getCash(FirebaseAuth.instance.currentUser!.uid);
+    _walletController.getUPIApps();
     _walletController.getWalletBalance();
   }
   late WalletController _walletController ;
@@ -30,6 +34,7 @@ class _MyBalancePageState extends StateMVC<MyBalancePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _walletController.scaffoldKey,
       backgroundColor: Theme.of(context).appBarTheme.color,
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -113,17 +118,17 @@ class _MyBalancePageState extends StateMVC<MyBalancePage> {
                             child: Center(
                               child: InkWell(
                                 onTap: () async {
-                                  _walletController.initiatePayment("909090909090", "session_tU6-n4GMmVLqxBiljnoy-bF-aI1W_ualmioxJqoGP75pAl9KlT-8BZCxjpu52I8ppFaGAD8Yf1bGmL1AL0ceDM4on8abuANfDhGowUtV8afj");
-                                  return;
-                                  final result = await _walletController.createTransaction(_walletController.createMocOrder());
-                                  if(result!=null && result.paymentSessionId!=null){
-                                    _walletController.initiatePayment(result.orderId, result.paymentSessionId!);
-                                  }else if(result!=null && result.paymentSessionId==null){
-                                    // display error
-                                  }
-                                  // Navigator.of(context).push(
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) => AddCash()));
+                                  // _walletController.initiatePayment("909090909090", "session_tU6-n4GMmVLqxBiljnoy-bF-aI1W_ualmioxJqoGP75pAl9KlT-8BZCxjpu52I8ppFaGAD8Yf1bGmL1AL0ceDM4on8abuANfDhGowUtV8afj");
+                                  // return;
+                                  // final result = await _walletController.createTransaction(_walletController.createMocOrder());
+                                  // if(result!=null && result.paymentSessionId!=null){
+                                  //   _walletController.initiatePayment(result.orderId, result.paymentSessionId!);
+                                  // }else if(result!=null && result.paymentSessionId==null){
+                                  //   // display error
+                                  // }
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (context) => AddCashPage()));
                                 },
                                 child: Text(
                                   AppLocalizations.of('Add Cash'),

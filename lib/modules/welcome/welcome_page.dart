@@ -29,7 +29,6 @@ class _WelcomePageState extends State<WelcomePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _startAutoSlide();
 
@@ -109,7 +108,7 @@ class _WelcomePageState extends State<WelcomePage> {
               child: CustomButton(
                 text: AppLocalizations.of('Register'),
                 onTap: () {
-                  Navigator.pushReplacementNamed(context, Routes.REGISTER);
+                  Navigator.pushNamed(context, Routes.REGISTER);
                 },
               ),
             ),

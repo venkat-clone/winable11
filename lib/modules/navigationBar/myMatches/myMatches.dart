@@ -1,6 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
+import 'package:newsports/controllers/MatchController.dart';
+import 'package:newsports/models/soprt.dart';
 import 'package:newsports/modules/navigationBar/myMatches/completed.dart';
 import 'package:newsports/modules/navigationBar/myMatches/live.dart';
 import 'package:newsports/modules/navigationBar/myMatches/upcoming.dart';
@@ -11,10 +14,22 @@ class MyMatchesPage extends StatefulWidget {
   _MyMatchesPageState createState() => _MyMatchesPageState();
 }
 
-class _MyMatchesPageState extends State<MyMatchesPage> {
+class _MyMatchesPageState extends StateMVC<MyMatchesPage> {
   bool isUpcoming = true;
   bool isLive = false;
   bool isCompleted = false;
+  late MatchController _con ;
+
+  _MyMatchesPageState() :super(MatchController()){
+    _con = controller as MatchController;
+  }
+
+  @override
+  void initState() {
+    _con.initSport();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,12 +64,13 @@ class _MyMatchesPageState extends State<MyMatchesPage> {
             height: AppBar().preferredSize.height,
             child: tabBar(),
           ),
+          Divider(height: 1,),
           isUpcoming
-              ? UpComingPage()
+              ? UpComingPage(con: _con,)
               : isLive
-                  ? LivePage()
+                  ? LivePage(controller: _con,)
                   : isCompleted
-                      ? CompletedPage()
+                      ? CompletedPage(controller: _con,)
                       : SizedBox(),
         ],
       ),

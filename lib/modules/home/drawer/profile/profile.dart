@@ -59,17 +59,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                       radius: 24,
                                       backgroundColor: Colors.white,
                                       backgroundImage: NetworkImage(
-                                        FirebaseAuth.instance.currentUser
-                                                ?.photoURL ??
-                                            "",
+                                        currentUser.value.photo ?? "",
                                       ),
-                                      child: FirebaseAuth.instance.currentUser
-                                                  ?.photoURL ==
-                                              null
-                                          ? Text(user!.displayName
-                                              .toString()[0]
-                                              .toUpperCase())
-                                          : SizedBox(),
+                                      child: currentUser.value.photo == ""
+                                          ? Text(currentUser.value.getFirstLetter(),
+                                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                                              color: Theme.of(context).primaryColor
+                                          )): SizedBox(),
                                     ),
                                     InkWell(
                                       child: CircleAvatar(

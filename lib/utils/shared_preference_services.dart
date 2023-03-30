@@ -13,6 +13,9 @@ abstract class SharedPreferenceService {
   static const String DISCOVERABLE = "DISCOVERABLE";
   static const String USER_DETAILS = "USER_DETAILS";
   static const String MOBILE_VERIFIED = "MOBILE_VERIFIED";
+  static const String WALLET = "WALLET";
+  static const String BALANCE = "BALANCE";
+  static const String SPORT = "SPORT";
 
   static Future<String?> getPreferenceString(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -67,9 +70,12 @@ abstract class SharedPreferenceService {
   static void setDiscoverable(bool value) async =>
       await setBool(DISCOVERABLE, value);
 
-  static Future<LocalUser> getUser() async => LocalUser.formJson(
-      jsonDecode(await getPreferenceString(USER_DETAILS) ?? ""));
-  static void setUser(LocalUser user) async =>
+  static Future<AppUser> getUser() async {
+    print(await getPreferenceString(USER_DETAILS) ?? "");
+        return AppUser.formJson(
+            jsonDecode(await getPreferenceString(USER_DETAILS) ?? ""));
+      }
+  static void setUser(AppUser user) async =>
       await setString(USER_DETAILS, jsonEncode(user.toJson()));
 
   static Future<bool> getVerified() async =>
@@ -77,9 +83,34 @@ abstract class SharedPreferenceService {
   static void setVerified(bool value) async =>
       await setBool(MOBILE_VERIFIED, value);
 
-  static initSharedPreferences({bool login = true, LocalUser? user}) {
+  static Future<String> getBalance() async =>
+      await getPreferenceString(WALLET,)??"0";
+  static void setBalance(String balance) async =>
+      await setString(WALLET,"0");
+  static Future<String> cridetCash(double amount) async{
+    final current = double.parse(await getBalance());
+    final next = current+amount;
+    return next.toString();
+  }
+  static Future<String> debitCash(double amount) async{
+    final current = double.parse(await getBalance());
+    final next = current-amount;
+    return next.toString();
+  }
+
+  static Future setSport(String sport) async{
+    await setString(SPORT, sport);
+  }
+  static Future<String> getSport() async{
+    return await getPreferenceString(SPORT) ?? "Cricket";
+  }
+
+
+
+
+  static initSharedPreferences({bool login = true, AppUser? user}) {
     setLoggedIn(login);
-    setUser(user ?? LocalUser());
+    setUser(user ?? AppUser());
     setAllowSmsNotification(false);
     setDiscoverable(false);
 
@@ -87,4 +118,9 @@ abstract class SharedPreferenceService {
 
     setVerified(false);
   }
+
+
+
+
+
 }

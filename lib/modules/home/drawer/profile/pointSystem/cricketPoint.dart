@@ -65,7 +65,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
                   height: 1,
                 ),
                 row(
-                  AppLocalizations.of('Century Bomus'),
+                  AppLocalizations.of('Century Bonus'),
                   "+8",
                   (Colors.green[300])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.2),

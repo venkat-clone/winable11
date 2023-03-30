@@ -1,6 +1,6 @@
 
 
-class LocalUser{
+class AppUser{
   String user_id = "";
   String name = "";
   String mobile = "";
@@ -12,6 +12,8 @@ class LocalUser{
   String pincode = "";
   String state = "";
   String country = "";
+  String authId = "";
+  String photo ="";
 
   int level = 0;
   int followers = 0;
@@ -26,7 +28,7 @@ class LocalUser{
 
 
 
-  LocalUser({
+  AppUser({
     this.user_id  = "",
     this.name  = "",
     this.mobile  = "",
@@ -40,8 +42,8 @@ class LocalUser{
     this.country  = "",
   });
 
-  LocalUser.formJson(Map<String,dynamic> json){
-    this.user_id = json['user_id']??"";
+  AppUser.formJson(Map<String,dynamic> json){
+    this.user_id = json['id']??"";
     this.name = json['name']??"";
     this.mobile = json['mobile']??"";
     this.email = json['email']??"";
@@ -55,7 +57,7 @@ class LocalUser{
   }
 
   Map<String,dynamic> toJson()=>{
-    "user_id": user_id,
+    "id": user_id,
     "name": name,
     "mobile": mobile,
     "email": email,
@@ -67,5 +69,12 @@ class LocalUser{
     "state": state,
     "country": country,
   };
+
+
+  getFirstLetter(){
+    if(name.length<1)
+      return "";
+    else return name[0].toUpperCase();
+  }
 
 }

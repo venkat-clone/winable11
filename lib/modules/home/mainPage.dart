@@ -2,7 +2,9 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
+import 'package:newsports/controllers/MatchController.dart';
 import 'package:newsports/modules/home/drawer/profile/notification.dart';
 import 'package:flutter/material.dart';
 import 'package:newsports/constance/constance.dart';
@@ -13,6 +15,8 @@ import 'package:newsports/modules/sports/football.dart';
 import 'package:newsports/modules/sports/handball.dart';
 import 'package:newsports/modules/sports/nfl.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:newsports/utils/shared_preference_services.dart';
+import 'package:newsports/utils/value_notifiers.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../widget/cardView.dart';
@@ -22,7 +26,7 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage>
+class _MainPageState extends StateMVC<MainPage>
     with SingleTickerProviderStateMixin {
   double xOffset = 0;
   double yOffset = 0;
@@ -38,16 +42,15 @@ class _MainPageState extends State<MainPage>
   bool isBaseball = false;
   bool isNFL = false;
   bool isHandball = false;
-  bool _isLoading = true;
+
+  late MatchController _con;
+  _MainPageState():super(MatchController()){
+    _con = controller as MatchController;
+  }
 
   @override
   void initState() {
     _pageController = PageController();
-    Future.delayed(Duration(milliseconds: 10000), () {
-      setState(() {
-        _isLoading = false;
-      });
-    });
     super.initState();
     tabController = TabController(initialIndex: 0, length: 2, vsync: this);
   }
@@ -88,7 +91,7 @@ class _MainPageState extends State<MainPage>
     );
   }
 
-  smimmersEffect() {
+  smimmersEffect(bool _isLoading) {
     return Container(
       height: MediaQuery.of(context).size.height - 204,
       child: Shimmer.fromColors(
@@ -328,8 +331,14 @@ class _MainPageState extends State<MainPage>
     );
   }
 
+  void setSport() async {
+    await SharedPreferenceService.setSport(isCricket?"Cricket":"FootBall");
+  }
+
   @override
   Widget build(BuildContext context) {
+    // set sport
+    setSport();
     return AnimatedContainer(
       transform: Matrix4.translationValues(xOffset, yOffset, 0)
         ..scale(scaleFactor)
@@ -381,9 +390,12 @@ class _MainPageState extends State<MainPage>
                                 CircleAvatar(
                                   radius: 18,
                                   backgroundColor: Colors.white,
-                                  backgroundImage: NetworkImage(FirebaseAuth
-                                          .instance.currentUser?.photoURL ??
-                                      ""),
+                                  backgroundImage: currentUser.value.photo !="" ? NetworkImage( currentUser.value.photo ??""):null,
+                                  child: currentUser.value.photo == ""
+                                      ? Text(currentUser.value.getFirstLetter(),
+                                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                                          color: Theme.of(context).primaryColor
+                                      )): SizedBox(),
                                 ),
                                 InkWell(
                                   onTap: () {
@@ -460,13 +472,9 @@ class _MainPageState extends State<MainPage>
               //         // HandballPage()
               //       ]),
               // ),
-              //
-              _isLoading
-                  ? smimmersEffect()
-                  : isCricket
-                      ? CricketPage()
+              isCricket ? CricketPage(controller: _con)
                       : isFootball
-                          ? FootballPage()
+                          ? FootballPage(controller: _con,)
                           : isBasketball
                               ? BasketballPage()
                               : isBaseball

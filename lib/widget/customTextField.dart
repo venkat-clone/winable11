@@ -5,11 +5,14 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatelessWidget {
   final String? hintText;
   final TextEditingController? controller;
-
-  const CustomTextField({
+  final readOnly ;
+  GestureTapCallback? onTap;
+  CustomTextField({
     Key? key,
     this.hintText,
     this.controller,
+    this.readOnly = false,
+    this.onTap
   }) : super(key: key);
 
   @override
@@ -21,6 +24,7 @@ class CustomTextField extends StatelessWidget {
       ),
       child: TextFormField(
         controller: controller,
+        readOnly: readOnly,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.only(left: 14, right: 14),
           hintText: hintText,
@@ -33,6 +37,7 @@ class CustomTextField extends StatelessWidget {
             borderRadius: BorderRadius.circular(30),
           ),
         ),
+        onTap: onTap,
       ),
     );
   }

@@ -5,12 +5,26 @@ import 'package:newsports/constance/constance.dart';
 import 'package:newsports/modules/matchDetail/contestDetail/addCash.dart';
 import 'package:newsports/modules/matchDetail/contestDetail/detail.dart';
 import 'package:newsports/modules/matchDetail/contestDetail/leaderboard.dart';
+import 'package:newsports/utils/utils.dart';
 import 'package:newsports/widget/customButton.dart';
 import 'package:newsports/widget/matchDetailCardView.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
+
+import '../../../models/Contest.dart';
+import '../../../models/MatchModel.dart';
+import '../../../models/Team.dart';
+import '../../../models/Winnings.dart';
 
 class ContestDetailPage extends StatefulWidget {
+  final Contest contest;
+  final MatchModel match;
+  ContestDetailPage({
+    required this.contest,
+    required this.match,
+  });
+
   @override
   _ContestDetailPageState createState() => _ContestDetailPageState();
 }
@@ -18,6 +32,7 @@ class ContestDetailPage extends StatefulWidget {
 class _ContestDetailPageState extends State<ContestDetailPage> {
   bool isleaderboard = false;
   bool isContest = true;
+  Contest get contest=>widget.contest;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,11 +48,202 @@ class _ContestDetailPageState extends State<ContestDetailPage> {
             color: Colors.black87,
             child: appBar(),
           ),
-          MatchDetailCardView(
-            txt1: AppLocalizations.of('₹5 Lakhs'),
-            txt2: "₹25",
-            txt3: AppLocalizations.of('18,406 sports left'),
-            txt4: AppLocalizations.of('26,595 spots'),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 8, right: 8, top: 10),
+                child: Row(
+                  children: [
+                    Text(
+                      AppLocalizations.of('Prize Pool'),
+                      style: Theme.of(context).textTheme.caption!.copyWith(
+                        letterSpacing: 0.6,
+                        fontSize: 10,
+                      ),
+                    ),
+
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8, right: 8),
+                child: Row(
+                  children: [
+                    Text(
+                      '₹${Utils.convertToIndianCurrency(int.parse(contest.prizePool))}',
+                      style: Theme.of(context).textTheme.caption!.copyWith(
+                        color: Theme.of(context).textTheme.headline6!.color,
+                        letterSpacing: 0.6,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Expanded(child: SizedBox()),
+
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              LinearPercentIndicator(
+                percent: 0.4,
+                progressColor: Theme.of(context).primaryColor,
+                backgroundColor: Theme.of(context).disabledColor,
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 8,
+                  right: 8,
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      AppLocalizations.of('${contest.joinTeam} sports left'),
+                      style: Theme.of(context).textTheme.caption!.copyWith(
+                        color: Color(0xffD30001),
+                        letterSpacing: 0.6,
+                        fontSize: 10,
+                      ),
+                    ),
+                    Expanded(child: SizedBox()),
+                    Text(
+                      AppLocalizations.of('${contest.totalTeam} spots'),
+                      style: Theme.of(context).textTheme.caption!.copyWith(
+                        color: Colors.black54,
+                        letterSpacing: 0.6,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                child: InkWell(
+                  onTap: (){
+                    if(widget.match.isStarted){
+                      return;
+                    }
+                    /// check kyc
+                    ///  show dialog for payment
+                    ///
+
+                    showDialog(context: context, builder: (context)=>
+                        JoinContestCard(fee: double.parse(contest.entry),contestId: contest.contestId,),
+                      barrierDismissible: false,
+
+                    );
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(8),
+                    // width: MediaQuery.of(context).size.width*0.9,
+                    decoration: BoxDecoration(
+                        color: !widget.match.isStarted? Theme.of(context).primaryColor:
+                        Theme.of(context).disabledColor,
+                        borderRadius: BorderRadius.circular(4)),
+                    child: Center(
+                      child: Text(
+                        "₹${contest.entry}",
+                        style: Theme.of(context).textTheme.caption!.copyWith(
+                          color: Colors.white,
+                          letterSpacing: 0.6,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 8,),
+              Container(
+                height: 32,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).disabledColor.withOpacity(0.2),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(5),
+                    bottomRight: Radius.circular(5),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 10,
+                    right: 10,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        AppLocalizations.of('₹1 Lakh'),
+                        style: Theme.of(context).textTheme.caption!.copyWith(
+                          color: Theme.of(context).textTheme.caption!.color,
+                          letterSpacing: 0.6,
+                          fontSize: 10,
+                        ),
+                      ),
+                      Expanded(child: SizedBox()),
+                      Text((double.parse(contest.joinTeam)/double.parse(contest.totalTeam)*100).toString(),
+                        style: Theme.of(context).textTheme.caption!.copyWith(
+                          color: Theme.of(context).textTheme.caption!.color,
+                          letterSpacing: 0.6,
+                          fontSize: 10,
+                        ),
+                      ),
+                      Expanded(child: SizedBox()),
+                      Text(
+                        AppLocalizations.of('Upto ${contest.winners} Entries'),
+                        style: Theme.of(context).textTheme.caption!.copyWith(
+                          color: Theme.of(context).textTheme.caption!.color,
+                          letterSpacing: 0.6,
+                          fontSize: 10,
+                        ),
+                      ),
+                      Expanded(child: SizedBox()),
+                      Icon(
+                        Icons.check_circle_outline,
+                        color: Theme.of(context).textTheme.caption!.color,
+                        size: 18,
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 8,),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Text(contest.contestDescription,style: Theme.of(context).textTheme.caption,),
+              ),
+              SizedBox(height: 8,),
+              Container(
+                  padding: EdgeInsets.symmetric(horizontal: 13),
+                  child: Text("Note",style: TextStyle(
+                      fontSize: 14
+                  ),)),
+              SizedBox(height: 4,),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 14),
+                child: Text(contest.contestNote1,style: Theme.of(context).textTheme.caption,),
+              ),
+              SizedBox(height: 4,),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 14),
+                child: Text(contest.contestNote2,style: Theme.of(context).textTheme.caption,),
+              ),
+            ],
+          ),
+          Divider(
+            height: 1,
           ),
           Container(
             height: 40,
@@ -45,7 +251,14 @@ class _ContestDetailPageState extends State<ContestDetailPage> {
             child: tabBar(),
           ),
           isContest == true
-              ? DetailPage()
+              ? DetailPage(
+            winningNote: contest.winningNote,
+            winnings: [
+              Winning(rank: "1",prize: 10000000),
+              Winning(rank: "2",prize: 100000),
+              Winning(rank: "3",prize: 10000),
+            ],
+          )
               : isleaderboard == true
                   ? LeaderboardPage()
                   : SizedBox(),
@@ -143,7 +356,7 @@ class _ContestDetailPageState extends State<ContestDetailPage> {
           child: Padding(
             padding: const EdgeInsets.only(top: 5, left: 50),
             child: Text(
-              AppLocalizations.of('Contents'),
+              AppLocalizations.of('Winnings'),
               style: Theme.of(context).textTheme.caption!.copyWith(
                     color: isContest == true ? Theme.of(context).textTheme.headline6!.color : Colors.black38,
                     fontWeight: FontWeight.bold,
@@ -167,7 +380,7 @@ class _ContestDetailPageState extends State<ContestDetailPage> {
           child: Padding(
             padding: const EdgeInsets.only(top: 5, right: 50),
             child: Text(
-              AppLocalizations.of('My Contents (0)'),
+              AppLocalizations.of('Teams'),
               style: Theme.of(context).textTheme.caption!.copyWith(
                     color: isleaderboard == true ? Theme.of(context).textTheme.headline6!.color : Colors.black38,
                     fontWeight: FontWeight.bold,
@@ -205,7 +418,7 @@ class _ContestDetailPageState extends State<ContestDetailPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  AppLocalizations.of('SSMG vs DAE'),
+                  AppLocalizations.of('${widget.match.team1.teamShortName} vs ${widget.match.team2.teamShortName}'),
                   style: Theme.of(context).textTheme.caption!.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -214,7 +427,7 @@ class _ContestDetailPageState extends State<ContestDetailPage> {
                       ),
                 ),
                 Text(
-                  AppLocalizations.of('48m 39s left'),
+                  Utils.getTimeLeft(DateTime.parse(widget.match.matchDateTime)),
                   style: Theme.of(context).textTheme.caption!.copyWith(
                         color: Colors.white,
                         letterSpacing: 0.6,
