@@ -4,14 +4,31 @@ import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/constance/constance.dart';
 import 'package:flutter/material.dart';
 
+import '../../models/team_players.dart';
+import '../../models/player.dart';
+
+import '../../models/userTeamPlayer.dart';
+
 class ChooseCaptainPage extends StatefulWidget {
+  TeamPlayers team;
+
+  ChooseCaptainPage({required this.team});
+
   @override
   _ChooseCaptainPageState createState() => _ChooseCaptainPageState();
 }
 
 class _ChooseCaptainPageState extends State<ChooseCaptainPage> {
+
+  String captainId = "";
+  String wiseCaptainId = "";
+
+
   @override
   Widget build(BuildContext context) {
+
+    final saveTeam = captainId.isNotEmpty && wiseCaptainId.isNotEmpty;
+
     return Scaffold(
       body: Stack(
         alignment: Alignment.bottomCenter,
@@ -85,7 +102,7 @@ class _ChooseCaptainPageState extends State<ChooseCaptainPage> {
                       ),
                       Expanded(child: SizedBox()),
                       Text(
-                        AppLocalizations.of('% C By'),
+                        AppLocalizations.of('Captain'),
                         style: Theme.of(context).textTheme.bodyText2!.copyWith(
                               color: Theme.of(context).textTheme.bodyText2!.color,
                               letterSpacing: 0.6,
@@ -96,7 +113,7 @@ class _ChooseCaptainPageState extends State<ChooseCaptainPage> {
                         width: 20,
                       ),
                       Text(
-                        AppLocalizations.of('% VC By'),
+                        AppLocalizations.of('Vice Captain'),
                         style: Theme.of(context).textTheme.bodyText2!.copyWith(
                               color: Theme.of(context).textTheme.bodyText2!.color,
                               letterSpacing: 0.6,
@@ -113,105 +130,113 @@ class _ChooseCaptainPageState extends State<ChooseCaptainPage> {
                   children: [
                     Column(
                       children: [
-                        cardView(
-                          AppLocalizations.of('RR'),
-                          "WX",
-                          AppLocalizations.of('archer'),
-                          "391",
-                          "C",
-                          "5.8%",
-                          "VC",
-                          "5.97%",
-                          AssetImage(ConstanceData.archer),
-                        ),
-                        cardView(
-                          "RR",
-                          "WX",
-                          AppLocalizations.of('chahal'),
-                          "268",
-                          "c",
-                          "5.8%",
-                          "VC",
-                          "11.16%",
-                          AssetImage(ConstanceData.chahal),
-                        ),
-                        cardView(
-                          "RR",
-                          "WX",
-                          AppLocalizations.of('finch'),
-                          "0",
-                          "C",
-                          "0.4%",
-                          "1.5x",
-                          "5.97%",
-                          AssetImage(ConstanceData.finch),
-                        ),
-                        cardView(
-                          "RR",
-                          "BAT",
-                          AppLocalizations.of('jaiswal'),
-                          "246",
-                          "C",
-                          "0.4%",
-                          "1.5x",
-                          "5.97%",
-                          AssetImage(ConstanceData.jaiswal),
-                        ),
-                        cardView(
-                          "RR",
-                          "BAT",
-                          AppLocalizations.of('joshi'),
-                          "0",
-                          "C",
-                          "0.4%",
-                          "1.5x",
-                          "5.97%",
-                          AssetImage(ConstanceData.joshi),
-                        ),
-                        cardView(
-                          "RR",
-                          "BAT",
-                          AppLocalizations.of('morris'),
-                          "0",
-                          "C",
-                          "0.4%",
-                          "1.5x",
-                          "5.97%",
-                          AssetImage(ConstanceData.morris),
-                        ),
-                        cardView(
-                          "RR",
-                          "BAT",
-                          AppLocalizations.of('siraj'),
-                          "246",
-                          "C",
-                          "0.4%",
-                          "1.5x",
-                          "5.97%",
-                          AssetImage(ConstanceData.siraj),
-                        ),
-                        cardView(
-                          "RR",
-                          "BAT",
-                          AppLocalizations.of('smith'),
-                          "0",
-                          "C",
-                          "0.4%",
-                          "1.5x",
-                          "5.97%",
-                          AssetImage(ConstanceData.smith),
-                        ),
-                        cardView(
-                          "RR",
-                          "BAT",
-                          AppLocalizations.of('steyn'),
-                          "0",
-                          "C",
-                          "0.4%",
-                          "1.5x",
-                          "5.97%",
-                          AssetImage(ConstanceData.steyn),
-                        ),
+                        ...widget.team.players.map((UserTeamPlayer player) {
+                          ImageProvider? image;
+                          if(player.image.isEmpty){
+                            image = NetworkImage(player.image);
+                          }
+                          return cardView(player);
+                        }),
+
+                        // cardView(
+                        //   AppLocalizations.of('RR'),
+                        //   "WX",
+                        //   AppLocalizations.of('archer'),
+                        //   "391",
+                        //   "C",
+                        //   "5.8%",
+                        //   "VC",
+                        //   "5.97%",
+                        //   AssetImage(ConstanceData.archer),
+                        // ),
+                        // cardView(
+                        //   "RR",
+                        //   "WX",
+                        //   AppLocalizations.of('chahal'),
+                        //   "268",
+                        //   "c",
+                        //   "5.8%",
+                        //   "VC",
+                        //   "11.16%",
+                        //   AssetImage(ConstanceData.chahal),
+                        // ),
+                        // cardView(
+                        //   "RR",
+                        //   "WX",
+                        //   AppLocalizations.of('finch'),
+                        //   "0",
+                        //   "C",
+                        //   "0.4%",
+                        //   "1.5x",
+                        //   "5.97%",
+                        //   AssetImage(ConstanceData.finch),
+                        // ),
+                        // cardView(
+                        //   "RR",
+                        //   "BAT",
+                        //   AppLocalizations.of('jaiswal'),
+                        //   "246",
+                        //   "C",
+                        //   "0.4%",
+                        //   "1.5x",
+                        //   "5.97%",
+                        //   AssetImage(ConstanceData.jaiswal),
+                        // ),
+                        // cardView(
+                        //   "RR",
+                        //   "BAT",
+                        //   AppLocalizations.of('joshi'),
+                        //   "0",
+                        //   "C",
+                        //   "0.4%",
+                        //   "1.5x",
+                        //   "5.97%",
+                        //   AssetImage(ConstanceData.joshi),
+                        // ),
+                        // cardView(
+                        //   "RR",
+                        //   "BAT",
+                        //   AppLocalizations.of('morris'),
+                        //   "0",
+                        //   "C",
+                        //   "0.4%",
+                        //   "1.5x",
+                        //   "5.97%",
+                        //   AssetImage(ConstanceData.morris),
+                        // ),
+                        // cardView(
+                        //   "RR",
+                        //   "BAT",
+                        //   AppLocalizations.of('siraj'),
+                        //   "246",
+                        //   "C",
+                        //   "0.4%",
+                        //   "1.5x",
+                        //   "5.97%",
+                        //   AssetImage(ConstanceData.siraj),
+                        // ),
+                        // cardView(
+                        //   "RR",
+                        //   "BAT",
+                        //   AppLocalizations.of('smith'),
+                        //   "0",
+                        //   "C",
+                        //   "0.4%",
+                        //   "1.5x",
+                        //   "5.97%",
+                        //   AssetImage(ConstanceData.smith),
+                        // ),
+                        // cardView(
+                        //   "RR",
+                        //   "BAT",
+                        //   AppLocalizations.of('steyn'),
+                        //   "0",
+                        //   "C",
+                        //   "0.4%",
+                        //   "1.5x",
+                        //   "5.97%",
+                        //   AssetImage(ConstanceData.steyn),
+                        // ),
                         SizedBox(
                           height: MediaQuery.of(context).padding.bottom + 70,
                         )
@@ -225,8 +250,49 @@ class _ChooseCaptainPageState extends State<ChooseCaptainPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // InkWell(
+              //   onTap: () {
+              //
+              //   },
+              //   child: Padding(
+              //     padding: const EdgeInsets.only(bottom: 20),
+              //     child: Card(
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(6),
+              //       ),
+              //       child: Container(
+              //         height: 40,
+              //         width: 140,
+              //         decoration: BoxDecoration(
+              //           borderRadius: BorderRadius.circular(6),
+              //         ),
+              //         child: Center(
+              //           child: Text(
+              //             AppLocalizations.of('Team Preview'),
+              //             style: Theme.of(context).textTheme.caption!.copyWith(
+              //                   color: Color(0xff317E2F),
+              //                   letterSpacing: 0.6,
+              //                   fontWeight: FontWeight.bold,
+              //                   fontSize: 16,
+              //                 ),
+              //           ),
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  if(captainId.isEmpty){
+                    /// TO SHOW SNAKEBAR
+                  }
+                  if(wiseCaptainId.isEmpty){
+                    /// TO SHOW SNAKEBAR
+                  }
+
+                  //  TODO : send team to server
+
+                },
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 20),
                   child: Card(
@@ -237,36 +303,7 @@ class _ChooseCaptainPageState extends State<ChooseCaptainPage> {
                       height: 40,
                       width: 140,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Center(
-                        child: Text(
-                          AppLocalizations.of('Team Preview'),
-                          style: Theme.of(context).textTheme.caption!.copyWith(
-                                color: Color(0xff317E2F),
-                                letterSpacing: 0.6,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Container(
-                      height: 40,
-                      width: 140,
-                      decoration: BoxDecoration(
-                        color: Color(0xff317E2F),
+                        color: saveTeam?Color(0xff317E2F):Theme.of(context).disabledColor,
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Center(
@@ -291,17 +328,15 @@ class _ChooseCaptainPageState extends State<ChooseCaptainPage> {
     );
   }
 
-  Widget cardView(
-    String txt1,
-    String txt2,
-    String txt3,
-    String txt4,
-    String txt5,
-    String txt6,
-    String txt7,
-    String txt8,
-    AssetImage image1,
-  ) {
+  Widget cardView(UserTeamPlayer player) {
+
+    ImageProvider? image1;
+    if(player.image.isEmpty){
+      image1 = NetworkImage(player.image);
+    }
+    final isCaptain = player.id == captainId;
+    final isWiseCaptain = player.id == wiseCaptainId;
+
     return Card(
       child: Container(
         color: Theme.of(context).disabledColor.withOpacity(0.3),
@@ -327,7 +362,7 @@ class _ChooseCaptainPageState extends State<ChooseCaptainPage> {
                       color: Theme.of(context).primaryColor,
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: image1,
+                        image:  image1 ?? AssetImage(ConstanceData.archer),
                       ),
                     ),
                   ),
@@ -344,7 +379,7 @@ class _ChooseCaptainPageState extends State<ChooseCaptainPage> {
                         child: Padding(
                           padding: const EdgeInsets.all(2.0),
                           child: Text(
-                            txt1,
+                            player.teamShortName,
                             style: Theme.of(context).textTheme.bodyText2!.copyWith(
                                   color: Theme.of(context).textTheme.headline6!.color,
                                   letterSpacing: 0.6,
@@ -364,7 +399,7 @@ class _ChooseCaptainPageState extends State<ChooseCaptainPage> {
                         child: Padding(
                           padding: const EdgeInsets.all(2.0),
                           child: Text(
-                            txt2,
+                            player.shortDesignation,
                             style: Theme.of(context).textTheme.bodyText2!.copyWith(
                                   color: Theme.of(context).textTheme.headline6!.color,
                                   letterSpacing: 0.6,
@@ -384,7 +419,7 @@ class _ChooseCaptainPageState extends State<ChooseCaptainPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    txt3,
+                    player.name,
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(
                           color: Theme.of(context).textTheme.headline6!.color,
                           letterSpacing: 0.6,
@@ -396,7 +431,7 @@ class _ChooseCaptainPageState extends State<ChooseCaptainPage> {
                     height: 5,
                   ),
                   Text(
-                    txt4,
+                    player.points,
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(
                           color: Theme.of(context).textTheme.bodyText2!.color,
                           letterSpacing: 0.6,
@@ -409,24 +444,36 @@ class _ChooseCaptainPageState extends State<ChooseCaptainPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    height: 30,
-                    width: 30,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: (Theme.of(context).textTheme.bodyText2!.color)!,
+                  InkWell(
+                    onTap: (){
+
+                      if(wiseCaptainId==player.id){
+                        wiseCaptainId = "";
+                      }
+
+                      setState(() {
+                        captainId = player.id;
+                      });
+                    },
+                    child: Container(
+                      height: 30,
+                      width: 30,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: isCaptain ?(Theme.of(context).primaryColor):(Theme.of(context).textTheme.bodyText2!.color)!,
+                        ),
+                        shape: BoxShape.circle,
                       ),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Text(
-                        txt5,
-                        style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                              color: Theme.of(context).textTheme.bodyText2!.color,
-                              letterSpacing: 0.6,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
+                      child: Center(
+                        child: Text(
+                          "C",
+                          style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                            color: isCaptain ?(Theme.of(context).primaryColor):(Theme.of(context).textTheme.bodyText2!.color)!,
+                                letterSpacing: 0.6,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                        ),
                       ),
                     ),
                   ),
@@ -434,7 +481,7 @@ class _ChooseCaptainPageState extends State<ChooseCaptainPage> {
                     height: 5,
                   ),
                   Text(
-                    txt6,
+                    "",
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(
                           color: Theme.of(context).textTheme.bodyText2!.color,
                           letterSpacing: 0.6,
@@ -449,24 +496,36 @@ class _ChooseCaptainPageState extends State<ChooseCaptainPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    height: 30,
-                    width: 30,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: (Theme.of(context).textTheme.bodyText2!.color)!,
+                  InkWell(
+                    onTap: (){
+
+                      if(player.id==captainId){
+                        captainId = "";
+                      }
+
+                      setState(() {
+                        wiseCaptainId = player.id;
+                      });
+                    },
+                    child: Container(
+                      height: 30,
+                      width: 30,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: isWiseCaptain ?(Theme.of(context).primaryColor):(Theme.of(context).textTheme.bodyText2!.color)!,
+                        ),
+                        shape: BoxShape.circle,
                       ),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Text(
-                        txt7,
-                        style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                              color: Theme.of(context).textTheme.bodyText2!.color,
-                              letterSpacing: 0.6,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
+                      child: Center(
+                        child: Text(
+                          "VC",
+                          style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                            color: isWiseCaptain ?(Theme.of(context).primaryColor):(Theme.of(context).textTheme.bodyText2!.color)!,
+                            letterSpacing: 0.6,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
+                        ),
                       ),
                     ),
                   ),
@@ -474,7 +533,7 @@ class _ChooseCaptainPageState extends State<ChooseCaptainPage> {
                     height: 5,
                   ),
                   Text(
-                    txt8,
+                    "",
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(
                           color: Theme.of(context).textTheme.bodyText2!.color,
                           letterSpacing: 0.6,

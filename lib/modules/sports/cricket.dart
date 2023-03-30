@@ -1,18 +1,26 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:convert';
+
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
+import 'package:newsports/controllers/MatchController.dart';
+import 'package:newsports/models/MatchModel.dart';
 import 'package:newsports/widget/cardView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import '../../constance/constance.dart';
+import '../navigationBar/myMatches/myMatches.dart';
 
 class CricketPage extends StatefulWidget {
+  MatchController controller;
+  CricketPage({required this.controller});
   @override
-  _CricketPageState createState() => _CricketPageState();
+  _CricketPageState createState() => _CricketPageState(controller);
 }
 
-class _CricketPageState extends State<CricketPage> {
+class _CricketPageState extends StateMVC<CricketPage> {
   final List<String> imgList = [
     ConstanceData.slider1,
     ConstanceData.slider2,
@@ -20,13 +28,41 @@ class _CricketPageState extends State<CricketPage> {
     ConstanceData.slider4,
   ];
 
+  late MatchController _con;
+  final scrollController = ScrollController();
+  _CricketPageState(MatchController cont) : super(cont) {
+    _con = controller as MatchController;
+  }
+
   @override
   void initState() {
     super.initState();
+    // _con.getCricketMatches(context);
+    _con.getUpcomingCricketMatches(context);
+     // _con.getTeams(context);
   }
 
   @override
   Widget build(BuildContext context) {
+
+    if(_con.upcomingCricketMatchList.loading){
+      return Expanded(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+    if(_con.upcomingCricketMatchList.error != null){
+      return Expanded(
+        child: Center(
+          child: Text(_con.upcomingCricketMatchList.error!),
+        ),
+      );
+    }
+
+
+    MatchModel? nextMatch = _con.upcomingCricketMatchList.value!.isNotEmpty?_con.upcomingCricketMatchList.value!.first:null;
+
     return Expanded(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -34,7 +70,8 @@ class _CricketPageState extends State<CricketPage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Stack(
+              if(nextMatch!=null)
+                Stack(
                 children: [
                   Container(
                     height: 150,
@@ -51,13 +88,17 @@ class _CricketPageState extends State<CricketPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 20, right: 20, top: 15),
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, top: 15),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(
                                 AppLocalizations.of('My Matches'),
-                                style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText2!
+                                    .copyWith(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                       letterSpacing: 0.6,
@@ -65,22 +106,39 @@ class _CricketPageState extends State<CricketPage> {
                                     ),
                               ),
                               Expanded(child: SizedBox()),
-                              Text(
-                                AppLocalizations.of('View All'),
-                                style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 0.6,
-                                      fontSize: 14,
+                              InkWell(
+                                onTap: (){
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => MyMatchesPage(),
                                     ),
-                              ),
-                              SizedBox(
-                                width: 8,
-                              ),
-                              Icon(
-                                Icons.arrow_forward_ios,
-                                color: Colors.white,
-                                size: 14,
+                                  );
+                                },
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of('View All'),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText2!
+                                          .copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.6,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 8,
+                                    ),
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: Colors.white,
+                                      size: 14,
+                                    )
+                                  ],
+                                ),
                               )
                             ],
                           ),
@@ -89,30 +147,10 @@ class _CricketPageState extends State<CricketPage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
+                    padding:
+                        const EdgeInsets.only(top: 50, left: 20, right: 20),
                     child: CardView(
-                      txt1: AppLocalizations.of('Cricket IPL'),
-                      txt2: AppLocalizations.of('Mumbai Indians'),
-                      txt3: AppLocalizations.of('Kolkata'),
-                      txt4: "MI",
-                      setTime: CountdownTimer(
-                        endTime: DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60,
-                        textStyle: TextStyle(
-                          fontSize: 14,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      txt6: "KOL",
-                      txt7: AppLocalizations.of('1 Team'),
-                      image1: Image.asset(
-                        ConstanceData.mumbaiIndians,
-                        fit: BoxFit.cover,
-                      ),
-                      image2: Image.asset(
-                        ConstanceData.kolkata,
-                        fit: BoxFit.cover,
-                      ),
+                      match: nextMatch,
                     ),
                   ),
                 ],
@@ -144,7 +182,8 @@ class _CricketPageState extends State<CricketPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 15),
+                padding: const EdgeInsets.only(
+                    left: 20, right: 20, top: 20, bottom: 15),
                 child: Text(
                   AppLocalizations.of('Upcoming Matches'),
                   style: Theme.of(context).textTheme.headline6!.copyWith(
@@ -159,111 +198,45 @@ class _CricketPageState extends State<CricketPage> {
                 padding: const EdgeInsets.only(left: 16, right: 16),
                 child: Column(
                   children: [
-                    CardView(
-                      txt1: AppLocalizations.of('Cricket IPL'),
-                      txt2: AppLocalizations.of('Mumbai Indians'),
-                      txt3: AppLocalizations.of('Kolkata'),
-                      txt4: "MI",
-                      setTime: CountdownTimer(
-                        endTime: DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60,
-                        textStyle: TextStyle(
-                          fontSize: 14,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      txt6: "KOL",
-                      txt7: AppLocalizations.of('1 Team'),
-                      image1: Image.asset(
-                        ConstanceData.mumbaiIndians,
-                        fit: BoxFit.cover,
-                      ),
-                      image2: Image.asset(
-                        ConstanceData.kolkata,
-                        fit: BoxFit.cover,
+                    InkWell(
+                      onTap:(){
+                        // _con.getMatches(context);
+                        _con.getUpcomingCricketMatches(context);
+                        // _con.getTeams(context);
+                        // _con.mapTeams();
+                        // print(jsonEncode(nextMatch?.toJson()));
+                        // print(nextMatch?.toJson());
+                      },
+                      child: Container(
+                        height: 40,
+                        width: 100,
+                        color: Colors.green,
                       ),
                     ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    CardView(
-                      txt1: AppLocalizations.of('Cricket IPL'),
-                      txt2: AppLocalizations.of('Delhi Capital'),
-                      txt3: AppLocalizations.of('Hyderabad'),
-                      txt4: "DC",
-                      setTime: CountdownTimer(
-                        endTime: DateTime.now().millisecondsSinceEpoch + 1000 * 30 * 30,
-                        textStyle: TextStyle(
-                          fontSize: 14,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      txt6: "HD",
-                      txt7: AppLocalizations.of('1 Team'),
-                      image1: Image.asset(
-                        ConstanceData.delhiCapital,
-                        fit: BoxFit.cover,
-                      ),
-                      image2: Image.asset(
-                        ConstanceData.hyderabad,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    CardView(
-                      txt1: AppLocalizations.of('Cricket IPL'),
-                      txt2: AppLocalizations.of('Channai'),
-                      txt3: AppLocalizations.of('Banglore'),
-                      txt4: "BT",
-                      setTime: CountdownTimer(
-                        endTime: DateTime.now().millisecondsSinceEpoch + 1000 * 90 * 90,
-                        textStyle: TextStyle(
-                          fontSize: 14,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      txt6: "BG",
-                      txt7: AppLocalizations.of('1 Team'),
-                      image1: Image.asset(
-                        ConstanceData.channai,
-                        fit: BoxFit.cover,
-                      ),
-                      image2: Image.asset(
-                        ConstanceData.banglore,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    CardView(
-                      txt1: AppLocalizations.of('Cricket IPL'),
-                      txt2: AppLocalizations.of('Mumbai Indians'),
-                      txt3: AppLocalizations.of('Delhi Capital'),
-                      txt4: "MI",
-                      setTime: CountdownTimer(
-                        endTime: DateTime.now().millisecondsSinceEpoch + 1000 * 180 * 30,
-                        textStyle: TextStyle(
-                          fontSize: 14,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      txt6: "DC",
-                      txt7: AppLocalizations.of('1 Team'),
-                      image1: Image.asset(
-                        ConstanceData.mumbaiIndians,
-                        fit: BoxFit.cover,
-                      ),
-                      image2: Image.asset(
-                        ConstanceData.delhiCapital,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                    _con.upcomingCricketMatchList.value!.length > 0
+                        ? ListView.separated(
+                          controller: scrollController,
+                          shrinkWrap: true,
+                          itemCount: _con.upcomingCricketMatchList.value!.length,
+                          itemBuilder: (c, index) {
+                            final match = _con.upcomingCricketMatchList.value![index];
+                            return CardView(
+                              match: match,
+                            );
+                          },
+                          separatorBuilder:
+                              (BuildContext context, int index) => SizedBox(
+                            height: 15,
+                          ),
+                        )
+                        : Center(
+                            child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Text(
+                              "No  Matches for the sport",
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          )),
                   ],
                 ),
               )
@@ -274,3 +247,4 @@ class _CricketPageState extends State<CricketPage> {
     );
   }
 }
+

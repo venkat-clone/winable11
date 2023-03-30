@@ -5055,10 +5055,10 @@
             ]
         },
         {
-            "textId": "₹5 Lakhs",
+            "textId": "₹5 Lacks",
             "languageTextList": [
                 {
-                    "fr": "5 ₹ Lakhs"
+                    "fr": "5 ₹ Lacks"
                 },
                 {
                     "ar": "روبية 5 كهس"
@@ -5419,10 +5419,10 @@
             ]
         },
         {
-            "textId": "₹1 Lakhs",
+            "textId": "₹1 Lacks",
             "languageTextList": [
                 {
-                    "fr": "1 Lakhs"
+                    "fr": "1 Lacks"
                 },
                 {
                     "ar": "روبية 1 كهس"

@@ -1,19 +1,40 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
+import 'package:newsports/controllers/WalletController.dart';
 import 'package:newsports/modules/home/drawer/mybalance/accountInfo.dart';
+import 'package:newsports/modules/home/drawer/mybalance/payment_methods.dart';
+import 'package:newsports/modules/home/drawer/mybalance/upi_Interface.dart';
 import 'package:newsports/modules/home/drawer/mybalance/transaction.dart';
 import 'package:flutter/material.dart';
+
+import '../../../matchDetail/contestDetail/addCash.dart';
 
 class MyBalancePage extends StatefulWidget {
   @override
   _MyBalancePageState createState() => _MyBalancePageState();
 }
 
-class _MyBalancePageState extends State<MyBalancePage> {
+class _MyBalancePageState extends StateMVC<MyBalancePage> {
+
+  @override
+  void initState() {
+    super.initState();
+    // _paymentController.getCash(FirebaseAuth.instance.currentUser!.uid);
+    _walletController.getUPIApps();
+    _walletController.getWalletBalance();
+  }
+  late WalletController _walletController ;
+  _MyBalancePageState():super(WalletController()){
+    _walletController = controller as WalletController;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _walletController.scaffoldKey,
       backgroundColor: Theme.of(context).appBarTheme.color,
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -22,11 +43,11 @@ class _MyBalancePageState extends State<MyBalancePage> {
         title: Text(
           AppLocalizations.of('My Balance'),
           style: Theme.of(context).textTheme.caption!.copyWith(
-                color: Colors.white,
-                letterSpacing: 0.6,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
+            color: Colors.white,
+            letterSpacing: 0.6,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         leading: InkWell(
           onTap: () {
@@ -56,15 +77,15 @@ class _MyBalancePageState extends State<MyBalancePage> {
                           child: Text(
                             AppLocalizations.of('Total Balance'),
                             style:
-                                Theme.of(context).textTheme.bodyText2!.copyWith(
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .bodyText2!
-                                          .color,
-                                      letterSpacing: 0.6,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                            Theme.of(context).textTheme.bodyText2!.copyWith(
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2!
+                                  .color,
+                              letterSpacing: 0.6,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                         SizedBox(
@@ -72,15 +93,16 @@ class _MyBalancePageState extends State<MyBalancePage> {
                         ),
                         Center(
                           child: Text(
-                            "₹31",
-                            style: Theme.of(context).textTheme.caption!.copyWith(
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .headline6!
-                                      .color,
-                                  letterSpacing: 0.6,
-                                  fontSize: 12,
-                                ),
+                            "₹ ${_walletController.totalBalance.toString()}",
+                            style:
+                            Theme.of(context).textTheme.caption!.copyWith(
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .color,
+                              letterSpacing: 0.6,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
                         SizedBox(
@@ -94,17 +116,32 @@ class _MyBalancePageState extends State<MyBalancePage> {
                                 color: Color(0xff317E2F),
                                 borderRadius: BorderRadius.circular(4)),
                             child: Center(
-                              child: Text(
-                                AppLocalizations.of('Add Cash'),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .caption!
-                                    .copyWith(
-                                      color: Colors.white,
-                                      letterSpacing: 0.6,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                              child: InkWell(
+                                onTap: () async {
+                                  // _walletController.initiatePayment("909090909090", "session_tU6-n4GMmVLqxBiljnoy-bF-aI1W_ualmioxJqoGP75pAl9KlT-8BZCxjpu52I8ppFaGAD8Yf1bGmL1AL0ceDM4on8abuANfDhGowUtV8afj");
+                                  // return;
+                                  // final result = await _walletController.createTransaction(_walletController.createMocOrder());
+                                  // if(result!=null && result.paymentSessionId!=null){
+                                  //   _walletController.initiatePayment(result.orderId, result.paymentSessionId!);
+                                  // }else if(result!=null && result.paymentSessionId==null){
+                                  //   // display error
+                                  // }
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (context) => AddCashPage()));
+                                },
+                                child: Text(
+                                  AppLocalizations.of('Add Cash'),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .caption!
+                                      .copyWith(
+                                    color: Colors.white,
+                                    letterSpacing: 0.6,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -126,31 +163,31 @@ class _MyBalancePageState extends State<MyBalancePage> {
                                         .textTheme
                                         .caption!
                                         .copyWith(
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyText2!
-                                              .color,
-                                          letterSpacing: 0.6,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyText2!
+                                          .color,
+                                      letterSpacing: 0.6,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                   SizedBox(
                                     height: 5,
                                   ),
                                   Text(
-                                    "₹0",
+                                    "₹${_walletController.totalBalance}",
                                     style: Theme.of(context)
                                         .textTheme
                                         .caption!
                                         .copyWith(
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .headline6!
-                                              .color,
-                                          letterSpacing: 0.6,
-                                          fontSize: 12,
-                                        ),
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .headline6!
+                                          .color,
+                                      letterSpacing: 0.6,
+                                      fontSize: 12,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -180,31 +217,31 @@ class _MyBalancePageState extends State<MyBalancePage> {
                                         .textTheme
                                         .caption!
                                         .copyWith(
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyText2!
-                                              .color,
-                                          letterSpacing: 0.6,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyText2!
+                                          .color,
+                                      letterSpacing: 0.6,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                   SizedBox(
                                     height: 5,
                                   ),
                                   Text(
-                                    "₹31",
+                                    "₹0",
                                     style: Theme.of(context)
                                         .textTheme
                                         .caption!
                                         .copyWith(
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .headline6!
-                                              .color,
-                                          letterSpacing: 0.6,
-                                          fontSize: 12,
-                                        ),
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .headline6!
+                                          .color,
+                                      letterSpacing: 0.6,
+                                      fontSize: 12,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -234,14 +271,14 @@ class _MyBalancePageState extends State<MyBalancePage> {
                                         .textTheme
                                         .caption!
                                         .copyWith(
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyText2!
-                                              .color,
-                                          letterSpacing: 0.6,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyText2!
+                                          .color,
+                                      letterSpacing: 0.6,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                   SizedBox(
                                     height: 5,
@@ -252,13 +289,13 @@ class _MyBalancePageState extends State<MyBalancePage> {
                                         .textTheme
                                         .caption!
                                         .copyWith(
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .headline6!
-                                              .color,
-                                          letterSpacing: 0.6,
-                                          fontSize: 12,
-                                        ),
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .headline6!
+                                          .color,
+                                      letterSpacing: 0.6,
+                                      fontSize: 12,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -292,7 +329,7 @@ class _MyBalancePageState extends State<MyBalancePage> {
                 }),
                 container(
                   AppLocalizations.of('Manage Payments'),
-                  () {
+                      () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -303,7 +340,7 @@ class _MyBalancePageState extends State<MyBalancePage> {
                 ),
                 container(
                   AppLocalizations.of('Refer and Earn'),
-                  () {},
+                      () {},
                 )
               ],
             ),
@@ -329,10 +366,10 @@ class _MyBalancePageState extends State<MyBalancePage> {
                 Text(
                   txt1,
                   style: Theme.of(context).textTheme.caption!.copyWith(
-                        color: Theme.of(context).textTheme.headline6!.color,
-                        letterSpacing: 0.6,
-                        fontSize: 14,
-                      ),
+                    color: Theme.of(context).textTheme.headline6!.color,
+                    letterSpacing: 0.6,
+                    fontSize: 14,
+                  ),
                 ),
                 Expanded(child: SizedBox()),
                 Icon(

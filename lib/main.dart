@@ -10,7 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:newsports/constance/constance.dart' as constance;
 
 import 'firebase_options.dart';
-import 'modules/welcome/feature_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +20,7 @@ void main() {
     Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
     runApp(new MyApp());
   });
 }
@@ -53,7 +53,8 @@ class _MyAppState extends State<MyApp> {
     } else {
       setState(() {
         constance.colorsIndex = index;
-        constance.primaryColorString = ConstanceData().colors[constance.colorsIndex];
+        constance.primaryColorString =
+            ConstanceData().colors[constance.colorsIndex];
         constance.secondaryColorString = constance.primaryColorString;
       });
     }
@@ -73,11 +74,15 @@ class _MyAppState extends State<MyApp> {
     constance.locale = locale;
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness: AppTheme.isLightTheme ? Brightness.dark : Brightness.light,
-      statusBarBrightness: AppTheme.isLightTheme ? Brightness.light : Brightness.dark,
-      systemNavigationBarColor: AppTheme.isLightTheme ? Colors.white : Colors.black,
+      statusBarIconBrightness:
+          AppTheme.isLightTheme ? Brightness.dark : Brightness.light,
+      statusBarBrightness:
+          AppTheme.isLightTheme ? Brightness.light : Brightness.dark,
+      systemNavigationBarColor:
+          AppTheme.isLightTheme ? Colors.white : Colors.black,
       systemNavigationBarDividerColor: Colors.grey,
-      systemNavigationBarIconBrightness: AppTheme.isLightTheme ? Brightness.dark : Brightness.light,
+      systemNavigationBarIconBrightness:
+          AppTheme.isLightTheme ? Brightness.dark : Brightness.light,
     ));
     return MaterialApp(
       title: 'Winable 11',

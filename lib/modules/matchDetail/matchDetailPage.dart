@@ -1,6 +1,7 @@
-// ignore_for_file: deprecated_member_use
 
+import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
+import 'package:newsports/controllers/ContestController.dart';
 import 'package:newsports/modules/createTeam/createTeam.dart';
 import 'package:newsports/modules/filter/filter.dart';
 import 'package:newsports/modules/matchDetail/contestDetail/addCash.dart';
@@ -10,16 +11,42 @@ import 'package:newsports/modules/matchDetail/myTeam.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../models/MatchModel.dart';
+import '../../models/Team.dart';
+import '../../utils/utils.dart';
+
 class MatchDetailPage extends StatefulWidget {
+  final MatchModel match;
+  MatchDetailPage({
+    required this.match,
+  });
+
   @override
   _MatchDetailPageState createState() => _MatchDetailPageState();
 }
 
-class _MatchDetailPageState extends State<MatchDetailPage> {
+class _MatchDetailPageState extends StateMVC<MatchDetailPage> {
+
+  late ContestController _con;
+  _MatchDetailPageState():super(ContestController()){
+    _con = controller as ContestController;
+  }
+
   bool isContests = true;
   bool isMyContests = false;
   bool isMyTeams = false;
-  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  static final List<double> entryList =[1,50,100,1000];
+  final entryMap =entryList.asMap().entries;
+
+  static final List<double> prizePoolList =[1,10000,100000,1000000,2500000];
+
+  int selectedPrizePool = -1;
+  int selectedEntry = -1;
+
+  Pair<double,double>? entryFilter;
+  Pair<double,double>? prizePollFilter;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,7 +98,7 @@ class _MatchDetailPageState extends State<MatchDetailPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              AppLocalizations.of('SSMG vs DAE'),
+                              AppLocalizations.of('${widget.match.team1.teamShortName} vs ${widget.match.team2.teamShortName}'),
                               style:
                                   Theme.of(context).textTheme.caption!.copyWith(
                                         color: Colors.white,
@@ -80,7 +107,7 @@ class _MatchDetailPageState extends State<MatchDetailPage> {
                                       ),
                             ),
                             Text(
-                              AppLocalizations.of('48m 39s left'),
+                              Utils.getTimeLeft(DateTime.parse(widget.match.matchDateTime)),
                               style:
                                   Theme.of(context).textTheme.caption!.copyWith(
                                         color: Colors.white,
@@ -369,7 +396,7 @@ class _MatchDetailPageState extends State<MatchDetailPage> {
                                         ),
                                         Center(
                                           child: Text(
-                                            "₹31",
+                                            "₹0",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .caption!
@@ -434,7 +461,7 @@ class _MatchDetailPageState extends State<MatchDetailPage> {
                                         row(AppLocalizations.of('Amount Added'),
                                             "₹0"),
                                         row(AppLocalizations.of('Winnings'),
-                                            "₹31"),
+                                            "₹0"),
                                         row(AppLocalizations.of('Cash Bonus'),
                                             "₹0"),
                                         SizedBox(
@@ -494,11 +521,11 @@ class _MatchDetailPageState extends State<MatchDetailPage> {
                     )
                   : SizedBox(),
               isContests
-                  ? ContestsPage()
+                  ? ContestsPage(match: widget.match,con: _con,entryFilter: entryFilter,prizePollFilter: prizePollFilter,)
                   : isMyContests
-                      ? MyContestsPage()
+                      ? MyContestsPage(match: widget.match,con: _con,)
                       : isMyTeams
-                          ? MyTeamPage()
+                          ? MyTeamPage(match: widget.match,con: _con,)
                           : SizedBox(),
             ],
           ),
@@ -508,7 +535,7 @@ class _MatchDetailPageState extends State<MatchDetailPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CreateTeamPage()));
+                            builder: (context) => CreateTeamPage(match: widget.match,)));
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 20),
@@ -547,7 +574,7 @@ class _MatchDetailPageState extends State<MatchDetailPage> {
 
   Widget secondRow() {
     return Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20, top: 12, bottom: 8),
+        padding: const EdgeInsets.only(left: 15, right: 15, top: 12, bottom: 8),
         child: Row(
           children: [
             Text(
@@ -583,7 +610,7 @@ class _MatchDetailPageState extends State<MatchDetailPage> {
               child: Padding(
                 padding: const EdgeInsets.all(6.0),
                 child: Text(
-                  AppLocalizations.of('Content Size'),
+                  AppLocalizations.of('Contest Size'),
                   style: Theme.of(context).textTheme.caption!.copyWith(
                         color: Theme.of(context).textTheme.bodyText2!.color,
                         letterSpacing: 0.6,
@@ -596,7 +623,25 @@ class _MatchDetailPageState extends State<MatchDetailPage> {
             InkWell(
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => FilterPage()));
+                    MaterialPageRoute(builder: (context) => FilterPage(
+                        selectedPrizePool:selectedPrizePool,
+                        selectedEntry:selectedEntry,
+                      save: (selectedEntry,selectedPrizePool){
+                      Navigator.of(context).pop();
+                      this.selectedEntry = selectedEntry;
+                      this.selectedPrizePool = selectedPrizePool;
+                      if(selectedEntry!=-1){
+                        entryFilter = Pair(entryList[selectedEntry], selectedEntry+1<entryList.length?entryList[selectedEntry+1]:double.infinity);
+                      }
+                      if(selectedPrizePool!=-1){
+                        prizePollFilter = Pair(prizePoolList[selectedPrizePool], selectedPrizePool+1<prizePoolList.length?prizePoolList[selectedPrizePool+1]:-1);
+                      }
+
+                      setState(() {
+
+                      });
+                      _con.successSnackBar("Filter applied successfully ", context);
+                    },)));
               },
               child: Row(
                 children: [
@@ -639,7 +684,7 @@ class _MatchDetailPageState extends State<MatchDetailPage> {
           child: Padding(
             padding: const EdgeInsets.only(top: 5, left: 20),
             child: Text(
-              AppLocalizations.of('Contents'),
+              AppLocalizations.of('Contests'),
               style: Theme.of(context).textTheme.caption!.copyWith(
                     color: isContests == true
                         ? Theme.of(context).textTheme.headline6!.color
@@ -666,7 +711,7 @@ class _MatchDetailPageState extends State<MatchDetailPage> {
           child: Padding(
             padding: const EdgeInsets.only(top: 5),
             child: Text(
-              AppLocalizations.of('My Contents (0)'),
+              AppLocalizations.of('My Contests '),
               style: Theme.of(context).textTheme.caption!.copyWith(
                     color: isMyContests == true
                         ? Theme.of(context).textTheme.headline6!.color
@@ -695,7 +740,7 @@ class _MatchDetailPageState extends State<MatchDetailPage> {
             child: Row(
               children: [
                 Text(
-                  AppLocalizations.of('My Teams (1)'),
+                  AppLocalizations.of('My Teams'),
                   style: Theme.of(context).textTheme.caption!.copyWith(
                         color: isMyTeams == true
                             ? Theme.of(context).textTheme.headline6!.color
@@ -766,3 +811,15 @@ class _MatchDetailPageState extends State<MatchDetailPage> {
     );
   }
 }
+
+
+class Pair<T1, T2> {
+  final T1 first;
+  final T2 second;
+
+  const Pair(this.first, this.second);
+
+  @override
+  String toString() => '($first, $second)';
+}
+

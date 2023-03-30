@@ -30,7 +30,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
               children: [
                 row(
                   AppLocalizations.of('Run'),
-                  "+1",
+                  "+0.5",
                   (Colors.green[300])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.2),
                 ),
@@ -39,7 +39,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
                 ),
                 row(
                   AppLocalizations.of('Boundary Bonus'),
-                  "+1",
+                  "+0.5",
                   (Colors.green[300])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.7),
                 ),
@@ -48,7 +48,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
                 ),
                 row(
                   AppLocalizations.of('Six Bonus'),
-                  "+2",
+                  "+1",
                   (Colors.green[300])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.2),
                 ),
@@ -57,7 +57,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
                 ),
                 row(
                   AppLocalizations.of('Half-century Bonus'),
-                  "+8",
+                  "+4",
                   (Colors.green[300])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.7),
                 ),
@@ -65,8 +65,8 @@ class _CricketPointPageState extends State<CricketPointPage> {
                   height: 1,
                 ),
                 row(
-                  AppLocalizations.of('Century Bomus'),
-                  "+16",
+                  AppLocalizations.of('Century Bonus'),
+                  "+8",
                   (Colors.green[300])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.2),
                 ),
@@ -99,7 +99,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
               children: [
                 row(
                   AppLocalizations.of('Wicket (Excluding Run Out)'),
-                  "+25",
+                  "+10",
                   (Colors.green[300])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.2),
                 ),
@@ -108,7 +108,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
                 ),
                 row(
                   AppLocalizations.of('4 wicket haul Bonus'),
-                  "+8",
+                  "+4",
                   (Colors.green[300])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.7),
                 ),
@@ -117,7 +117,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
                 ),
                 row(
                   AppLocalizations.of('5 wicket haul  Bonus'),
-                  "+16",
+                  "+8",
                   (Colors.green[300])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.2),
                 ),
@@ -126,7 +126,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
                 ),
                 row(
                   AppLocalizations.of('Maiden over'),
-                  "+8",
+                  "+2",
                   (Colors.green[300])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.7),
                 ),
@@ -150,7 +150,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
               children: [
                 row(
                   AppLocalizations.of('Catch'),
-                  "+8",
+                  "+4",
                   (Colors.green[300])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.2),
                 ),
@@ -159,7 +159,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
                 ),
                 row(
                   AppLocalizations.of('Stumping/Run-out'),
-                  "+12",
+                  "+6",
                   (Colors.green[300])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.7),
                 ),
@@ -168,7 +168,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
                 ),
                 row(
                   AppLocalizations.of('Run Out (Thrower)'),
-                  "+6",
+                  "+4",
                   (Colors.green[300])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.2),
                 ),
@@ -177,7 +177,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
                 ),
                 row(
                   AppLocalizations.of('Run Out (Catcher)'),
-                  "+8",
+                  "+2",
                   (Colors.green[300])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.7),
                 ),
@@ -219,7 +219,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
                 ),
                 row(
                   AppLocalizations.of('In Starting'),
-                  "+4",
+                  "+2",
                   (Colors.green[300])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.2),
                 ),
@@ -251,7 +251,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
               children: [
                 row(
                   AppLocalizations.of('Below 4 runs per over'),
-                  "+6",
+                  "+3",
                   (Colors.green[300])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.2),
                 ),
@@ -260,7 +260,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
                 ),
                 row(
                   AppLocalizations.of('Between 4-4.99 runs per over'),
-                  "+4",
+                  "+2",
                   (Colors.green[300])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.7),
                 ),
@@ -269,7 +269,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
                 ),
                 row(
                   AppLocalizations.of('Between 5-6 runs per over'),
-                  "+2",
+                  "+1",
                   (Colors.green[300])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.2),
                 ),
@@ -278,7 +278,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
                 ),
                 row(
                   AppLocalizations.of('Between 9-10 runs per over'),
-                  "-2",
+                  "-1",
                   (Colors.green[300])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.7),
                 ),
@@ -287,7 +287,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
                 ),
                 row(
                   AppLocalizations.of('Between 10.01-11 runs per over'),
-                  "-4",
+                  "-2",
                   (Colors.red[100])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.2),
                 ),
@@ -296,7 +296,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
                 ),
                 row(
                   AppLocalizations.of('Above 11 runs per over'),
-                  "-6",
+                  "-3",
                   (Colors.red[100])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.7),
                 )
@@ -328,7 +328,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
               children: [
                 row(
                   AppLocalizations.of('Between 60-70 runs per 100 balls'),
-                  "-2",
+                  "-1",
                   (Colors.red[100])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.2),
                 ),
@@ -337,7 +337,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
                 ),
                 row(
                   AppLocalizations.of('Between 50-59.99 runs per 100 balls'),
-                  "-4",
+                  "-2",
                    (Colors.red[100])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.7),
                 ),
@@ -346,7 +346,7 @@ class _CricketPointPageState extends State<CricketPointPage> {
                 ),
                 row(
                   AppLocalizations.of('Below 50 runs per 100 balls'),
-                  "-6",
+                  "-3",
                   (Colors.red[100])!,
                   Theme.of(context).appBarTheme.color!.withOpacity(0.2),
                 ),

@@ -48,7 +48,7 @@ class _WinnerPageState extends State<WinnerPage> {
           ),
         ],
       ),
-      body: ListView(
+      body: false?ListView(
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
@@ -483,6 +483,8 @@ class _WinnerPageState extends State<WinnerPage> {
             ),
           ),
         ],
+      ):Center(
+        child:Text("No Data Present")
       ),
     );
   }

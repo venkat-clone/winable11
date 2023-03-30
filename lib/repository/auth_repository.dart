@@ -3,23 +3,23 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:newsports/models/user.dart';
+import '../base_classes/networkAPIService.dart';
 import '../models/AuthUser.dart';
 import '../utils/constants.dart';
 
 class AuthRepository{
 
-  static Future<AuthUser> registerUser(AuthUser user) async{
+
+  final _apiService = NetworkAPIService();
+
+  Future<AuthUser> registerUser(AuthUser user) async{
     final String url = '${Constants.BaseUrl}user/register/new';
     try{
-      final client = new http.Client();
-      final streamedRest = await client.post(
-        Uri.parse(url),
-        headers: {HttpHeaders.contentTypeHeader: 'application/json'},
-        body: json.encode(user.toJson()),
-      );
-
-    }on Exception catch(error){
-      print(error);
+      final response = await _apiService.getPostApiResponse(url, user.toJson());
+      _apiService.getData(response);
+    }catch(error){
+      rethrow;
     }
     return AuthUser();
   }
@@ -28,5 +28,24 @@ class AuthRepository{
     return AuthUser();
   }
 
+  Future<AppUser> login(String email,String password ) async{
+    final String url = '${Constants.BaseUrl}user/login';
+    try{
+      final client = new http.Client();
+      final response = await client.post(
+        Uri.parse(url),
+        headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+        body: json.encode({
+          "email":email,
+          "password":password
+        }),
+      );
+    final result = _apiService.returnResponse(response);
+
+    return AppUser.formJson(_apiService.getData(result));
+    }catch(error){
+      rethrow;
+    }
+  }
 
 }

@@ -102,12 +102,13 @@ class _PointSystemPageState extends State<PointSystemPage> {
   Widget tabBar() {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20),
-      child: ListView(
-        scrollDirection: Axis.horizontal,
+      child: Row(
+        // scrollDirection: Axis.horizontal,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(
-            height: 6,
-          ),
+          // SizedBox(
+          //   height: 6,
+          // ),
           InkWell(
             onTap: () {
               setState(() {
@@ -131,12 +132,13 @@ class _PointSystemPageState extends State<PointSystemPage> {
               isCricket == true ? Theme.of(context).primaryColor : (Theme.of(context).textTheme.caption!.color)!,
             ),
           ),
-          SizedBox(
-            width: 20,
-          ),
-          SizedBox(
-            height: 6,
-          ),
+          // SizedBox(
+          //   width: 20,
+          // ),
+
+          // SizedBox(
+          //   height: 6,
+          // ),
           InkWell(
             onTap: () {
               setState(() {
@@ -160,123 +162,123 @@ class _PointSystemPageState extends State<PointSystemPage> {
               isFootball == true ? Theme.of(context).primaryColor : (Theme.of(context).textTheme.caption!.color)!,
             ),
           ),
-          SizedBox(
-            width: 20,
-          ),
-          SizedBox(
-            height: 6,
-          ),
-          InkWell(
-            onTap: () {
-              setState(() {
-                isCricket = false;
-
-                isFootball = false;
-
-                isBasketball = true;
-
-                isBaseball = false;
-
-                isNFL = false;
-
-                isHandball = false;
-              });
-            },
-            child: customColumn(
-                AppLocalizations.of('Basketball'),
-                FontAwesomeIcons.basketballBall,
-                isBasketball == true ? Theme.of(context).primaryColor : (Theme.of(context).textTheme.caption!.color)!,
-                isBasketball == true ? Theme.of(context).primaryColor : (Theme.of(context).textTheme.caption!.color)!),
-          ),
-          SizedBox(
-            width: 20,
-          ),
-          SizedBox(
-            height: 6,
-          ),
-          InkWell(
-            onTap: () {
-              setState(() {
-                isCricket = false;
-
-                isFootball = false;
-
-                isBasketball = false;
-
-                isBaseball = true;
-
-                isNFL = false;
-
-                isHandball = false;
-              });
-            },
-            child: customColumn(
-                AppLocalizations.of('Baseball'),
-                FontAwesomeIcons.baseballBall,
-                isBaseball == true ? Theme.of(context).primaryColor : (Theme.of(context).textTheme.caption!.color)!,
-                isBaseball == true ? Theme.of(context).primaryColor : (Theme.of(context).textTheme.caption!.color)!),
-          ),
-          SizedBox(
-            width: 20,
-          ),
-          SizedBox(
-            height: 6,
-          ),
-          InkWell(
-            onTap: () {
-              setState(() {
-                isCricket = false;
-
-                isFootball = false;
-
-                isBasketball = false;
-
-                isBaseball = false;
-
-                isNFL = true;
-
-                isHandball = false;
-              });
-            },
-            child: customColumn(
-              AppLocalizations.of('NFL'),
-              FontAwesomeIcons.footballBall,
-              isNFL == true ? Theme.of(context).primaryColor : (Theme.of(context).textTheme.caption!.color)!,
-              isNFL == true
-                  ? Theme.of(context).primaryColor
-                  : isNFL == true
-                      ? Theme.of(context).primaryColor
-                      : (Theme.of(context).textTheme.caption!.color)!,
-            ),
-          ),
-          SizedBox(
-            width: 20,
-          ),
-          SizedBox(
-            height: 6,
-          ),
-          InkWell(
-            onTap: () {
-              setState(() {
-                isCricket = false;
-
-                isFootball = false;
-
-                isBasketball = false;
-
-                isBaseball = false;
-
-                isNFL = false;
-
-                isHandball = true;
-              });
-            },
-            child: customColumn(
-                AppLocalizations.of('HandBall'),
-                FontAwesomeIcons.basketballBall,
-                isHandball == true ? Theme.of(context).primaryColor : (Theme.of(context).textTheme.caption!.color)!,
-                isHandball == true ? Theme.of(context).primaryColor : (Theme.of(context).textTheme.caption!.color)!),
-          ),
+          // SizedBox(
+          //   width: 20,
+          // ),
+          // SizedBox(
+          //   height: 6,
+          // ),
+          // InkWell(
+          //   onTap: () {
+          //     setState(() {
+          //       isCricket = false;
+          //
+          //       isFootball = false;
+          //
+          //       isBasketball = true;
+          //
+          //       isBaseball = false;
+          //
+          //       isNFL = false;
+          //
+          //       isHandball = false;
+          //     });
+          //   },
+          //   child: customColumn(
+          //       AppLocalizations.of('Basketball'),
+          //       FontAwesomeIcons.basketballBall,
+          //       isBasketball == true ? Theme.of(context).primaryColor : (Theme.of(context).textTheme.caption!.color)!,
+          //       isBasketball == true ? Theme.of(context).primaryColor : (Theme.of(context).textTheme.caption!.color)!),
+          // ),
+          // SizedBox(
+          //   width: 20,
+          // ),
+          // SizedBox(
+          //   height: 6,
+          // ),
+          // InkWell(
+          //   onTap: () {
+          //     setState(() {
+          //       isCricket = false;
+          //
+          //       isFootball = false;
+          //
+          //       isBasketball = false;
+          //
+          //       isBaseball = true;
+          //
+          //       isNFL = false;
+          //
+          //       isHandball = false;
+          //     });
+          //   },
+          //   child: customColumn(
+          //       AppLocalizations.of('Baseball'),
+          //       FontAwesomeIcons.baseballBall,
+          //       isBaseball == true ? Theme.of(context).primaryColor : (Theme.of(context).textTheme.caption!.color)!,
+          //       isBaseball == true ? Theme.of(context).primaryColor : (Theme.of(context).textTheme.caption!.color)!),
+          // ),
+          // SizedBox(
+          //   width: 20,
+          // ),
+          // SizedBox(
+          //   height: 6,
+          // ),
+          // InkWell(
+          //   onTap: () {
+          //     setState(() {
+          //       isCricket = false;
+          //
+          //       isFootball = false;
+          //
+          //       isBasketball = false;
+          //
+          //       isBaseball = false;
+          //
+          //       isNFL = true;
+          //
+          //       isHandball = false;
+          //     });
+          //   },
+          //   child: customColumn(
+          //     AppLocalizations.of('NFL'),
+          //     FontAwesomeIcons.footballBall,
+          //     isNFL == true ? Theme.of(context).primaryColor : (Theme.of(context).textTheme.caption!.color)!,
+          //     isNFL == true
+          //         ? Theme.of(context).primaryColor
+          //         : isNFL == true
+          //             ? Theme.of(context).primaryColor
+          //             : (Theme.of(context).textTheme.caption!.color)!,
+          //   ),
+          // ),
+          // SizedBox(
+          //   width: 20,
+          // ),
+          // SizedBox(
+          //   height: 6,
+          // ),
+          // InkWell(
+          //   onTap: () {
+          //     setState(() {
+          //       isCricket = false;
+          //
+          //       isFootball = false;
+          //
+          //       isBasketball = false;
+          //
+          //       isBaseball = false;
+          //
+          //       isNFL = false;
+          //
+          //       isHandball = true;
+          //     });
+          //   },
+          //   child: customColumn(
+          //       AppLocalizations.of('HandBall'),
+          //       FontAwesomeIcons.basketballBall,
+          //       isHandball == true ? Theme.of(context).primaryColor : (Theme.of(context).textTheme.caption!.color)!,
+          //       isHandball == true ? Theme.of(context).primaryColor : (Theme.of(context).textTheme.caption!.color)!),
+          // ),
         ],
       ),
     );

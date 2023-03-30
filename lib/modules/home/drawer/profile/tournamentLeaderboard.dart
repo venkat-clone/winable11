@@ -50,7 +50,7 @@ class _TournamentLeaderBoardPageState extends State<TournamentLeaderBoardPage> {
               child: Row(
                 children: [
                   Text(
-                    AppLocalizations.of('Select Toue'),
+                    AppLocalizations.of('Select Toe'),
                     style: Theme.of(context).textTheme.caption!.copyWith(
                           color: Theme.of(context).textTheme.bodyText2!.color,
                           letterSpacing: 0.6,

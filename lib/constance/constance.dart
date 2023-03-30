@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class ConstanceData {
   static const BaseImageUrl = 'assets/images/';
-
+  static final appLogo = "assets/img/logo.png";
   static final batsmanLogo = BaseImageUrl + "batsmanLogo.png";
   static final palyerProfilePic = BaseImageUrl + "playerProfilePic.jpg";
   static final mumbaiIndians = BaseImageUrl + "mumbaiIndians.png";

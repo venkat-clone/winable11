@@ -1,22 +1,25 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
+import 'package:newsports/controllers/WalletController.dart';
+import 'package:newsports/models/Contest.dart';
 import 'package:newsports/modules/matchDetail/contestDetail/contestDetail.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-class MatchDetailCardView extends StatelessWidget {
-  final String? txt1;
-  final String? txt2;
-  final String? txt3;
-  final String? txt4;
+import '../models/MatchModel.dart';
+import '../models/Team.dart';
+import '../utils/utils.dart';
 
+class MatchDetailCardView extends StatelessWidget {
+  final MatchModel match;
+  final Contest contest;
   const MatchDetailCardView({
     Key? key,
-    this.txt1,
-    this.txt2,
-    this.txt3,
-    this.txt4,
+    required this.contest,
+    required this.match,
+
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -25,7 +28,7 @@ class MatchDetailCardView extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ContestDetailPage(),
+            builder: (context) => ContestDetailPage(contest: contest,match: match,),
           ),
         );
       },
@@ -67,7 +70,7 @@ class MatchDetailCardView extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      txt1!,
+                      '₹${Utils.convertToIndianCurrency(int.parse(contest.prizePool))}',
                       style: Theme.of(context).textTheme.caption!.copyWith(
                             color: Theme.of(context).textTheme.headline6!.color,
                             letterSpacing: 0.6,
@@ -76,19 +79,39 @@ class MatchDetailCardView extends StatelessWidget {
                           ),
                     ),
                     Expanded(child: SizedBox()),
-                    Container(
-                      height: 25,
-                      width: 80,
-                      decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(4)),
-                      child: Center(
-                        child: Text(
-                          txt2!,
-                          style: Theme.of(context).textTheme.caption!.copyWith(
-                                color: Colors.white,
-                                letterSpacing: 0.6,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
+
+                      InkWell(
+                      onTap: (){
+                        if(match.isStarted){
+                          return;
+                        }
+                        /// check kyc
+                        ///  show dialog for payment
+                        ///
+
+                        showDialog(context: context, builder: (context)=>
+                            JoinContestCard(fee: double.parse(contest.entry),contestId: contest.contestId,),
+                          barrierDismissible: false,
+
+                        );
+                      },
+                      child: Container(
+                        height: 25,
+                        width: 80,
+                        decoration: BoxDecoration(
+                            color: !match.isStarted? Theme.of(context).primaryColor:
+                            Theme.of(context).disabledColor,
+                            borderRadius: BorderRadius.circular(4)),
+                        child: Center(
+                          child: Text(
+                            "₹${contest.entry}",
+                            style: Theme.of(context).textTheme.caption!.copyWith(
+                                  color: Colors.white,
+                                  letterSpacing: 0.6,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
                         ),
                       ),
                     ),
@@ -99,7 +122,7 @@ class MatchDetailCardView extends StatelessWidget {
                 height: 15,
               ),
               LinearPercentIndicator(
-                percent: 0.4,
+                percent: (double.parse(contest.joinTeam)/double.parse(contest.totalTeam)),
                 progressColor: Theme.of(context).primaryColor,
                 backgroundColor: Theme.of(context).disabledColor,
               ),
@@ -114,7 +137,7 @@ class MatchDetailCardView extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      txt3!,
+                      '${int.parse(contest.totalTeam)-int.parse(contest.joinTeam)} sports left',
                       style: Theme.of(context).textTheme.caption!.copyWith(
                             color: Color(0xffD30001),
                             letterSpacing: 0.6,
@@ -123,7 +146,7 @@ class MatchDetailCardView extends StatelessWidget {
                     ),
                     Expanded(child: SizedBox()),
                     Text(
-                      txt4!,
+                      AppLocalizations.of('${contest.totalTeam} spots'),
                       style: Theme.of(context).textTheme.caption!.copyWith(
                             color: Colors.black54,
                             letterSpacing: 0.6,
@@ -162,8 +185,7 @@ class MatchDetailCardView extends StatelessWidget {
                             ),
                       ),
                       Expanded(child: SizedBox()),
-                      Text(
-                        "45%",
+                      Text((double.parse(contest.joinTeam)/double.parse(contest.totalTeam)*100).toString(),
                         style: Theme.of(context).textTheme.caption!.copyWith(
                               color: Theme.of(context).textTheme.caption!.color,
                               letterSpacing: 0.6,
@@ -172,7 +194,7 @@ class MatchDetailCardView extends StatelessWidget {
                       ),
                       Expanded(child: SizedBox()),
                       Text(
-                        AppLocalizations.of('Upto 11 Entries'),
+                        AppLocalizations.of('Upto ${contest.winners} Entries'),
                         style: Theme.of(context).textTheme.caption!.copyWith(
                               color: Theme.of(context).textTheme.caption!.color,
                               letterSpacing: 0.6,
@@ -196,3 +218,161 @@ class MatchDetailCardView extends StatelessWidget {
     );
   }
 }
+
+class JoinContestCard extends StatefulWidget {
+  final double fee;
+  final String contestId;
+  JoinContestCard({Key? key, required this.fee,required this.contestId}) : super(key: key);
+
+  @override
+  StateMVC<JoinContestCard> createState() => _JoinContestCardState();
+}
+
+class _JoinContestCardState extends StateMVC<JoinContestCard> {
+
+  late WalletController _con;
+  _JoinContestCardState():super(WalletController()){
+    _con = controller as WalletController;
+  }
+
+  @override
+  void initState() {
+
+    super.initState();
+  }
+  @override
+  Future<bool> initAsync() {
+
+    return super.initAsync();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: IntrinsicHeight(
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14)
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  SizedBox(height: 10,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("CONFORMATION",
+                              style: Theme.of(context).textTheme.caption!.copyWith(
+                                color: Theme.of(context).textTheme.headline6!.color,
+                                letterSpacing: 0.6,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),),
+                          Text("Amount Added (Unutilised) + Winnings = ₹${_con.totalBalance}",
+                            style: Theme.of(context).textTheme.caption!.copyWith(
+                              letterSpacing: 0.6,
+                              fontSize: 12,
+                            ),),
+                        ],
+                      ),
+
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.of(context).pop();
+                        },
+                          child: Icon(Icons.cancel_outlined)
+                      )
+                    ],
+                  ),
+                  SizedBox(height: 20,),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //   Text("Entry", style: Theme.of(context).textTheme.caption!.copyWith(
+                  //     color: Theme.of(context).textTheme.headline6!.color,
+                  //     letterSpacing: 0.6,
+                  //     fontSize: 16,
+                  //     fontWeight: FontWeight.bold,
+                  //   ),
+                  //   ),
+                  //     Text("₹${0}", style: Theme.of(context).textTheme.caption!.copyWith(
+                  //     color: Theme.of(context).textTheme.headline6!.color,
+                  //     letterSpacing: 0.6,
+                  //     fontSize: 16,
+                  //     fontWeight: FontWeight.bold,
+                  //   ),
+                  //   ),
+                  // ],),
+                  // Divider(height: 20,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Entry Fee", style: Theme.of(context).textTheme.caption!.copyWith(
+                        color: Theme.of(context).primaryColor,
+                        letterSpacing: 0.6,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      ),
+                      Text("₹${widget.contestId}", style: Theme.of(context).textTheme.caption!.copyWith(
+                        color: Theme.of(context).primaryColor,
+                        letterSpacing: 0.6,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      ),
+                    ],),
+                  SizedBox(height: 20),
+                  Text("By joining this contest,you accept Winable11 T&C's",
+                    style: Theme.of(context).textTheme.caption!.copyWith(
+                    letterSpacing: 0.6,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),),
+                  SizedBox(height: 30,),
+                  GestureDetector(
+                    onTap: (){
+                      _con.payContestFee(widget.fee, widget.contestId);
+                    },
+                    child: Container(
+                      height: 40,
+                      width:180,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(6)
+                      ),
+                      alignment: Alignment.center,
+                      child: Text("Join Contest",
+                        style: Theme.of(context).textTheme.caption!.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        letterSpacing: 0.6,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),),
+                    ),
+                  ),
+                  SizedBox(height: 15,)
+
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+

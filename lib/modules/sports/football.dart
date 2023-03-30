@@ -1,27 +1,65 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
+import 'package:newsports/models/MatchModel.dart';
 import 'package:newsports/widget/cardView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import '../../constance/constance.dart';
+import '../../controllers/MatchController.dart';
+import '../../models/Team.dart';
 
 class FootballPage extends StatefulWidget {
+  MatchController controller;
+  FootballPage({required this.controller});
   @override
-  _FootballPageState createState() => _FootballPageState();
+  _FootballPageState createState() => _FootballPageState(controller);
 }
 
-class _FootballPageState extends State<FootballPage> {
+class _FootballPageState extends StateMVC<FootballPage> {
   final List<String> imgList = [
     ConstanceData.fslider1,
     ConstanceData.fslider2,
     ConstanceData.fslider3,
     ConstanceData.fslider4,
   ];
+  late MatchController _con;
+  final scrollController = ScrollController();
+  _FootballPageState(MatchController cont) : super(cont) {
+    _con = controller as MatchController;
+  }
+  @override
+  void initState() {
+    initAsync();
+    super.initState();
+  }
+  @override
+  Future<bool> initAsync() {
+    _con.initSport();
+    _con.getUpComingFootBallMatches(context);
+    return super.initAsync();
+  }
 
   @override
   Widget build(BuildContext context) {
+
+    if(_con.upcomingFootballMatchList.loading){
+      return Expanded(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+    if(_con.upcomingFootballMatchList.error != null){
+      return Expanded(
+        child: Center(
+          child: Text(_con.upcomingFootballMatchList.error!),
+        ),
+      );
+    }
+
     return Expanded(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -64,118 +102,30 @@ class _FootballPageState extends State<FootballPage> {
                       ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                child: Column(
-                  children: [
-                    CardView(
-                      txt1: AppLocalizations.of('Korean League'),
-                      txt2: AppLocalizations.of('Sangju Sangmu'),
-                      txt3: "Daegu FC",
-                      txt4: "MSSMGI",
-                      setTime: CountdownTimer(
-                        endTime: DateTime.now().millisecondsSinceEpoch + 1000 * 200 * 200,
-                        textStyle: TextStyle(
-                          fontSize: 14,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      txt6: "DAE",
-                      txt7: AppLocalizations.of('₹5 Lakhs'),
-                      image1: Image.asset(
-                        ConstanceData.mumbaiIndians,
-                        fit: BoxFit.cover,
-                      ),
-                      image2: Image.asset(
-                        ConstanceData.kolkata,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    CardView(
-                      txt1: AppLocalizations.of('Korean League'),
-                      txt2: AppLocalizations.of('Seongam FC'),
-                      txt3: AppLocalizations.of('Everton'),
-                      txt4: "ET",
-                      setTime: CountdownTimer(
-                        endTime: DateTime.now().millisecondsSinceEpoch + 1000 * 70 * 120,
-                        textStyle: TextStyle(
-                          fontSize: 14,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      txt6: "SEGN",
-                      txt7: AppLocalizations.of('₹5 Lakhs'),
-                      image1: Image.asset(
-                        ConstanceData.mumbaiIndians,
-                        fit: BoxFit.cover,
-                      ),
-                      image2: Image.asset(
-                        ConstanceData.kolkata,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    CardView(
-                      txt1: AppLocalizations.of('Korean League'),
-                      txt2: "FC Seaul",
-                      txt3: AppLocalizations.of('Liverpool'),
-                      txt4: "SE",
-                      setTime: CountdownTimer(
-                        endTime: DateTime.now().millisecondsSinceEpoch + 1000 * 100 * 20,
-                        textStyle: TextStyle(
-                          fontSize: 14,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      txt6: "LP",
-                      txt7: AppLocalizations.of('₹5 Lakhs'),
-                      image1: Image.asset(
-                        ConstanceData.mumbaiIndians,
-                        fit: BoxFit.cover,
-                      ),
-                      image2: Image.asset(
-                        ConstanceData.kolkata,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    CardView(
-                      txt1: AppLocalizations.of('Korean League'),
-                      txt2: AppLocalizations.of('Sangju Sangmu'),
-                      txt3: "Daegu FC",
-                      txt4: "MSSMGI",
-                      setTime: CountdownTimer(
-                        endTime: DateTime.now().millisecondsSinceEpoch + 1000 * 130 * 150,
-                        textStyle: TextStyle(
-                          fontSize: 14,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      txt6: "DAE",
-                      txt7: AppLocalizations.of('₹5 Lakhs'),
-                      image1: Image.asset(
-                        ConstanceData.mumbaiIndians,
-                        fit: BoxFit.cover,
-                      ),
-                      image2: Image.asset(
-                        ConstanceData.kolkata,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ],
+              _con.upcomingFootballMatchList.value!.length > 0
+                  ? ListView.separated(
+                controller: scrollController,
+                shrinkWrap: true,
+                itemCount: _con.upcomingFootballMatchList.value!.length,
+                itemBuilder: (c, index) {
+                  final match = _con.upcomingFootballMatchList.value![index];
+                  return CardView(
+                    match: match,
+                  );
+                },
+                separatorBuilder:
+                    (BuildContext context, int index) => SizedBox(
+                  height: 15,
                 ),
               )
+                  : Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Text(
+                      "No  Matches for the sport",
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  )),
             ],
           )
         ],
