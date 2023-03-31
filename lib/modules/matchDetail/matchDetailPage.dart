@@ -535,7 +535,7 @@ class _MatchDetailPageState extends StateMVC<MatchDetailPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CreateTeamPage(match: widget.match,)));
+                            builder: (context) => CreateTeamPage(match: widget.match)));
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 20),

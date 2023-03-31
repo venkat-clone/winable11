@@ -1,8 +1,10 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/constance/constance.dart';
 import 'package:flutter/material.dart';
+import 'package:newsports/controllers/TeamController.dart';
 
 import '../../models/team_players.dart';
 import '../../models/player.dart';
@@ -10,6 +12,7 @@ import '../../models/player.dart';
 import '../../models/userTeamPlayer.dart';
 
 class ChooseCaptainPage extends StatefulWidget {
+  
   TeamPlayers team;
 
   ChooseCaptainPage({required this.team});
@@ -18,11 +21,22 @@ class ChooseCaptainPage extends StatefulWidget {
   _ChooseCaptainPageState createState() => _ChooseCaptainPageState();
 }
 
-class _ChooseCaptainPageState extends State<ChooseCaptainPage> {
-
+class _ChooseCaptainPageState extends StateMVC<ChooseCaptainPage> {
   String captainId = "";
   String wiseCaptainId = "";
 
+  late TeamController _con;
+
+  _ChooseCaptainPageState (): super(TeamController()){
+    
+    _con = controller as TeamController;
+    
+  }
+
+  @override
+  void initState() {
+    _con.cricketTeam = widget.team;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -285,11 +299,18 @@ class _ChooseCaptainPageState extends State<ChooseCaptainPage> {
                 onTap: () {
                   if(captainId.isEmpty){
                     /// TO SHOW SNAKEBAR
+                    _con.errorSnackBar('Please select the Captain', context);
+                    return;
                   }
                   if(wiseCaptainId.isEmpty){
                     /// TO SHOW SNAKEBAR
+                    _con.errorSnackBar('Please select the Vise Captain', context);
+                    return;
                   }
 
+                  _con.cricketTeam.captainId = captainId;
+                  _con.cricketTeam.viceCaptainId = wiseCaptainId;
+                  _con.createTeam(_con.cricketTeam , context);
                   //  TODO : send team to server
 
                 },

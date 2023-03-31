@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:newsports/constance/global.dart' as globals;
 import '../../constance/constance.dart';
 import '../../controllers/TeamController.dart';
+import '../../models/Contest.dart';
 import '../../models/MatchModel.dart';
 import '../../models/player.dart';
 import '../../models/userTeamPlayer.dart';
@@ -17,6 +18,7 @@ import '../../utils/utils.dart';
 
 class CreateTeamPage extends StatefulWidget {
   MatchModel match;
+
   CreateTeamPage({ required this.match});
 
   @override

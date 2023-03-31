@@ -6,6 +6,7 @@ import 'package:newsports/models/userTeamPlayer.dart';
 import 'package:newsports/repository/mock/mock_repository.dart';
 
 import '../models/player.dart';
+import '../models/team_players.dart';
 
 class TeamRepository {
   BaseApiServices apiServices = NetworkAPIService();
@@ -39,7 +40,37 @@ class TeamRepository {
     }
   }
 
+  Future sendTeamPlayers(String sport, TeamPlayers players) async{
 
+    try{
+      if(sport=="Cricket"){
+        return sendCricketTeamPlayers(players);
+      }
+      return sendFootballTeamPlayers(players);
+    }catch(e){
+      throw e;
+    }
+  }
+
+  Future sendCricketTeamPlayers(TeamPlayers players) async{
+
+    try{
+
+      final jsonResponse = await apiServices.getPostApiResponse(_getUrl("default_contest/user_join"),players.toJson());
+
+    }catch(e){
+      throw e;
+    }
+  }
+
+  Future sendFootballTeamPlayers(TeamPlayers players) async{
+
+    try{
+      return sendFootballTeamPlayers(players);
+    }catch(e){
+      throw e;
+    }
+  }
 
 
   Future<List<UserTeamPlayer>> getAllCricketPlayers(Team team) async{

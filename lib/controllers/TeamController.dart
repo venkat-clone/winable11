@@ -49,6 +49,17 @@ class TeamController extends BaseController {
     setState(() {});
   }
 
+  createTeam(TeamPlayers team, BuildContext context) async {
+
+    try{
+      await _teamRepo.sendTeamPlayers(sport,team);
+    }catch(exception){
+      errorSnackBar("something went wrong", context);
+    }
+
+
+  }
+
   String getShortDesignation(int id) {
     return Designation
         .getDesignation(sport, id)
