@@ -8,6 +8,7 @@ import 'package:newsports/base_classes/base_controller.dart';
 
 import '../base_classes/value_state.dart';
 import '../models/Contest.dart';
+import '../models/Winnings.dart';
 import '../repository/contest_repository.dart';
 import '../utils/app_execptions.dart';
 import '../utils/shared_preference_services.dart';
@@ -22,6 +23,9 @@ class ContestController extends BaseController{
   ValueState<List<Contest>> cricketContests = ValueState.loading();
   ValueState<List<Contest>> myCricketContests = ValueState.loading();
   ValueState<List<Contest>> myCricketTeams = ValueState.loading();
+
+
+  ValueState<List<Winning>> winnings = ValueState.loading();
 
   final _repository = ContestRepository();
 
@@ -64,9 +68,14 @@ class ContestController extends BaseController{
 
     } on FetchDataException {
       errorSnackBar("Please check you internet connection", context);
+      setState(() {
+        cricketContests = ValueState(error: "Please check you internet connection");
+      });
     } on InvalidResponseException {
-      setState(() { });
-      workingSnackBar("No Contest Fond For this Match", context);
+      setState(() {
+        cricketContests = ValueState(value: []);
+      });
+      workingSnackBar("No Contest found For this Match", context);
     }
     catch(e,s){
       if(kDebugMode){
@@ -85,9 +94,14 @@ class ContestController extends BaseController{
 
     } on FetchDataException {
       errorSnackBar("Please check you internet connection", context);
+      setState(() {
+        footballContests = ValueState(error: "Please check you internet connection");
+      });
     } on InvalidResponseException {
-      setState(() { });
-      workingSnackBar("No Contest Fond For this Match", context);
+      setState(() {
+        footballContests = ValueState(value: []);
+      });
+      workingSnackBar("No Contest found For this Match", context);
     }
     catch(e,s){
       if(kDebugMode){
@@ -96,7 +110,6 @@ class ContestController extends BaseController{
       errorSnackBar("Something went wrong", context);
     }
   }
-
   getContests(String matchId,BuildContext context) async{
     if(sport=="Cricket"){
       getCricketContests(matchId, context);
@@ -115,10 +128,15 @@ class ContestController extends BaseController{
       });
 
     } on FetchDataException {
+      setState(() {
+        myCricketContests = ValueState(error: "Please check you internet connection");
+      });
       errorSnackBar("Please check you internet connection", context);
     } on InvalidResponseException {
-      setState(() { });
-      workingSnackBar("No Contest Fond For this Match", context);
+      setState(() {
+        myCricketContests = ValueState(value: []);
+      });
+      workingSnackBar("No Contest found For this Match", context);
     }
     catch(e,s){
       if(kDebugMode){
@@ -136,10 +154,15 @@ class ContestController extends BaseController{
       });
 
     } on FetchDataException {
+      setState(() {
+        myFootballContests = ValueState(error: "Please check you internet connection");
+      });
       errorSnackBar("Please check you internet connection", context);
     } on InvalidResponseException {
-      setState(() { });
-      workingSnackBar("No Contest Fond For this Match", context);
+      setState(() {
+        myFootballContests = ValueState(value: []);
+      });
+      workingSnackBar("No Contest found For this Match", context);
     }
     catch(e,s){
       if(kDebugMode){
@@ -148,7 +171,6 @@ class ContestController extends BaseController{
       errorSnackBar("Something went wrong", context);
     }
   }
-
   getMyContests(String matchId,BuildContext context) async{
     if(sport=="Cricket"){
       getMyCricketContests(matchId, context);
@@ -156,6 +178,35 @@ class ContestController extends BaseController{
       getMyFootballContests(matchId,context);
     }
   }
+
+  void joinContest(String contestId,String teamId,BuildContext context) {
+    if(sport=="Cricket"){
+      joinCricketContest(contestId,teamId,context);
+    }else if(sport=="FootBall"){
+
+    }
+  }
+
+  void joinCricketContest(String contestId,String teamId,BuildContext context) async{
+    try{
+      await _repository.joinCricketContest(contestId, teamId);
+      successSnackBar("Joined the Contest", context);
+    }catch(e){
+
+    }
+  }
+
+  void getMatchWinnings(BuildContext context,String contestId) async{
+    try{
+      final result = await _repository.getWinnings(contestId);
+      setState(() {
+        winnings = ValueState(value: result);
+      });
+    }catch(e){
+      errorSnackBar("Something went wrong", context);
+    }
+  }
+
 
 
 

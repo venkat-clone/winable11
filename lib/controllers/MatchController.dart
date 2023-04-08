@@ -193,11 +193,12 @@ class MatchController extends BaseController {
       setState(() {
         myLiveCricketMatchList = ValueState(value: list);
       });
+      // print(list);
+      // successSnackBar("message", context);
     } catch(error, stackTrace) {
       setState(() {
         myLiveCricketMatchList = ValueState(error: "unexpected error please try again") ;
       });
-
       errorSnackBar(error.toString(), context);
       if (kDebugMode) {
         print("getMatches Error ${error.toString()}");
@@ -239,8 +240,9 @@ class MatchController extends BaseController {
     if(myPastCricketMatchList.value!=null) return;
     try{
       final list  = await _matchRepository.getCricketMatches("completed");
+
       setState(() {
-        myPastCricketMatchList = ValueState(value: list);
+        myPastCricketMatchList = ValueState(value: list.reversed.toList());
       });
     } catch(error, stackTrace) {
       setState(() {

@@ -59,12 +59,12 @@ class _PaymentMethodsState extends State<PaymentMethods> {
                       Navigator.of(context).push(MaterialPageRoute(builder: (context)=>UPIInterface(amount: amount.toString(),)));
                     }
                   ),
-                  PaymentOptionCard(
-                    title:"Easy Payment",
-                    onClick:(){
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>UPIInterface(amount: amount.toString(),)));
-                    }
-                  ),
+                  // PaymentOptionCard(
+                  //   title:"Easy Payment",
+                  //   onClick:(){
+                  //     Navigator.of(context).push(MaterialPageRoute(builder: (context)=>UPIInterface(amount: amount.toString(),)));
+                  //   }
+                  // ),
                 ],
               ),
             ),

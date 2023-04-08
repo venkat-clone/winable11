@@ -3,7 +3,12 @@ import 'package:newsports/models/player.dart';
 
 class UserTeamPlayer extends Player{
 
-  UserTeamPlayer();
+  UserTeamPlayer({
+    this.teamShortName ="",
+    name ="",
+    designationId ="",
+  });
+  String teamImage="";
   String teamShortName = "";
   /// player selected to team
   bool selected = false;
@@ -24,7 +29,6 @@ class UserTeamPlayer extends Player{
 
 
   UserTeamPlayer.fromJson(Map<String,dynamic> json){
-    id = json['id']??"";
     pid = json['pid']??"";
     name = json['name']??"";
     designationId = json['designationid']??"";
@@ -42,7 +46,7 @@ class UserTeamPlayer extends Player{
   }
 
   UserTeamPlayer.fromFootball(Map<String,dynamic> json){
-    id = json['id']??"";
+
     pid = json['pid']??"";
     name = json['name']??"";
     designationId = getFootballDesignationId(json['designationid']??"");
@@ -64,6 +68,18 @@ class UserTeamPlayer extends Player{
     "player_id":pid,
     "designation_id":designationId
   };
+
+  UserTeamPlayer.fromJsonUpload(Map<String,dynamic> json){
+    name = json["player"];
+    pid = json["player_id"];
+    designationId = json["designation_id"];
+  }
+  UserTeamPlayer.getFromJson(Map<String,dynamic> json){
+    name = json["player"]??"";
+    pid = json["player_id"]??"";
+    designationId = json["designation_id"]??"";
+    image = "https://admin.winable11.com/"+(json['image']??"");
+  }
 
 
 

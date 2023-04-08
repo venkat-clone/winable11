@@ -7,7 +7,6 @@ import '../utils/designations.dart';
 
 class Player{
 
-  String id = "";
   String pid = "";
   String name = "";
   /// Check out this [Designation] or ../utils/designations.dart
@@ -28,7 +27,7 @@ class Player{
   Designation getDesignation(String sport) =>Designation.getDesignation(sport, int.parse(designationId));
 
   Player({
-    this.id="",
+
     this.pid="",
     this.name="",
     this.designationId="",
@@ -46,7 +45,7 @@ class Player{
   });
 
   Player.fromJson(Map<String,dynamic> json){
-    id = json['id']??"";
+
     pid = json['pid']??"";
     name = json['name']??"";
     designationId = json['designationid']??"";
@@ -64,7 +63,6 @@ class Player{
   }
 
   Player.fromFootball(Map<String,dynamic> json){
-    id = json['id']??"";
     pid = json['pid']??"";
     name = json['name']??"";
     designationId = getFootballDesignationId(json['designationid']??"");
@@ -91,7 +89,6 @@ class Player{
   }
   
   toJson()=>{
-    'id':id,
     'pid':pid,
     'name':name,
     'designationid':designationId,

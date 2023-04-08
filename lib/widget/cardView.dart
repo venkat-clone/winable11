@@ -1,18 +1,27 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:intl/intl.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/models/MatchModel.dart';
 import 'package:newsports/modules/matchDetail/matchDetailPage.dart';
 import 'package:flutter/material.dart';
+import 'package:newsports/widget/timeLeft.dart';
 
+import '../constance/constance.dart';
 import '../models/Team.dart';
+import '../modules/navigationBar/feed/commentry.dart';
+import '../utils/utils.dart';
 
 class CardView extends StatefulWidget {
   final MatchModel match;
-
+  final bool notificationIcon;
+  final bool clickable;
   const CardView({
     Key? key,
     required this.match,
+    this.notificationIcon = false,
+    this.clickable = true,
+
   }) : super(key: key);
 
   @override
@@ -25,7 +34,7 @@ class _CardViewState extends State<CardView> {
   final match = widget.match;
     return InkWell(
       onTap: () {
-        Navigator.push(
+        if(widget.clickable) Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => MatchDetailPage(
@@ -73,7 +82,8 @@ class _CardViewState extends State<CardView> {
                               flex: 10,
                             ),
                             // Expanded(child: SizedBox(),flex: 2,),
-                            Expanded(child: Icon(Icons.notifications_on_outlined),flex: 1,)
+                            if(widget.notificationIcon)
+                              Expanded(child: Icon(Icons.notifications_on_outlined),flex: 1,)
                           ],
                         ),
                       ),
@@ -89,24 +99,35 @@ class _CardViewState extends State<CardView> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    match.team1.teamName,
-                                    style: Theme.of(context).textTheme.caption!.copyWith(
-                                          color: Theme.of(context).textTheme.caption!.color,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 0.6,
-                                          fontSize: 14,
-                                        ),
+                                  Expanded(
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        match.team1.teamName,
+                                        style: Theme.of(context).textTheme.caption!.copyWith(
+                                              color: Theme.of(context).textTheme.caption!.color,
+                                              fontWeight: FontWeight.bold,
+                                              letterSpacing: 0.6,
+                                              fontSize: 14,
+                                            ),
+                                      ),
+                                    ),
                                   ),
-                                  Expanded(child: SizedBox()),
-                                  Text(
-                                    match.team2.teamName,
-                                    style: Theme.of(context).textTheme.caption!.copyWith(
-                                          color: Theme.of(context).textTheme.caption!.color,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 0.6,
-                                          fontSize: 14,
-                                        ),
+
+                                  Expanded(
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        match.team2.teamName,
+                                        textAlign: TextAlign.end,
+                                        style: Theme.of(context).textTheme.caption!.copyWith(
+                                              color: Theme.of(context).textTheme.caption!.color,
+                                              fontWeight: FontWeight.bold,
+                                              letterSpacing: 0.6,
+                                              fontSize: 14,
+                                            ),
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -125,6 +146,12 @@ class _CardViewState extends State<CardView> {
                                     child: Image.network(
                                       match.team1.teamImage,
                                       fit: BoxFit.cover,
+                                      errorBuilder: (c,o,s){
+                                        return Image.asset(
+                                            ConstanceData.appLogo,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
                                     ),
                                   ),
                                   SizedBox(
@@ -140,13 +167,24 @@ class _CardViewState extends State<CardView> {
                                         ),
                                   ),
                                   Expanded(child: SizedBox()),
-                                  Text(
-                                    match.matchDateTime,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                  Column(
+                                    children: [
+                                      TimeLeftText(
+                                        match.matchDateTime,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.green,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(Utils.getDaySpecificDate(DateTime.parse(match.matchDateTime)),
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: Theme.of(context).disabledColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                   Expanded(child: SizedBox()),
                                   Text(
@@ -167,6 +205,12 @@ class _CardViewState extends State<CardView> {
                                     child: Image.network(
                                       match.team2.teamImage,
                                       fit: BoxFit.cover,
+                                      errorBuilder: (c,o,s){
+                                        return Image.asset(
+                                          ConstanceData.appLogo,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
                                     )
                                   ),
                                 ],
@@ -178,65 +222,65 @@ class _CardViewState extends State<CardView> {
                       // Expanded(child: SizedBox()),
                       // Divider(),
                       SizedBox(height: 5,),
-                      // Container(
-                      //   height: 35,
-                      //   decoration: BoxDecoration(
-                      //     color: Theme.of(context).disabledColor.withOpacity(0.2),
-                      //     borderRadius: BorderRadius.only(
-                      //       bottomLeft: Radius.circular(10),
-                      //       bottomRight: Radius.circular(10),
-                      //     ),
-                      //   ),
-                      //   child: Padding(
-                      //     padding: const EdgeInsets.only(
-                      //       left: 10,
-                      //       right: 10,
-                      //     ),
-                      //     child: Row(
-                      //       mainAxisAlignment: MainAxisAlignment.center,
-                      //       children: [
-                      //         Text(
-                      //           '1 Team',
-                      //           style: Theme.of(context).textTheme.caption!.copyWith(
-                      //                 color: Theme.of(context).primaryColor,
-                      //                 fontWeight: FontWeight.bold,
-                      //                 letterSpacing: 0.6,
-                      //                 fontSize: 14,
-                      //               ),
-                      //         ),
-                      //         SizedBox(
-                      //           width: 5,
-                      //         ),
-                      //         Container(
-                      //           height: 25,
-                      //           width: 60,
-                      //           decoration: BoxDecoration(
-                      //             borderRadius: BorderRadius.circular(4),
-                      //             border: Border.all(
-                      //               color: Theme.of(context).primaryColor,
-                      //             ),
-                      //           ),
-                      //           child: Center(
-                      //             child: Text(
-                      //               "Mega",
-                      //               style: Theme.of(context).textTheme.caption!.copyWith(
-                      //                     color: Theme.of(context).primaryColor,
-                      //                     fontWeight: FontWeight.bold,
-                      //                     letterSpacing: 0.6,
-                      //                     fontSize: 12,
-                      //                   ),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //         Expanded(child: SizedBox()),
-                      //         Icon(
-                      //           Icons.outbox,
-                      //           color: Theme.of(context).primaryColor,
-                      //         )
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
+                      Container(
+                        height: 35,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).disabledColor.withOpacity(0.2),
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 10,
+                            right: 10,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '1 Team',
+                                style: Theme.of(context).textTheme.caption!.copyWith(
+                                      color: Theme.of(context).primaryColor,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0.6,
+                                      fontSize: 14,
+                                    ),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Container(
+                                height: 25,
+                                width: 60,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "Mega",
+                                    style: Theme.of(context).textTheme.caption!.copyWith(
+                                          color: Theme.of(context).primaryColor,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.6,
+                                          fontSize: 12,
+                                        ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(child: SizedBox()),
+                              Icon(
+                                Icons.outbox,
+                                color: Theme.of(context).primaryColor,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -250,37 +294,306 @@ class _CardViewState extends State<CardView> {
 }
 
 class CompleteCardView extends StatefulWidget {
-  final String? txt1;
-  final String? txt2;
-  final String? txt3;
-  final String? txt4;
-  final String? txt5;
-  final String? txt6;
-  final String? txt7;
-  final Image? image1;
-  final Image? image2;
   final MatchModel match;
 
-
-  const CompleteCardView({
+  CompleteCardView({
     Key? key,
     required this.match,
-    this.txt1,
-    this.txt2,
-    this.txt3,
-    this.txt4,
-    this.txt6,
-    this.txt7,
-    this.image1,
-    this.image2,
-    this.txt5,
   }) : super(key: key);
 
   @override
   _CompleteCardViewState createState() => _CompleteCardViewState();
 }
-
 class _CompleteCardViewState extends State<CompleteCardView> {
+  @override
+  Widget build(BuildContext context) {
+
+    String winningString = "";
+
+    if(widget.match.winnerTeam==widget.match.teamid1){
+      winningString = "${widget.match.team1.teamName} won with ${widget.match.team1Score} in ${widget.match.team1Over} overs";
+    }else{
+      winningString = "${widget.match.team2.teamName} won with ${widget.match.team2Score} in ${widget.match.team1Over} overs";
+    }
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MatchDetailPage(
+              match: widget.match,
+            ),
+          ),
+        );
+      },
+      child: Row(
+        children: [
+          Expanded(
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: IntrinsicHeight(
+                child: Container(
+
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).appBarTheme.color!.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                AppLocalizations.of(widget.match.title),
+                                style: Theme.of(context).textTheme.caption!.copyWith(
+                                  color: Theme.of(context).textTheme.caption!.color,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.6,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 20,),
+                            Icon(Icons.notifications_on_outlined)
+                          ],
+                        ),
+                      ),
+                      Divider(),
+                      Container(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 10,
+                                right: 10,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      AppLocalizations.of(widget.match.team1.teamName??""),
+                                      style: Theme.of(context).textTheme.caption!.copyWith(
+                                        color: Theme.of(context).textTheme.caption!.color,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.6,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10,),
+                                  Expanded(
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        AppLocalizations.of(widget.match.team2.teamName??""),
+                                        style: Theme.of(context).textTheme.caption!.copyWith(
+                                          color: Theme.of(context).textTheme.caption!.color,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.6,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 5, right: 5),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 35,
+                                    width: 35,
+                                    child: Image.network(
+                                      widget.match.team1.teamImage??"",
+                                      errorBuilder: (c,o,s){
+                                        return Image.asset(
+                                          ConstanceData.appLogo,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        widget.match.team1.teamShortName??"",
+                                        style: Theme.of(context).textTheme.headline6!.copyWith(
+                                          color: Theme.of(context).textTheme.headline6!.color,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.6,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      SizedBox(height: 4,),
+                                      Text(
+                                        widget.match.team1Score??"",
+                                        style: Theme.of(context).textTheme.headline6!.copyWith(
+                                          color: Theme.of(context).textTheme.caption!.color,                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.6,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                  Text(Utils.getDaySpecificDate(DateTime.parse(widget.match.matchDateTime)),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Theme.of(context).textTheme.caption!.color,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        widget.match.team1.teamShortName??"",
+                                        style: Theme.of(context).textTheme.headline6!.copyWith(
+                                          color: Theme.of(context).textTheme.headline6!.color,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.6,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      SizedBox(height: 4,),
+                                      Text(
+                                        widget.match.team1Score??"",
+                                        style: Theme.of(context).textTheme.headline6!.copyWith(
+                                          color: Theme.of(context).textTheme.caption!.color,                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.6,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Container(
+                                    height: 35,
+                                    width: 35,
+                                    child: Image.network(
+                                      widget.match.team2.teamImage??"",
+                                      errorBuilder: (c,o,s){
+                                        return Image.asset(
+                                          ConstanceData.appLogo,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(child: SizedBox()),
+                      Container(
+                        height: 35,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).disabledColor.withOpacity(0.2),
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 10,
+                            right: 10,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.match.matchStatusNote,
+                                style: Theme.of(context).textTheme.caption!.copyWith(
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.6,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              // Container(
+                              //   height: 25,
+                              //   width: 60,
+                              //   decoration: BoxDecoration(
+                              //     borderRadius: BorderRadius.circular(4),
+                              //     border: Border.all(
+                              //       color: Theme.of(context).primaryColor,
+                              //     ),
+                              //   ),
+                              //   child: Center(
+                              //     child: Text(
+                              //       AppLocalizations.of('Mega'),
+                              //       style: Theme.of(context).textTheme.caption!.copyWith(
+                              //         color: Theme.of(context).primaryColor,
+                              //         fontWeight: FontWeight.bold,
+                              //         letterSpacing: 0.6,
+                              //         fontSize: 12,
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
+                              // Expanded(child: SizedBox()),
+                              // Icon(
+                              //   Icons.outbox,
+                              //   color: Theme.of(context).primaryColor,
+                              // )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+class LiveSliderCardView extends StatefulWidget {
+  final MatchModel match;
+
+  LiveSliderCardView({
+    Key? key,
+    required this.match,
+  }) : super(key: key);
+
+  @override
+  _LiveSliderCardViewState createState() => _LiveSliderCardViewState();
+}
+class _LiveSliderCardViewState extends State<LiveSliderCardView> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -302,188 +615,618 @@ class _CompleteCardViewState extends State<CompleteCardView> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Container(
-                height: 150,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).appBarTheme.color!.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            widget.txt1!,
-                            style: Theme.of(context).textTheme.caption!.copyWith(
-                                  color: Theme.of(context).textTheme.caption!.color,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 0.6,
-                                  fontSize: 14,
-                                ),
-                          ),
-                          Expanded(child: SizedBox()),
-                          Icon(Icons.notifications_on_outlined)
-                        ],
-                      ),
-                    ),
-                    Divider(),
-                    Container(
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 10,
-                              right: 10,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  widget.txt2!,
-                                  style: Theme.of(context).textTheme.caption!.copyWith(
-                                        color: Theme.of(context).textTheme.caption!.color,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.6,
-                                        fontSize: 14,
-                                      ),
-                                ),
-                                Expanded(child: SizedBox()),
-                                Text(
-                                  widget.txt3!,
-                                  style: Theme.of(context).textTheme.caption!.copyWith(
-                                        color: Theme.of(context).textTheme.caption!.color,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.6,
-                                        fontSize: 14,
-                                      ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 5, right: 5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  height: 35,
-                                  width: 35,
-                                  child: widget.image1,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  widget.txt4!,
-                                  style: Theme.of(context).textTheme.headline6!.copyWith(
-                                        color: Theme.of(context).textTheme.headline6!.color,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.6,
-                                        fontSize: 14,
-                                      ),
-                                ),
-                                Expanded(child: SizedBox()),
-                                Text(
-                                  widget.txt5!,
-                                  style: Theme.of(context).textTheme.caption!.copyWith(
-                                        color: Theme.of(context).textTheme.caption!.color,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.6,
-                                        fontSize: 14,
-                                      ),
-                                ),
-                                Expanded(child: SizedBox()),
-                                Text(
-                                  widget.txt6!,
-                                  style: Theme.of(context).textTheme.headline6!.copyWith(
-                                        color: Theme.of(context).textTheme.headline6!.color,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.6,
-                                        fontSize: 14,
-                                      ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Container(
-                                  height: 35,
-                                  width: 35,
-                                  child: widget.image2,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(child: SizedBox()),
-                    Container(
-                      height: 35,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).disabledColor.withOpacity(0.2),
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          left: 10,
-                          right: 10,
-                        ),
+              child: IntrinsicHeight(
+                child: Container(
+
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).appBarTheme.color!.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              widget.txt7!,
-                              style: Theme.of(context).textTheme.caption!.copyWith(
-                                    color: Theme.of(context).primaryColor,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 0.6,
-                                    fontSize: 14,
-                                  ),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Container(
-                              height: 25,
-                              width: 60,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(4),
-                                border: Border.all(
-                                  color: Theme.of(context).primaryColor,
+                            Expanded(
+                              child: Text(
+                                AppLocalizations.of(widget.match.title),
+                                style: Theme.of(context).textTheme.caption!.copyWith(
+                                  color: Theme.of(context).textTheme.caption!.color,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.4,
+                                  fontSize: 12,
                                 ),
                               ),
-                              child: Center(
-                                child: Text(
-                                  AppLocalizations.of('Mega'),
-                                  style: Theme.of(context).textTheme.caption!.copyWith(
-                                        color: Theme.of(context).primaryColor,
+                            ),
+                            SizedBox(width: 20,),
+                            Icon(Icons.notifications_on_outlined)
+                          ],
+                        ),
+                      ),
+                      Divider(),
+                      Container(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 10,
+                                right: 10,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      AppLocalizations.of(widget.match.team1.teamName??""),
+                                      style: Theme.of(context).textTheme.caption!.copyWith(
+                                        color: Theme.of(context).textTheme.caption!.color,
                                         fontWeight: FontWeight.bold,
                                         letterSpacing: 0.6,
                                         fontSize: 12,
                                       ),
-                                ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10,),
+                                  Expanded(
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        AppLocalizations.of(widget.match.team2.teamName??""),
+                                        textAlign: TextAlign.end,
+                                        style: Theme.of(context).textTheme.caption!.copyWith(
+                                          color: Theme.of(context).textTheme.caption!.color,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.6,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            Expanded(child: SizedBox()),
-                            Icon(
-                              Icons.outbox,
-                              color: Theme.of(context).primaryColor,
-                            )
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 5, right: 5),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 30,
+                                    width: 30,
+                                    child: Image.network(
+                                      widget.match.team1.teamImage??"",
+                                      errorBuilder: (c,o,s){
+                                        return Image.asset(
+                                          ConstanceData.appLogo,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        widget.match.team1.teamShortName??"",
+                                        style: Theme.of(context).textTheme.headline6!.copyWith(
+                                          color: Theme.of(context).textTheme.headline6!.color,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.6,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      SizedBox(height: 6,),
+                                      Text(
+                                        AppLocalizations.of(widget.match.team1Score??""),
+                                        style: Theme.of(context).textTheme.caption!.copyWith(
+                                          color: Theme.of(context).textTheme.caption!.color,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.6,
+                                          fontSize: 10,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                  Text(
+                                    "Live",
+                                    // DateFormat('d MMM y').format(DateTime.parse(widget.match.matchDateTime)),
+                                    style: Theme.of(context).textTheme.caption!.copyWith(
+                                      // color: Theme.of(context).textTheme.caption!.color,
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0.6,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        widget.match.team1.teamShortName??"",
+                                        style: Theme.of(context).textTheme.headline6!.copyWith(
+                                          color: Theme.of(context).textTheme.headline6!.color,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.6,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      SizedBox(height: 6,),
+                                      Text(
+                                        AppLocalizations.of(widget.match.team1Score??""),
+                                        style: Theme.of(context).textTheme.caption!.copyWith(
+                                          color: Theme.of(context).textTheme.caption!.color,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.6,
+                                          fontSize: 10,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Container(
+                                    height: 30,
+                                    width: 30,
+                                    child: Image.network(
+                                      widget.match.team2.teamImage??"",
+                                      errorBuilder: (c,o,s){
+                                        return Image.asset(
+                                          ConstanceData.appLogo,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.only(
+                            //     left: 10,
+                            //     right: 10,
+                            //   ),
+                            //   child: Row(
+                            //     mainAxisAlignment: MainAxisAlignment.center,
+                            //     children: [
+                            //       Expanded(
+                            //         child: Text(
+                            //           AppLocalizations.of(widget.match.team1Score??""),
+                            //           style: Theme.of(context).textTheme.caption!.copyWith(
+                            //             color: Theme.of(context).textTheme.caption!.color,
+                            //             fontWeight: FontWeight.bold,
+                            //             letterSpacing: 0.6,
+                            //             fontSize: 12,
+                            //           ),
+                            //         ),
+                            //       ),
+                            //       SizedBox(width: 10,),
+                            //       Expanded(
+                            //         child: Align(
+                            //           alignment: Alignment.centerRight,
+                            //           child: Text(
+                            //             AppLocalizations.of(widget.match.team2Score??""),
+                            //             textAlign: TextAlign.end,
+                            //             style: Theme.of(context).textTheme.caption!.copyWith(
+                            //               color: Theme.of(context).textTheme.caption!.color,
+                            //               fontWeight: FontWeight.bold,
+                            //               letterSpacing: 0.6,
+                            //               fontSize: 12,
+                            //             ),
+                            //           ),
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
-                    ),
-                  ],
+                      Expanded(child: SizedBox()),
+                      Container(
+                        height: 35,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).disabledColor.withOpacity(0.2),
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 10,
+                            right: 10,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  widget.match.matchStatusNote,
+                                  softWrap: true,
+                                  style: Theme.of(context).textTheme.caption!.copyWith(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 0.6,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+
+                              // Container(
+                              //   height: 25,
+                              //   width: 60,
+                              //   decoration: BoxDecoration(
+                              //     borderRadius: BorderRadius.circular(4),
+                              //     border: Border.all(
+                              //       color: Theme.of(context).primaryColor,
+                              //     ),
+                              //   ),
+                              //   child: Center(
+                              //     child: Text(
+                              //       AppLocalizations.of('Mega'),
+                              //       style: Theme.of(context).textTheme.caption!.copyWith(
+                              //         color: Theme.of(context).primaryColor,
+                              //         fontWeight: FontWeight.bold,
+                              //         letterSpacing: 0.6,
+                              //         fontSize: 12,
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
+                              // Expanded(child: SizedBox()),
+                              // Icon(
+                              //   Icons.outbox,
+                              //   color: Theme.of(context).primaryColor,
+                              // )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+class FeedCardView extends StatefulWidget {
+  final MatchModel match;
+
+  FeedCardView({
+    Key? key,
+    required this.match,
+  }) : super(key: key);
+
+  @override
+  _FeedCardViewState createState() => _FeedCardViewState();
+}
+
+
+
+class _FeedCardViewState extends State<FeedCardView> {
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Commentary(
+              match: widget.match,
+            ),
+          ),
+        );
+      },
+      child: Row(
+        children: [
+          Expanded(
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: IntrinsicHeight(
+                child: Container(
+
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).appBarTheme.color!.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                AppLocalizations.of(widget.match.title),
+                                style: Theme.of(context).textTheme.caption!.copyWith(
+                                  color: Theme.of(context).textTheme.caption!.color,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.4,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 20,),
+                            Icon(Icons.notifications_on_outlined)
+                          ],
+                        ),
+                      ),
+                      Divider(),
+                      Container(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 10,
+                                right: 10,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      AppLocalizations.of(widget.match.team1.teamName??""),
+                                      style: Theme.of(context).textTheme.caption!.copyWith(
+                                        color: Theme.of(context).textTheme.caption!.color,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.6,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10,),
+                                  Expanded(
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        AppLocalizations.of(widget.match.team2.teamName??""),
+                                        textAlign: TextAlign.end,
+                                        style: Theme.of(context).textTheme.caption!.copyWith(
+                                          color: Theme.of(context).textTheme.caption!.color,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.6,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 5, right: 5),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 30,
+                                    width: 30,
+                                    child: Image.network(
+                                      widget.match.team1.teamImage??"",
+                                      errorBuilder: (c,o,s){
+                                        return Image.asset(
+                                          ConstanceData.appLogo,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        widget.match.team1.teamShortName??"",
+                                        style: Theme.of(context).textTheme.headline6!.copyWith(
+                                          color: Theme.of(context).textTheme.headline6!.color,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.6,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      SizedBox(height: 6,),
+                                      Text(
+                                        AppLocalizations.of(widget.match.team1Score??""),
+                                        style: Theme.of(context).textTheme.caption!.copyWith(
+                                          color: Theme.of(context).textTheme.caption!.color,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.6,
+                                          fontSize: 10,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                  Text(
+                                    "Live",
+                                    // DateFormat('d MMM y').format(DateTime.parse(widget.match.matchDateTime)),
+                                    style: Theme.of(context).textTheme.caption!.copyWith(
+                                      // color: Theme.of(context).textTheme.caption!.color,
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0.6,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        widget.match.team1.teamShortName??"",
+                                        style: Theme.of(context).textTheme.headline6!.copyWith(
+                                          color: Theme.of(context).textTheme.headline6!.color,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.6,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      SizedBox(height: 6,),
+                                      Text(
+                                        AppLocalizations.of(widget.match.team1Score??""),
+                                        style: Theme.of(context).textTheme.caption!.copyWith(
+                                          color: Theme.of(context).textTheme.caption!.color,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.6,
+                                          fontSize: 10,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Container(
+                                    height: 30,
+                                    width: 30,
+                                    child: Image.network(
+                                      widget.match.team2.teamImage??"",
+                                      errorBuilder: (c,o,s){
+                                        return Image.asset(
+                                          ConstanceData.appLogo,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.only(
+                            //     left: 10,
+                            //     right: 10,
+                            //   ),
+                            //   child: Row(
+                            //     mainAxisAlignment: MainAxisAlignment.center,
+                            //     children: [
+                            //       Expanded(
+                            //         child: Text(
+                            //           AppLocalizations.of(widget.match.team1Score??""),
+                            //           style: Theme.of(context).textTheme.caption!.copyWith(
+                            //             color: Theme.of(context).textTheme.caption!.color,
+                            //             fontWeight: FontWeight.bold,
+                            //             letterSpacing: 0.6,
+                            //             fontSize: 12,
+                            //           ),
+                            //         ),
+                            //       ),
+                            //       SizedBox(width: 10,),
+                            //       Expanded(
+                            //         child: Align(
+                            //           alignment: Alignment.centerRight,
+                            //           child: Text(
+                            //             AppLocalizations.of(widget.match.team2Score??""),
+                            //             textAlign: TextAlign.end,
+                            //             style: Theme.of(context).textTheme.caption!.copyWith(
+                            //               color: Theme.of(context).textTheme.caption!.color,
+                            //               fontWeight: FontWeight.bold,
+                            //               letterSpacing: 0.6,
+                            //               fontSize: 12,
+                            //             ),
+                            //           ),
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
+                          ],
+                        ),
+                      ),
+                      Expanded(child: SizedBox()),
+                      Container(
+                        height: 35,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).disabledColor.withOpacity(0.2),
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 10,
+                            right: 10,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  widget.match.matchStatusNote,
+                                  softWrap: true,
+                                  style: Theme.of(context).textTheme.caption!.copyWith(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 0.6,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+
+                              // Container(
+                              //   height: 25,
+                              //   width: 60,
+                              //   decoration: BoxDecoration(
+                              //     borderRadius: BorderRadius.circular(4),
+                              //     border: Border.all(
+                              //       color: Theme.of(context).primaryColor,
+                              //     ),
+                              //   ),
+                              //   child: Center(
+                              //     child: Text(
+                              //       AppLocalizations.of('Mega'),
+                              //       style: Theme.of(context).textTheme.caption!.copyWith(
+                              //         color: Theme.of(context).primaryColor,
+                              //         fontWeight: FontWeight.bold,
+                              //         letterSpacing: 0.6,
+                              //         fontSize: 12,
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
+                              // Expanded(child: SizedBox()),
+                              // Icon(
+                              //   Icons.outbox,
+                              //   color: Theme.of(context).primaryColor,
+                              // )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

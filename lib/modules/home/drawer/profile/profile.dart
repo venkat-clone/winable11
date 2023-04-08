@@ -16,7 +16,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  User? user = FirebaseAuth.instance.currentUser;
+
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Row(
                                   children: [
                                     Text(
-                                      user?.displayName ?? " ",
+                                      currentUser.value.name.trim(),
                                       style: Theme.of(context)
                                           .textTheme
                                           .caption!

@@ -3,12 +3,14 @@
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/modules/home/drawer/drawer.dart';
 import 'package:newsports/modules/home/mainPage.dart';
-import 'package:newsports/modules/navigationBar/feed.dart';
+import 'package:newsports/modules/navigationBar/feed/feed.dart';
 import 'package:newsports/modules/navigationBar/group.dart';
 import 'package:newsports/modules/navigationBar/myMatches/myMatches.dart';
-import 'package:newsports/modules/navigationBar/winner.dart';
+import 'package:newsports/modules/navigationBar/winner/winner.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../navigationBar/winner/winner_oldui.dart';
 
 class HomeScreen extends StatelessWidget {
   final IsSelect objIsSelect = new IsSelect();
@@ -66,12 +68,10 @@ class HomeScreen extends StatelessWidget {
                   ),
                   text: AppLocalizations.of('Winners'),
                   ontap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => WinnerPage(),
-                      ),
-                    );
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => WinnerPage(),
+                    ));
+
                   },
                   color: objIsSelect.win ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
                 ),

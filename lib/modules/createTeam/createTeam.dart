@@ -14,7 +14,9 @@ import '../../models/Contest.dart';
 import '../../models/MatchModel.dart';
 import '../../models/player.dart';
 import '../../models/userTeamPlayer.dart';
+import '../../utils/designations.dart';
 import '../../utils/utils.dart';
+import '../../widget/timeLeft.dart';
 
 class CreateTeamPage extends StatefulWidget {
   MatchModel match;
@@ -44,6 +46,7 @@ class _CreateTeamPageState extends StateMVC<CreateTeamPage> {
   Future<bool> initAsync() async{
     await _con.getSport();
     _con.getMatchPlayers(context,widget.match);
+    _con.cricketTeam.matchId = widget.match.matchId;
     return super.initAsync();
   }
 
@@ -51,6 +54,9 @@ class _CreateTeamPageState extends StateMVC<CreateTeamPage> {
   bool isBAT = false;
   bool isAR = false;
   bool isBowl = false;
+
+  bool creditsSort = true;
+
   @override
   Widget build(BuildContext context) {
 
@@ -114,24 +120,38 @@ class _CreateTeamPageState extends StateMVC<CreateTeamPage> {
                             ),
                       ),
                       Expanded(child: SizedBox()),
-                      Text(
-                        AppLocalizations.of('POINTS'),
-                        style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                              color: Colors.black54,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.6,
-                              fontSize: 10,
-                            ),
+                      InkWell(
+                        onTap: (){
+                          setState(() {
+                            creditsSort = false;
+                          });
+                        },
+                        child: Text(
+                          AppLocalizations.of('POINTS'),
+                          style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                                color: creditsSort?Colors.black54:Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.6,
+                                fontSize: 10,
+                              ),
+                        ),
                       ),
                       Expanded(child: SizedBox()),
-                      Text(
-                        AppLocalizations.of('CREDITS'),
-                        style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                              color: Colors.black54,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.6,
-                              fontSize: 10,
-                            ),
+                      InkWell(
+                        onTap: (){
+                          setState(() {
+                            creditsSort = true;
+                          });
+                        },
+                        child: Text(
+                          AppLocalizations.of('CREDITS'),
+                          style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                                color: creditsSort?Theme.of(context).primaryColor:Colors.black54,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.6,
+                                fontSize: 10,
+                              ),
+                        ),
                       ),
                     ],
                   ),
@@ -204,13 +224,30 @@ class _CreateTeamPageState extends StateMVC<CreateTeamPage> {
               InkWell(
                 onTap: () {
                   if(_con.cricketTeam.players.length<11){
-                    _con.errorSnackBar("Select all players", context);
+                    _con.errorSnackBar("Team must Contain 11 players", context);
                     return;
                   }
+                  final test =[
+                    _con.cricketTeam.players1,
+                    _con.cricketTeam.players2,
+                    _con.cricketTeam.players3,
+                    _con.cricketTeam.players4,
+                  ];
+                  int i =1;
+                  bool flag =false;
+                  test.forEach((element) {
+                    if(element.length==0 && flag==false){
+                      _con.errorSnackBar("atleast 1 ${Designation.getDesignation(_con.sport, i).fullName} should be there in team", context);
+                      flag = true;
+                    }
+                    i=i+1;
+                  });
+                  if(flag) return;
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ChooseCaptainPage(team: _con.cricketTeam,),
+                      builder: (context) => ChooseCaptainPage(team: _con.cricketTeam,matchDateTime:widget.match.matchDateTime),
                     ),
                   );
                 },
@@ -250,11 +287,25 @@ class _CreateTeamPageState extends StateMVC<CreateTeamPage> {
   }
 
   Widget playerList(List<UserTeamPlayer> playersList,List<UserTeamPlayer> selectedPlayersList){
+
     if(playersList.isEmpty){
       return Expanded(child: Center(
         child: Text(" no player found"),
       ));
     }
+    if(_con.loading){
+      return Expanded(child: Center(
+        child: CircularProgressIndicator(),
+      ));
+    }
+
+    playersList.sort((a,b){
+      if(creditsSort)
+      return double.parse(b.creditPoints).compareTo(double.parse(a.creditPoints));
+      else
+        return double.parse(b.points).compareTo(double.parse(a.points));
+
+    });
     return Expanded(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -456,8 +507,8 @@ class _CreateTeamPageState extends StateMVC<CreateTeamPage> {
                           ),
                         ),
                         Expanded(child: SizedBox()),
-                        Text(
-                          Utils.getTimeLeft(DateTime.parse(widget.match.matchDateTime)),
+                        TimeLeftText(
+                          widget.match.matchDateTime,
                           style: Theme.of(context).textTheme.caption!.copyWith(
                                 color: Theme.of(context).textTheme.headline6!.color,
                                 letterSpacing: 0.6,

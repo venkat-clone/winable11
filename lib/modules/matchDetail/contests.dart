@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import '../../controllers/ContestController.dart';
 import '../../models/MatchModel.dart';
 import '../../models/Team.dart';
+import 'contestDetail/select_team.dart';
 import 'matchDetailPage.dart';
 
 class ContestsPage extends StatefulWidget {
@@ -50,13 +51,22 @@ class _ContestsPageState extends StateMVC<ContestsPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(_con.contests.value);
+
     if(_con.contests.loading) return Expanded(
       child: Center(
         child: CircularProgressIndicator(),
       ),
     );
-    if(_con.contests.value!.isEmpty){
+    if(_con.contests.error!=null){
+      return Expanded(
+        child: Center(
+          child: Text(_con.contests.error!,style: TextStyle(
+              color: Colors.grey
+          ),),
+        ),
+      );
+    }
+    if(_con.contests.value!.isEmpty || _con.contests.value==null){
       return Expanded(
         child: Center(
           child: Text("No Contest for this Match",style: TextStyle(
@@ -118,6 +128,17 @@ class _ContestsPageState extends StateMVC<ContestsPage> {
                   MatchDetailCardView(
                     contest: contest,
                     match: widget.match,
+                    joinContest: (){
+                      Navigator.of(context).push(MaterialPageRoute(builder: (c)=>SelectTeam(
+                        matchId: widget.match.matchId,
+                        saveTeam: (team)async{
+                          _con.joinContest(contest.contestId,team.teamId,context);
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                          _con.successSnackBar("Successfully joined the contest", context);
+                        },
+                      )));
+                    },
                   ),
                   SizedBox(
                     height: 25,

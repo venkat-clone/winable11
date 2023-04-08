@@ -4,6 +4,8 @@ import 'package:newsports/Language/appLocalizations.dart';
 import 'package:flutter/material.dart';
 import 'package:newsports/utils/utils.dart';
 
+import '../../../base_classes/value_state.dart';
+import '../../../models/Contest.dart';
 import '../../../models/Winnings.dart';
 
 class DetailPage extends StatelessWidget {
@@ -13,7 +15,7 @@ class DetailPage extends StatelessWidget {
     required this.winningNote
 });
   String winningNote;
-  List<Winning> winnings ;
+  ValueState<List<Winning>> winnings ;
 
   @override
   Widget build(BuildContext context) {
@@ -70,13 +72,13 @@ class DetailPage extends StatelessWidget {
                 ),
               ),
               Divider(),
-              ListView.separated(
+              if(winnings.value!=null) (winnings.value!.isNotEmpty)? ListView.separated(
                 shrinkWrap: true,
-                  itemCount: winnings.length,
+                  itemCount: winnings.value!.length,
                   itemBuilder: (c,index){
                     return row(
-                        "# ${winnings[index].rank}",
-                        '₹${Utils.convertToIndianCurrency(winnings[index].prize)}',
+                        "# ${((winnings.value?[index].rank)??"").replaceAll("-0", "")}",
+                        '₹${Utils.convertToIndianCurrency(int.parse(winnings.value?[index].price??"0"))}',
                         context
                     );
                   },
@@ -85,7 +87,10 @@ class DetailPage extends StatelessWidget {
                       height: 15,
                     );
                   },
+              ): Center(
+                child: Text("NO Winnings for this contest"),
               ),
+
               Divider(),
             ],
           ),

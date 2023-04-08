@@ -374,16 +374,19 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                   alignment: Alignment.bottomCenter,
                                   child: ElevatedButton(
                                     onPressed: () async {
-                                      if (_formKey.currentState!.validate()) {
+                                      if (_formKey.currentState!.validate() || true) {
                                         _formKey.currentState!.save();
-                                        print("started loading");
-                                        final success = await _con.requestForKYC(kyc,File(aadhaarCardPath),File(panCardPath));
+                                        final success = await _con.requestForKYC(kyc,
+                                            File(aadhaarCardPath),
+                                            File(panCardPath)
+                                        );
 
                                         _authController.upDateKYCStatus(FirebaseAuth.instance.currentUser!.uid, true);
 
-                                        setState(() => requested = success);
-                                        success
-                                            ? showToast("KYC details uploaded successful")
+                                        setState(() {
+                                          requested = success;
+                                        });
+                                        success ? showToast("KYC details uploaded successful")
                                             : showToast("KYC details uploaded successful");
                                       }
                                     },
@@ -402,7 +405,7 @@ class _KYCFormState extends StateMVC<KYCForm> {
                         ),
                 )),
           ),
-          if (loading)
+          if (_con.loading)
             Container(
               color: Colors.grey.shade50.withOpacity(0.4),
               child: Center(child: CircularProgressIndicator()),

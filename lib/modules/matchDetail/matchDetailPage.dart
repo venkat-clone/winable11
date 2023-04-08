@@ -14,6 +14,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../models/MatchModel.dart';
 import '../../models/Team.dart';
 import '../../utils/utils.dart';
+import '../../widget/timeLeft.dart';
 
 class MatchDetailPage extends StatefulWidget {
   final MatchModel match;
@@ -106,8 +107,8 @@ class _MatchDetailPageState extends StateMVC<MatchDetailPage> {
                                         fontSize: 16,
                                       ),
                             ),
-                            Text(
-                              Utils.getTimeLeft(DateTime.parse(widget.match.matchDateTime)),
+                            TimeLeftText(
+                              widget.match.matchDateTime,
                               style:
                                   Theme.of(context).textTheme.caption!.copyWith(
                                         color: Colors.white,
@@ -525,7 +526,7 @@ class _MatchDetailPageState extends StateMVC<MatchDetailPage> {
                   : isMyContests
                       ? MyContestsPage(match: widget.match,con: _con,)
                       : isMyTeams
-                          ? MyTeamPage(match: widget.match,con: _con,)
+                          ? MyTeamPage(match: widget.match,)
                           : SizedBox(),
             ],
           ),

@@ -35,7 +35,7 @@ class _MyContestsPageState extends StateMVC<MyContestsPage> {
   @override
   Future<bool> initAsync() async {
     await _con.initSport();
-    _con.getMyContests(widget.match.matchId,context);
+    await _con.getMyContests(widget.match.matchId,context);
     return super.initAsync();
   }
 
@@ -148,6 +148,9 @@ class _MyContestsPageState extends StateMVC<MyContestsPage> {
                   MatchDetailCardView(
                     contest: contest,
                     match: widget.match,
+                    joinContest: (){
+
+                    },
                   ),
                   SizedBox(
                     height: 25,

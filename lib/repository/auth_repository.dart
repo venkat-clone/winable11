@@ -16,6 +16,7 @@ class AuthRepository{
   Future<AuthUser> registerUser(AuthUser user) async{
     final String url = '${Constants.BaseUrl}user/register/new';
     try{
+      print(jsonEncode(user.toJson()));
       final response = await _apiService.getPostApiResponse(url, user.toJson());
       _apiService.getData(response);
     }catch(error){
@@ -37,6 +38,7 @@ class AuthRepository{
         headers: {HttpHeaders.contentTypeHeader: 'application/json'},
         body: json.encode({
           "email":email,
+          "mobile":email,
           "password":password
         }),
       );
@@ -47,5 +49,20 @@ class AuthRepository{
       rethrow;
     }
   }
+
+  Future signUpWithGAuth(String email,String password,String userName) async{
+    final String url = '${Constants.BaseUrl}user/register/new';
+    try{
+      final response = await _apiService.getPostApiResponse(url, {
+        "email":email,
+        "password":password,
+        "name":userName
+      });
+      _apiService.getData(response);
+    }catch(error){
+      rethrow;
+    }
+  }
+
 
 }

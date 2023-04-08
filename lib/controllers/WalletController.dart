@@ -12,6 +12,7 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/base_classes/base_controller.dart';
 import 'package:newsports/models/CashFreeTransaction.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
+import 'package:newsports/utils/value_notifiers.dart';
 import 'package:upi_india/upi_india.dart';
 import 'package:upi_india/upi_response.dart';
 import '../models/CashFreeTransactionResponse.dart';
@@ -24,7 +25,7 @@ class WalletController extends BaseController {
   UpiResponse? _upiResponse;
   UpiResponse? get upiResponse => _upiResponse;
   List<UpiApp> apps = [];
-  double totalBalance = 0;
+  double totalBalance = currentWallet.value.totalBalance;
 
   late CashFreeTransaction transaction ;
   CashFreeTransactionResponse? transactionResponse;
@@ -44,6 +45,14 @@ class WalletController extends BaseController {
     cfPaymentGatewayService.setCallback(verifyPayment, onError);
     super.initState();
   }
+
+  @override
+  Future<bool> initAsync() {
+
+    return super.initAsync();
+  }
+
+
 
 
   /// UPI Methods

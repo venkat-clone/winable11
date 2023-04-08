@@ -13,6 +13,7 @@ import 'package:newsports/models/AuthUser.dart';
 import 'package:newsports/repository/auth_repository.dart';
 import 'package:newsports/utils/app_execptions.dart';
 import '../models/user.dart';
+import '../modules/register/passwordReset.dart';
 import '../utils/constants.dart';
 import '../utils/shared_preference_services.dart';
 import '../utils/value_notifiers.dart';
@@ -63,17 +64,17 @@ class AuthController extends BaseController {
     return longedIn;
   }
 
-  Future<bool> loginWithGoogle() async {
+  Future<bool> loginWithGoogle(BuildContext context) async {
     try{
       await lodeWhile(() async {
         final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
 
         if (gUser == null) return false;
+        Navigator.of(context).push(MaterialPageRoute(builder: (c)=>RegisterPage(email: gUser.email,uName: gUser.displayName??"",)));
+        return false;
         final GoogleSignInAuthentication aAuth = await gUser.authentication;
         // print(gUser.toString());
-
         final credential = GoogleAuthProvider.credential(accessToken: aAuth.accessToken, idToken: aAuth.idToken);
-
 
         // print(credential.asMap());
 
@@ -97,7 +98,7 @@ class AuthController extends BaseController {
             signIn.credential?.accessToken ?? "");
         setUpLocalUser();
       });
-      return true;
+      return false;
     }catch(e,s){
       stopLoading();
       if(kDebugMode){
@@ -107,6 +108,8 @@ class AuthController extends BaseController {
       return false;
     }
   }
+
+
 
   Future<bool> loginWithFacebook() async {
     try{

@@ -14,21 +14,17 @@ import '../utils/app_execptions.dart';
 
 class KYCController extends BaseController {
   Future requestForKYC(KYCDetails details,File aadhaar,File panCard) async {
-    lodeWhile(() async{
+    await lodeWhile(() async{
       try{
+        // SharedPreferenceService.setKYC(true);
         await KYCRepository.requestKYC(details,aadhaar,panCard).then((value) {
           SharedPreferenceService.setKYC(true);
         });
       } on FileNotUploadedException catch(e){
         errorSnackBar(e.getMessage()+" please try again", lastContext!);
-      }
-
-      catch(e,s){
+      } catch(e,s){
 
       }
-
-
-
 
     });
     // details.PanCardIMAGE =
@@ -54,9 +50,6 @@ class KYCController extends BaseController {
 
     return Future.value(uploadTask);
   }
-
-
-
 
   setKYCStatus(authID, status) async {
     try {
@@ -98,10 +91,6 @@ class KYCController extends BaseController {
           .whenComplete(() => getKYCStatus(authID));
     } catch (e) {}
   }
-
-
-
-
 
 
 }

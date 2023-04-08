@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import '../utils/app_execptions.dart';
@@ -19,6 +20,8 @@ class NetworkAPIService extends BaseApiServices {
       responseJson = returnResponse(response);
     }on SocketException {
       throw FetchDataException('No Internet Connection');
+    }on JsonUnsupportedObjectError{
+      throw InvalidResponseException('In valid json');
     }
 
     return responseJson;
@@ -46,13 +49,19 @@ class NetworkAPIService extends BaseApiServices {
       responseJson = returnResponse(response);
     }on SocketException {
       throw FetchDataException('No Internet Connection');
+    }on JsonUnsupportedObjectError{
+      InvalidResponseException('In valid json');
     }
 
     return responseJson ;
   }
 
   dynamic returnResponse (http.Response response){
-    print("response:${response.body}");
+    print("response:${response.body.trim()}");
+    print("response:${response.body.substring(max(response.body.length-1000,0))}");
+    if(response.body.isEmpty){
+      return {};
+    }
     switch(response.statusCode){
       case 200:
         dynamic responseJson = jsonDecode(response.body);

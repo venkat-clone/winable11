@@ -32,6 +32,7 @@ class MatchModel {
 
 
   bool get isStarted{
+    return false;
     return DateTime.parse(matchDateTime).difference(DateTime.now()).isNegative;
   }
 

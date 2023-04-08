@@ -39,6 +39,7 @@ class _CricketPageState extends StateMVC<CricketPage> {
     super.initState();
     // _con.getCricketMatches(context);
     _con.getUpcomingCricketMatches(context);
+    _con.getMyLiveCricketMatches(context);
      // _con.getTeams(context);
   }
 
@@ -61,7 +62,6 @@ class _CricketPageState extends StateMVC<CricketPage> {
     }
 
 
-    MatchModel? nextMatch = _con.upcomingCricketMatchList.value!.isNotEmpty?_con.upcomingCricketMatchList.value!.first:null;
 
     return Expanded(
       child: ListView(
@@ -70,7 +70,7 @@ class _CricketPageState extends StateMVC<CricketPage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if(nextMatch!=null)
+              if(_con.myLiveCricketMatchList.value!=null)
                 Stack(
                 children: [
                   Container(
@@ -146,44 +146,56 @@ class _CricketPageState extends StateMVC<CricketPage> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(top: 50, left: 20, right: 20),
-                    child: CardView(
-                      match: nextMatch,
+                  Container(
+                    margin: EdgeInsets.only(top: 30),
+                    child: CarouselSlider(
+                      items: _con.myLiveCricketMatchList.value!
+                          .map((item) => LiveSliderCardView(match: item),)
+                          .toList(),
+                      options: CarouselOptions(
+                        aspectRatio: 16 / 9,
+                        viewportFraction: 0.8,
+                        initialPage: 0,
+                        autoPlay: true,
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        enlargeCenterPage: true,
+                        scrollDirection: Axis.horizontal,
+                        height: 200,
+                      ),
                     ),
                   ),
+
                 ],
               ),
-              SizedBox(
-                height: 15,
-              ),
-              SizedBox(
-                height: 180,
-                child: CarouselSlider(
-                  items: imgList
-                      .map(
-                        (item) => Image.asset(
-                          item,
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                      .toList(),
-                  options: CarouselOptions(
-                    aspectRatio: 16 / 9,
-                    viewportFraction: 0.8,
-                    initialPage: 0,
-                    autoPlay: true,
-                    autoPlayCurve: Curves.fastOutSlowIn,
-                    enlargeCenterPage: true,
-                    scrollDirection: Axis.horizontal,
-                    height: 200,
-                  ),
-                ),
-              ),
+              // SizedBox(
+              //   height: 15,
+              // ),
+              // SizedBox(
+              //   height: 180,
+              //   child: CarouselSlider(
+              //     items: imgList
+              //         .map(
+              //           (item) => Image.asset(
+              //             item,
+              //             fit: BoxFit.cover,
+              //           ),
+              //         )
+              //         .toList(),
+              //     options: CarouselOptions(
+              //       aspectRatio: 16 / 9,
+              //       viewportFraction: 0.8,
+              //       initialPage: 0,
+              //       autoPlay: true,
+              //       autoPlayCurve: Curves.fastOutSlowIn,
+              //       enlargeCenterPage: true,
+              //       scrollDirection: Axis.horizontal,
+              //       height: 200,
+              //     ),
+              //   ),
+              // ),
               Padding(
                 padding: const EdgeInsets.only(
-                    left: 20, right: 20, top: 20, bottom: 15),
+                    left: 20, right: 20, top: 20, bottom: 0),
                 child: Text(
                   AppLocalizations.of('Upcoming Matches'),
                   style: Theme.of(context).textTheme.headline6!.copyWith(
@@ -198,21 +210,6 @@ class _CricketPageState extends StateMVC<CricketPage> {
                 padding: const EdgeInsets.only(left: 16, right: 16),
                 child: Column(
                   children: [
-                    InkWell(
-                      onTap:(){
-                        // _con.getMatches(context);
-                        _con.getUpcomingCricketMatches(context);
-                        // _con.getTeams(context);
-                        // _con.mapTeams();
-                        // print(jsonEncode(nextMatch?.toJson()));
-                        // print(nextMatch?.toJson());
-                      },
-                      child: Container(
-                        height: 40,
-                        width: 100,
-                        color: Colors.green,
-                      ),
-                    ),
                     _con.upcomingCricketMatchList.value!.length > 0
                         ? ListView.separated(
                           controller: scrollController,

@@ -493,7 +493,7 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
       children: [
         Row(
           children: [
-            Expanded(
+            if(false) Expanded(
               child: Card(
                 shadowColor: Color(0xff1877F2),
                 elevation: 5,
@@ -546,10 +546,10 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                 ),
               ),
             ),
-            SizedBox(
+            if(false) SizedBox(
               width: 2,
             ),
-            Expanded(
+             Expanded(
               child: Card(
                 shadowColor: Color(0xffD30001),
                 elevation: 5,
@@ -558,11 +558,11 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                 ),
                 child: InkWell(
                   onTap: () async {
-
-                    await _con.loginWithGoogle().then((value) {
+                    await _con.loginWithGoogle(context).then((value) {
                       if (value)
                         Navigator.of(context).pushNamed(Routes.HOME);
                       else {
+                        setState(() {_con.loading = false;});
                         // set State Loading False
                       }
                     });

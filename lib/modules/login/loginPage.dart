@@ -86,9 +86,14 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Icon(
-                                      Icons.close,
-                                      color: Colors.white,
+                                    InkWell(
+                                      onTap:(){
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Icon(
+                                        Icons.close,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -184,23 +189,23 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                                     SizedBox(
                                       height: 10,
                                     ),
-                                    Center(
-                                      child: Text(
-                                        AppLocalizations.of('Forgot Password?'),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText2!
-                                            .copyWith(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              fontWeight: FontWeight.bold,
-                                              letterSpacing: 0.6,
-                                              fontSize: 16,
-                                              decoration:
-                                                  TextDecoration.underline,
-                                            ),
-                                      ),
-                                    ),
+                                    // Center(
+                                    //   child: Text(
+                                    //     AppLocalizations.of('Forgot Password?'),
+                                    //     style: Theme.of(context)
+                                    //         .textTheme
+                                    //         .bodyText2!
+                                    //         .copyWith(
+                                    //           color: Theme.of(context)
+                                    //               .primaryColor,
+                                    //           fontWeight: FontWeight.bold,
+                                    //           letterSpacing: 0.6,
+                                    //           fontSize: 16,
+                                    //           decoration:
+                                    //               TextDecoration.underline,
+                                    //         ),
+                                    //   ),
+                                    // ),
                                     SizedBox(
                                       height: 40,
                                     ),
@@ -233,7 +238,7 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
       children: [
         Row(
           children: [
-            Expanded(
+            if(false)Expanded(
               child: Card(
                 shadowColor: Color(0xff1877F2),
                 elevation: 5,
@@ -291,7 +296,7 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
             SizedBox(
               width: 2,
             ),
-            Expanded(
+            if(false)Expanded(
               child: Card(
                 shadowColor: Color(0xffD30001),
                 elevation: 5,
@@ -302,7 +307,7 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                   onTap: () async {
                     setState(() => loading = true);
 
-                    _con.loginWithGoogle().then((value) {
+                    _con.loginWithGoogle(context).then((value) {
                       setState(() => loading = false);
                       if (value) if (value)
                         Navigator.of(context).pushNamed(Routes.HOME);

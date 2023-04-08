@@ -1,10 +1,12 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/constance/constance.dart';
 import 'package:newsports/modules/matchDetail/contestDetail/addCash.dart';
 import 'package:newsports/modules/matchDetail/contestDetail/detail.dart';
 import 'package:newsports/modules/matchDetail/contestDetail/leaderboard.dart';
+import 'package:newsports/modules/matchDetail/contestDetail/select_team.dart';
 import 'package:newsports/utils/utils.dart';
 import 'package:newsports/widget/customButton.dart';
 import 'package:newsports/widget/matchDetailCardView.dart';
@@ -12,27 +14,51 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
+import '../../../controllers/ContestController.dart';
 import '../../../models/Contest.dart';
 import '../../../models/MatchModel.dart';
 import '../../../models/Team.dart';
 import '../../../models/Winnings.dart';
+import '../../../widget/timeLeft.dart';
 
 class ContestDetailPage extends StatefulWidget {
   final Contest contest;
   final MatchModel match;
+  void Function() joinContest;
   ContestDetailPage({
     required this.contest,
     required this.match,
+    required this.joinContest,
   });
 
   @override
   _ContestDetailPageState createState() => _ContestDetailPageState();
 }
 
-class _ContestDetailPageState extends State<ContestDetailPage> {
+class _ContestDetailPageState extends StateMVC<ContestDetailPage> {
+
   bool isleaderboard = false;
   bool isContest = true;
   Contest get contest=>widget.contest;
+  late ContestController _con;
+  _ContestDetailPageState():super(ContestController()) {
+    _con = controller as ContestController;
+  }
+
+  @override
+  void initState() {
+    initAsync();
+    super.initState();
+  }
+
+  @override
+  Future<bool> initAsync() {
+    _con.getMatchWinnings(context,widget.contest.contestId);
+    return super.initAsync();
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -134,12 +160,8 @@ class _ContestDetailPageState extends State<ContestDetailPage> {
                     if(widget.match.isStarted){
                       return;
                     }
-                    /// check kyc
-                    ///  show dialog for payment
-                    ///
-
                     showDialog(context: context, builder: (context)=>
-                        JoinContestCard(fee: double.parse(contest.entry),contestId: contest.contestId,),
+                        JoinContestCard(fee: double.parse(contest.entry),contestId: contest.contestId,accept: widget.joinContest,),
                       barrierDismissible: false,
 
                     );
@@ -253,11 +275,7 @@ class _ContestDetailPageState extends State<ContestDetailPage> {
           isContest == true
               ? DetailPage(
             winningNote: contest.winningNote,
-            winnings: [
-              Winning(rank: "1",prize: 10000000),
-              Winning(rank: "2",prize: 100000),
-              Winning(rank: "3",prize: 10000),
-            ],
+            winnings: _con.winnings,
           )
               : isleaderboard == true
                   ? LeaderboardPage()
@@ -426,8 +444,8 @@ class _ContestDetailPageState extends State<ContestDetailPage> {
                         fontSize: 22,
                       ),
                 ),
-                Text(
-                  Utils.getTimeLeft(DateTime.parse(widget.match.matchDateTime)),
+                TimeLeftText(
+                  widget.match.matchDateTime,
                   style: Theme.of(context).textTheme.caption!.copyWith(
                         color: Colors.white,
                         letterSpacing: 0.6,

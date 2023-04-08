@@ -10,7 +10,8 @@ import '../../utils/designations.dart';
 
 class TeamPreViewPage extends StatefulWidget {
   List<Player> players;
-  TeamPreViewPage({ required this.players});
+  String sport;
+  TeamPreViewPage({ required this.players,this.sport ="Cricket"});
 
   @override
   _TeamPreViewPageState createState() => _TeamPreViewPageState();
@@ -65,7 +66,7 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
                     ),
                     Center(
                       child: Text(
-                        Designation.getDesignation("", 4).fullName,
+                        Designation.getDesignation(widget.sport, 1).fullName,
                         style: Theme.of(context).textTheme.caption!.copyWith(
                               color: Theme.of(context).appBarTheme.color!.withOpacity(0.5),
                               letterSpacing: 0.6,
@@ -78,7 +79,7 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: widget.players.where((element) => element.designationId=="4").map<Widget>((Player player) {
+                      children: widget.players.where((element) => element.designationId=="1").map<Widget>((Player player) {
                         Image? image;
                         if(player.image.isNotEmpty){
                           image = Image.network(player.image);
@@ -130,7 +131,7 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
                     Expanded(child: SizedBox()),
                     Center(
                       child: Text(
-                        Designation.getDesignation("", 3).fullName,
+                        Designation.getDesignation(widget.sport, 3).fullName,
                         style: Theme.of(context).textTheme.caption!.copyWith(
                               color: Theme.of(context).appBarTheme.color!.withOpacity(0.5),
                               letterSpacing: 0.6,
@@ -165,7 +166,7 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
                     Expanded(child: SizedBox()),
                     Center(
                       child: Text(
-                        Designation.getDesignation("", 4).fullName,
+                        Designation.getDesignation(widget.sport, 4).fullName,
                         style: Theme.of(context).textTheme.caption!.copyWith(
                               color: Theme.of(context).appBarTheme.color!.withOpacity(0.5),
                               letterSpacing: 0.6,
@@ -198,7 +199,7 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
                     Expanded(child: SizedBox()),
                     Center(
                       child: Text(
-                        Designation.getDesignation("", 2).fullName,
+                        Designation.getDesignation(widget.sport, 2).fullName,
                         style: Theme.of(context).textTheme.caption!.copyWith(
                               color: Theme.of(context).appBarTheme.color!.withOpacity(0.5),
                               letterSpacing: 0.6,

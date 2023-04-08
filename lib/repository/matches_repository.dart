@@ -23,8 +23,14 @@ class MatchesRepository {
                 match
             );
           });
+      list.sort((a,b){
+        final dateA = DateTime.parse(a.matchDateTime);
+        final dateB = DateTime.parse(b.matchDateTime);
+        return dateA.compareTo(dateB);
+      });
       return list;
-    } catch (e) {
+    } catch (e,s) {
+      print(s);
       throw e;
     }
   }

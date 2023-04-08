@@ -5,17 +5,33 @@ class Utils{
   static String getTimeLeft(DateTime dateTime ){
     // final dateTime = DateFormat('MMM dd, hh:mm a').parse("inputString");
     final _timeLeft = dateTime.difference(DateTime.now());
-    if(_timeLeft.isNegative) return "completed";
+    if(_timeLeft.isNegative) return DateFormat('d MMM y').format(dateTime);
     if(_timeLeft.inDays>0)
       return "${_timeLeft.inDays} days left";
     if(_timeLeft.inHours>0)
-      return "${_timeLeft.inHours.remainder(24)} Hrs ${_timeLeft.inMinutes.remainder(60)} min left";
+      return "${_timeLeft.inHours.remainder(24)} H ${_timeLeft.inMinutes.remainder(60)} m";
     if(_timeLeft.inMinutes>0)
-      return "${_timeLeft.inMinutes.remainder(60)} min ${_timeLeft.inSeconds.remainder(60)} sec left";
+      return "${_timeLeft.inMinutes.remainder(60)} m ${_timeLeft.inSeconds.remainder(60)} s";
     if(_timeLeft.inSeconds>0)
-      return "${_timeLeft.inSeconds.remainder(60)} sec left";
+      return "${_timeLeft.inSeconds.remainder(60)} s";
     return "";
   }
+
+
+  static String getDaySpecificDate(DateTime dateTime) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+    if (dateTime.isAtSameMomentAs(today)) {
+      return DateFormat.jm().format(dateTime); // Today 7:30 PM
+    } else if (dateTime.isAtSameMomentAs(tomorrow)) {
+      return 'Tomorrow ' + DateFormat.jm().format(dateTime); // Tomorrow 9:30 PM
+    } else {
+      return DateFormat('d MMM h:mm a').format(dateTime); // 7 Apr 12:00 AM
+    }
+  }
+
+
 
 
   static String convertToIndianCurrency(int amount) {

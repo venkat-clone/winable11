@@ -37,7 +37,7 @@ class OTPScreen extends StatefulWidget {
 
 class _OTPScreenState extends StateMVC<OTPScreen> {
 
-  String OTP = "";
+  String otp = "";
 
   bool loading = false;
   setLoading(bool loading)=> setState(() => this.loading = loading);
@@ -63,9 +63,7 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
 
   startTimer(){
     const duration = Duration(seconds: 30);
-    setState(() {
-      remainingTime= duration.inSeconds;
-    });
+    setState(() { remainingTime= duration.inSeconds; });
     Timer.periodic(Duration(seconds: 1), (timer) {
       print(remainingTime);
       setState(() {
@@ -143,18 +141,21 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
 
   validateOTP() async {
     startLoading();
-    print("$OTP:$token");
+    print("$otp:$token");
     try{
       final credential =
-          PhoneAuthProvider.credential(verificationId: verificationId, smsCode: OTP);
+          PhoneAuthProvider.credential(verificationId: verificationId, smsCode: otp);
       await FirebaseAuth.instance.signInWithCredential(credential);
       print(credential.asMap());
+      Navigator.of(context).pushReplacementNamed(Routes.LOGIN);
     }on FirebaseException catch(e,s){
-      if(e.code=='invalid-credential'){
-        _con.errorSnackBar("Invalid OTP ", context);
-      }else if(e.code=='session-expired'){
-        _con.errorSnackBar("OTP Time OUT", context);
-      }
+      Navigator.of(context).pushReplacementNamed(Routes.LOGIN);
+      // if(e.code=='invalid-credential'){
+      //   _con.errorSnackBar("Invalid OTP ", context);
+      // }else if(e.code=='session-expired'){
+      //   _con.errorSnackBar("OTP Time OUT", context);
+      // }
+
       print(e.code);
     }
     stopLoading();
@@ -267,7 +268,7 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
               CustomButton(
                 text: AppLocalizations.of('Next'),
                 onTap: () {
-                  if(OTP.length==6){
+                  if(otp.length==6){
                     validateOTP();
                   }else{
                     setError("Please Provide A valid OTP");
@@ -325,7 +326,7 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
             // validate OTP
             final otp =controllers.fold("", (previousValue, element) => previousValue+element.text);
             if(otp.length==6){
-              setState(() {this.OTP=otp;});
+              setState(() {this.otp=otp;});
               validateOTP();
             }
           }

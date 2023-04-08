@@ -1,10 +1,17 @@
 
 
 class Winning{
-  String rank;
-  int prize;
-
+  String rank ="";
+  String contest = "";
+  String price = "";
   Winning({
-    this.rank ="", this.prize=0,
+    this.rank ="", this.price="",
+    this.contest = ""
   });
+
+  Winning.fromJson(Map<String,dynamic> json){
+    rank = json["rank"];
+    contest = json["contest_id"];
+    price = json["price"];
+  }
 }

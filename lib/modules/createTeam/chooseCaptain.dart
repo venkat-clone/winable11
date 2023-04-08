@@ -10,12 +10,14 @@ import '../../models/team_players.dart';
 import '../../models/player.dart';
 
 import '../../models/userTeamPlayer.dart';
+import '../../utils/utils.dart';
+import '../../widget/timeLeft.dart';
 
 class ChooseCaptainPage extends StatefulWidget {
   
   TeamPlayers team;
-
-  ChooseCaptainPage({required this.team});
+  String matchDateTime ="";
+  ChooseCaptainPage({required this.team,required this.matchDateTime});
 
   @override
   _ChooseCaptainPageState createState() => _ChooseCaptainPageState();
@@ -355,8 +357,8 @@ class _ChooseCaptainPageState extends StateMVC<ChooseCaptainPage> {
     if(player.image.isEmpty){
       image1 = NetworkImage(player.image);
     }
-    final isCaptain = player.id == captainId;
-    final isWiseCaptain = player.id == wiseCaptainId;
+    final isCaptain = player.pid == captainId;
+    final isWiseCaptain = player.pid == wiseCaptainId;
 
     return Card(
       child: Container(
@@ -468,12 +470,12 @@ class _ChooseCaptainPageState extends StateMVC<ChooseCaptainPage> {
                   InkWell(
                     onTap: (){
 
-                      if(wiseCaptainId==player.id){
+                      if(wiseCaptainId==player.pid){
                         wiseCaptainId = "";
                       }
 
                       setState(() {
-                        captainId = player.id;
+                        captainId = player.pid;
                       });
                     },
                     child: Container(
@@ -520,12 +522,12 @@ class _ChooseCaptainPageState extends StateMVC<ChooseCaptainPage> {
                   InkWell(
                     onTap: (){
 
-                      if(player.id==captainId){
+                      if(player.pid==captainId){
                         captainId = "";
                       }
 
                       setState(() {
-                        wiseCaptainId = player.id;
+                        wiseCaptainId = player.pid;
                       });
                     },
                     child: Container(
@@ -586,8 +588,8 @@ class _ChooseCaptainPageState extends StateMVC<ChooseCaptainPage> {
             ),
           ),
           Expanded(child: SizedBox()),
-          Text(
-            "5h 47m left",
+          TimeLeftText(
+            widget.matchDateTime,
             style: Theme.of(context).textTheme.caption!.copyWith(
                   color: Colors.white,
                   letterSpacing: 0.6,
