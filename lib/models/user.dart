@@ -49,7 +49,7 @@ class AppUser{
     this.email = json['email']??"";
     this.dob = json['dob']??"";
     this.gender = json['gender']??"";
-    this.address = json['address']??"";
+    // this.address = json['address']??"";
     this.city = json['city']??"";
     this.pincode = json['pincode']??"";
     this.state = json['state']??"";
@@ -59,7 +59,7 @@ class AppUser{
   Map<String,dynamic> toJson()=>{
     "id": user_id,
     "name": name,
-    "mobile": mobile,
+    "phone": mobile,
     "email": email,
     "dob": dob,
     "gender": gender,

@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:easy_upi_payment/easy_upi_payment.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cferrorresponse/cferrorresponse.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfdropcheckoutpayment.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfpaymentcomponents/cfpaymentcomponent.dart';
@@ -52,9 +52,6 @@ class WalletController extends BaseController {
     return super.initAsync();
   }
 
-
-
-
   /// UPI Methods
   /// Hello World
   Future initiateUPITransaction(UpiApp app, String amount) async {
@@ -63,19 +60,23 @@ class WalletController extends BaseController {
         final salt = DateTime.now().millisecond;
         final upiResponse = await _upiIndia.startTransaction(
           app: app,
-          receiverUpiId: "7905406363@kotak",
+          receiverUpiId: "7388477549@ybl",
           receiverName: 'Winable Platforms Private Limited',
           // transactionRefId = userId
-          transactionRefId: "$salt"+ (FirebaseAuth.instance.currentUser?.uid ?? "") ,
+          transactionRefId: "$salt"+ (currentUser.value.user_id ?? "") ,
           transactionNote: 'payment',
           amount: double.parse(amount.trim()),
         );
+        print("status ${upiResponse.status}");
         if(
         upiResponse.status == UpiPaymentStatus.SUCCESS &&
         upiResponse.approvalRefNo !=null
         ){
           final payment = Payment(amount: amount, transactionID: "");
           await addCash(amount);
+        }
+        else{
+          print("transaction not successful ${upiResponse.toString()}");
         }
         setState(() {
           _upiResponse = upiResponse;
@@ -130,52 +131,14 @@ class WalletController extends BaseController {
 
   }
 
-  // maxBalance()=>_setAccountBalance(0);
-
-  _setAccountBalance(double amount){
-    lodeWhile(() async {
-          await FirebaseFirestore.instance
-              .collection("user")
-              .doc(FirebaseAuth.instance.currentUser!.uid)
-              .set({"Total_balance": amount});
-        });
-  }
 
   getWalletBalance() async {
     lodeWhile(() async{
-      final document = await FirebaseFirestore.instance.collection("user").doc(FirebaseAuth.instance.currentUser!.uid).get();
-      print(document.data()?["Total_balance"]);
-      if(document.data()?["Total_balance"]==null) {
-        print("Document Not Found");
-        await FirebaseFirestore.instance
-            .collection("user")
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .set({"Total_balance": 0});
-      }
-      else{
-        setState(() {totalBalance = document.data()?["Total_balance"]??0;});
-        print("balance:$totalBalance==${document.data()?["Total_balance"]??0}");
-      }
+
     });
   }
 
-  getCash(authID) {
-    try {
-      FirebaseFirestore.instance
-          .collection("user")
-          .doc(authID)
-          .collection("addedCash")
-          .get()
-          .then((value) {
-        for (var i = 0; i < value.docs.length; i++) {
-          totalBalance = double.parse(value.docs[i]['amount']);
-          print(totalBalance);
-        }
-      });
-    } catch (e) {
-      print(e.toString());
-    }
-  }
+
 
   CashFreeTransaction createMocOrder(){
     setState(() {
@@ -184,7 +147,7 @@ class WalletController extends BaseController {
         orderId: "90909090909099",
         currency: "INR",
         details: Details(
-          id:FirebaseAuth.instance.currentUser?.uid??"",
+          id:currentUser.value.user_id,
           name: "Venkey Dev",
           email: "Lingampally.venkey@gmail.com",
           phone: "8184926683"
@@ -258,6 +221,22 @@ class WalletController extends BaseController {
   }
 
 
+  initiateUPITransactionEasyPayments(double amount) async {
+    try{
+      final res = await EasyUpiPaymentPlatform.instance.startPayment(
+        EasyUpiPaymentModel(
+          payeeVpa: '7388477549@ybl',
+          payeeName: 'Winable Platforms Private Limited',
+          amount: amount,
+          description: 'Winable Platforms Private Limited',
+        )
+      );
+      addCash(amount.toString());
+      print(res);
+    } on EasyUpiPaymentException {
+      // TODO: add your exception logic here
+    }
+  }
 
 
 }

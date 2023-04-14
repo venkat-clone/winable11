@@ -58,6 +58,7 @@ dependencies:
   googleapis_auth: ^1.4.0
   flutter_gif: ^0.0.4
   video_player: ^2.6.0
+  pull_to_refresh: ^2.0.0
 #  docx: ^0.3.0
 #  flutter_plugin_pdf_viewer:
 #  upi_pay: ^1.0.1

@@ -1,115 +1,82 @@
 import 'package:flutter/material.dart';
-import 'package:mvc_pattern/mvc_pattern.dart';
-import 'package:newsports/models/MatchModel.dart';
+import 'package:newsports/controllers/ContestController.dart';
+import 'package:newsports/controllers/FeedController.dart';
+import 'package:newsports/controllers/TeamController.dart';
+import 'package:newsports/modules/matchDetail/myContests.dart';
+import 'package:newsports/modules/matchDetail/myMatchDetail/scoreBoard.dart';
+import 'package:newsports/modules/matchDetail/myMatchDetail/stats.dart';
+import 'package:newsports/modules/matchDetail/myTeam.dart';
 
-import '../../../Language/appLocalizations.dart';
-import '../../../controllers/FeedController.dart';
-import '../../../widget/timeLeft.dart';
+import '../../../models/MatchModel.dart';
+import 'commentary.dart';
 
-class Commentary extends StatefulWidget {
-  MatchModel match;
-  Commentary({Key? key,required this.match}) : super(key: key);
 
+
+class MyMatchDetailPage extends StatefulWidget {
+  final MatchModel match;
+  MyMatchDetailPage({
+    required this.match,
+  });
   @override
-  StateMVC<Commentary> createState() => _CommentaryState();
+  State<MyMatchDetailPage> createState() => _MyMatchDetailPageState();
 }
 
-class _CommentaryState extends StateMVC<Commentary> {
+class _MyMatchDetailPageState extends State<MyMatchDetailPage> with SingleTickerProviderStateMixin {
 
-  late FeedController _con ;
-  _CommentaryState():super(FeedController()){
-    _con = controller as FeedController;
-  }
-  final selectedIndex = 0;
-  
-  final List<String> tabList =["1st Innings","2st Innings","Players"];
 
+  late TabController _tabController;
+
+  late  ContestController contestController ;
+  late FeedController feedController;
+  late TeamController teamController ;
 
 
   @override
   void initState() {
-    initAsync();
     super.initState();
+    _tabController = TabController(length: 4, vsync: this);
+    contestController = ContestController();
+    feedController = FeedController();
+    teamController = TeamController();
   }
+
   @override
-  Future<bool> initAsync() {
-    _con.getMatchCommentary(context,widget.match.matchId,inning: "1");
-    return super.initAsync();
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text("${widget.match.team1.teamShortName} vs ${widget.match.team1.teamShortName}",style: Theme.of(context).textTheme.titleLarge!.copyWith(
-      //     color: Theme.of(context).colorScheme.onPrimary
-      //   ),),
-      //   centerTitle: true,
-      //   backgroundColor: Theme.of(context).primaryColor,
-      // ),
-      body: Column(
-        children: [
-          appBar(),
-        ],
-      ),
-    );
-  }
-
-
-  Widget appBar() {
-    return Row(
-      children: [
-        Expanded(
+      appBar: AppBar(
+        title: Text(
+          "${widget.match.team1.teamShortName} vs ${widget.match.team2.teamShortName}",
+          style: Theme.of(context).textTheme.caption!.copyWith(
+            color: Theme.of(context).textTheme.headline6!.color,
+            letterSpacing: 0.6,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+          ),
+        ) ,
+        foregroundColor: Theme.of(context).textTheme.headline6!.color,
+        automaticallyImplyLeading: true,
+        backgroundColor: Theme.of(context).dividerColor,
+        shadowColor: Colors.transparent,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(150.0),
           child: Container(
-            color: Theme.of(context).dividerColor,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 20, bottom: 20),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 25,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: Row(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Icon(
-                            Icons.arrow_back,
-                            color: Theme.of(context).textTheme.headline6!.color,
-                            size: 24,
-                          ),
-                        ),
-                        Expanded(child: SizedBox()),
-                        Text(
-                          "${widget.match.team1.teamShortName} vs ${widget.match.team1.teamShortName}",
-                          style: Theme.of(context).textTheme.caption!.copyWith(
-                            color: Theme.of(context).textTheme.headline6!.color,
-                            letterSpacing: 0.6,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 22,
-                          ),
-                        ),
-                        Expanded(child: SizedBox()),
-                        SizedBox(width: 24,)
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(
-                    height: 25,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 14, right: 14),
-                    child: Row(
-                      children: [
-                        Column(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 14, right: 14),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex:2,
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-
                             Container(
                               margin: EdgeInsets.all(2),
                               height: 30,
@@ -132,17 +99,20 @@ class _CommentaryState extends StateMVC<Commentary> {
                               height: 5,
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
                                   widget.match.team1Score,
+                                  textAlign: TextAlign.center,
                                   style: Theme.of(context).textTheme.caption!.copyWith(
                                     color: Theme.of(context).textTheme.headline6!.color,
                                     letterSpacing: 0.6,
                                     fontSize: 16,
                                   ),
                                 ),
-                                Text(
-                                  widget.match.team1Over,
+                                if(widget.match.team1Over.isNotEmpty) Text(
+                                  " (${widget.match.team1Over})",
+                                  textAlign: TextAlign.center,
                                   style: Theme.of(context).textTheme.caption!.copyWith(
                                     color: Theme.of(context).textTheme.headline6!.color!.withOpacity(0.5),
                                     letterSpacing: 0.6,
@@ -153,11 +123,15 @@ class _CommentaryState extends StateMVC<Commentary> {
                             ),
                           ],
                         ),
-                        Expanded(child: SizedBox()),
-                        Column(
+                      ),
+                      Expanded(
+                          flex: 1,
+                          child: Center(child: Text("Live"))),
+                      Expanded(
+                        flex:2,
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-
                             Container(
                               margin: EdgeInsets.all(2),
                               height: 30,
@@ -180,17 +154,21 @@ class _CommentaryState extends StateMVC<Commentary> {
                               height: 5,
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
                                   widget.match.team2Score,
+                                  textAlign: TextAlign.center,
+
                                   style: Theme.of(context).textTheme.caption!.copyWith(
                                     color: Theme.of(context).textTheme.headline6!.color,
                                     letterSpacing: 0.6,
                                     fontSize: 16,
                                   ),
                                 ),
-                                Text(
-                                  "(${widget.match.team2Over})",
+                                if(widget.match.team2Over.isNotEmpty)Text(
+                                  " (${widget.match.team2Over})",
+                                  textAlign: TextAlign.center,
                                   style: Theme.of(context).textTheme.caption!.copyWith(
                                     color: Theme.of(context).textTheme.headline6!.color!.withOpacity(0.5),
                                     letterSpacing: 0.6,
@@ -201,40 +179,53 @@ class _CommentaryState extends StateMVC<Commentary> {
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                  ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-
+                      ),
                     ],
                   ),
-                  ListView(
-                    children: [
-                      ..._con.inning1Commentary.value!.commentaries!.map((e) =>Container(
-                child: Row(
-                  children: [
-                    Text(e.over),
-                    Text(e.commentary),
-                  ],
                 ),
-            )),
+                Container(
+                  child: TabBar(
+                    controller: _tabController,
+                    isScrollable: true,
+                    tabs: [
+                      Tab(text: "My Contest"),
+                      Tab(text: "My Teams"),
+                      Tab(text: "Commentary"),
+                      Tab(text: "Scoreboard"),
+                      // Tab(text: "Stats"),
                     ],
                   ),
-
-                  // SizedBox(
-                  //   height: 20,
-                  // ),
-
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
-      ],
+
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          MyContestsPage(match: widget.match,
+          con: contestController,
+          ),
+
+          MyTeamPage(match: widget.match,con: teamController,),
+
+          Commentary(feedController: feedController, match: widget.match,),
+
+          ScoreBoard(
+            feedController: feedController,
+            matchId: widget.match.matchId,
+          ),
+
+          // Stats(
+          //   feedController: feedController,
+          //   matchId: widget.match.matchId,
+          // ),
+        ],
+      ),
     );
   }
 
-}
 
+}

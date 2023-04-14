@@ -1,4 +1,4 @@
-import 'Batsmen.dart';
+import 'BatsMen.dart';
 import 'Batting.dart';
 import 'Bowlers.dart';
 import 'Bowling.dart';
@@ -27,17 +27,17 @@ class Inning {
       this.maxOver ="",});
 
   Inning.fromJson(dynamic json) {
-    id = json['iid'];
-    number = json['number'];
-    name = json['name'];
-    shortName = json['short_name'];
-    status = json['status'];
-    issuperover = json['issuperover'];
-    result = json['result'];
-    battingTeamId = json['batting_team_id'];
-    fieldingTeamId = json['fielding_team_id'];
-    scores = json['scores'];
-    scoresFull = json['scores_full'];
+    id = json['iid']??0;
+    number = json['number']??0;
+    name = json['name']??"";
+    shortName = json['short_name']??"";
+    status = json['status']?? 0;
+    issuperover = json['issuperover']??"";
+    result = json['result']??0;
+    battingTeamId = json['batting_team_id']??0;
+    fieldingTeamId = json['fielding_team_id']??0;
+    scores = json['scores']??"";
+    scoresFull = json['scores_full']??"";
     if (json['batsmen'] != null) {
       batsmen = [];
       json['batsmen'].forEach((v) {
@@ -69,7 +69,7 @@ class Inning {
     //     didNotBat.add(Dynamic.fromJson(v));
     //   });
     // }
-    maxOver = json['max_over'];
+    maxOver = json['max_over']??"";
   }
   int id = 0;
   int number = 0;

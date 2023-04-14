@@ -5,6 +5,7 @@ import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/models/Contest.dart';
 import 'package:newsports/widget/matchDetailCardView.dart';
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../controllers/ContestController.dart';
 import '../../models/MatchModel.dart';
@@ -32,6 +33,7 @@ class ContestsPage extends StatefulWidget {
 class _ContestsPageState extends StateMVC<ContestsPage> {
 
   late ContestController _con ;
+  RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   _ContestsPageState({required ContestController con}):super(con){
     _con = controller as ContestController;
@@ -45,8 +47,18 @@ class _ContestsPageState extends StateMVC<ContestsPage> {
   @override
   Future<bool> initAsync() async {
     await _con.initSport();
-    _con.getContests(widget.match.matchId,context);
+    if(_con.contests.value==null){
+      _con.getContests(widget.match.matchId,context);
+    }
+
     return true;
+  }
+
+  void _onRefresh() async{
+    await _con.getMyContests(widget.match.matchId,context);
+    setState(() {
+      _refreshController.refreshCompleted();
+    });
   }
 
   @override
@@ -58,7 +70,10 @@ class _ContestsPageState extends StateMVC<ContestsPage> {
       ),
     );
     if(_con.contests.error!=null){
-      return Expanded(
+      return SmartRefresher(
+        controller: _refreshController,
+        enablePullDown: true,
+        enablePullUp: false,
         child: Center(
           child: Text(_con.contests.error!,style: TextStyle(
               color: Colors.grey
@@ -67,7 +82,10 @@ class _ContestsPageState extends StateMVC<ContestsPage> {
       );
     }
     if(_con.contests.value!.isEmpty || _con.contests.value==null){
-      return Expanded(
+      return SmartRefresher(
+        controller: _refreshController,
+        enablePullDown: true,
+        enablePullUp: false,
         child: Center(
           child: Text("No Contest for this Match",style: TextStyle(
             color: Colors.grey
@@ -75,9 +93,13 @@ class _ContestsPageState extends StateMVC<ContestsPage> {
         ),
       );
     }
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20),
+      child: SmartRefresher(
+        controller: _refreshController,
+        enablePullDown: true,
+        enablePullUp: false,
+        onRefresh: _onRefresh,
         child: ListView.builder(
               itemCount: _con.contests.value!.length,
                 shrinkWrap: true,
@@ -132,7 +154,7 @@ class _ContestsPageState extends StateMVC<ContestsPage> {
                       Navigator.of(context).push(MaterialPageRoute(builder: (c)=>SelectTeam(
                         matchId: widget.match.matchId,
                         saveTeam: (team)async{
-                          _con.joinContest(contest.contestId,team.teamId,context);
+                          _con.joinContest(context,contest.contestId,team.teamId,contest.type);
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
                           _con.successSnackBar("Successfully joined the contest", context);

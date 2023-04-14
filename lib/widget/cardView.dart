@@ -9,7 +9,7 @@ import 'package:newsports/widget/timeLeft.dart';
 
 import '../constance/constance.dart';
 import '../models/Team.dart';
-import '../modules/navigationBar/feed/commentry.dart';
+import '../modules/matchDetail/myMatchDetail/myMatchDetailPage.dart';
 import '../utils/utils.dart';
 
 class CardView extends StatefulWidget {
@@ -69,7 +69,7 @@ class _CardViewState extends State<CardView> {
                           children: [
                             Expanded(
                               child: Text(
-                                match.title,
+                                match.competitionName,
                                 style: Theme.of(context).textTheme.caption!.copyWith(
                                       color: Theme.of(context).textTheme.caption!.color,
                                       fontWeight: FontWeight.bold,
@@ -77,7 +77,6 @@ class _CardViewState extends State<CardView> {
                                       fontSize: 14,
                                     ),
                                 overflow: TextOverflow.fade,
-
                               ),
                               flex: 10,
                             ),
@@ -239,39 +238,41 @@ class _CardViewState extends State<CardView> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                '1 Team',
-                                style: Theme.of(context).textTheme.caption!.copyWith(
-                                      color: Theme.of(context).primaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 0.6,
-                                      fontSize: 14,
+                              // Text(
+                              //   '1 Team',
+                              //   style: Theme.of(context).textTheme.caption!.copyWith(
+                              //         color: Theme.of(context).primaryColor,
+                              //         fontWeight: FontWeight.bold,
+                              //         letterSpacing: 0.6,
+                              //         fontSize: 14,
+                              //       ),
+                              // ),
+                              ...match.getContestTypes.map((s){
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 3),
+                                  child: Container(
+                                    height: 25,
+                                    width: 60,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(4),
+                                      border: Border.all(
+                                        color: Theme.of(context).primaryColor,
+                                      ),
                                     ),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Container(
-                                height: 25,
-                                width: 60,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(4),
-                                  border: Border.all(
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    "Mega",
-                                    style: Theme.of(context).textTheme.caption!.copyWith(
+                                    child: Center(
+                                      child: Text(
+                                        s,
+                                        style: Theme.of(context).textTheme.caption!.copyWith(
                                           color: Theme.of(context).primaryColor,
                                           fontWeight: FontWeight.bold,
                                           letterSpacing: 0.6,
                                           fontSize: 12,
                                         ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
+                                );
+                              }),
                               Expanded(child: SizedBox()),
                               Icon(
                                 Icons.outbox,
@@ -293,6 +294,9 @@ class _CardViewState extends State<CardView> {
   }
 }
 
+
+
+
 class CompleteCardView extends StatefulWidget {
   final MatchModel match;
 
@@ -308,19 +312,12 @@ class _CompleteCardViewState extends State<CompleteCardView> {
   @override
   Widget build(BuildContext context) {
 
-    String winningString = "";
-
-    if(widget.match.winnerTeam==widget.match.teamid1){
-      winningString = "${widget.match.team1.teamName} won with ${widget.match.team1Score} in ${widget.match.team1Over} overs";
-    }else{
-      winningString = "${widget.match.team2.teamName} won with ${widget.match.team2Score} in ${widget.match.team1Over} overs";
-    }
     return InkWell(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => MatchDetailPage(
+            builder: (context) => MyMatchDetailPage(
               match: widget.match,
             ),
           ),
@@ -351,7 +348,7 @@ class _CompleteCardViewState extends State<CompleteCardView> {
                           children: [
                             Expanded(
                               child: Text(
-                                AppLocalizations.of(widget.match.title),
+                                AppLocalizations.of(widget.match.competitionName),
                                 style: Theme.of(context).textTheme.caption!.copyWith(
                                   color: Theme.of(context).textTheme.caption!.color,
                                   fontWeight: FontWeight.bold,
@@ -464,7 +461,7 @@ class _CompleteCardViewState extends State<CompleteCardView> {
                                   Column(
                                     children: [
                                       Text(
-                                        widget.match.team1.teamShortName??"",
+                                        widget.match.team2.teamShortName??"",
                                         style: Theme.of(context).textTheme.headline6!.copyWith(
                                           color: Theme.of(context).textTheme.headline6!.color,
                                           fontWeight: FontWeight.bold,
@@ -474,7 +471,7 @@ class _CompleteCardViewState extends State<CompleteCardView> {
                                       ),
                                       SizedBox(height: 4,),
                                       Text(
-                                        widget.match.team1Score??"",
+                                        widget.match.team2Score??"",
                                         style: Theme.of(context).textTheme.headline6!.copyWith(
                                           color: Theme.of(context).textTheme.caption!.color,                                          fontWeight: FontWeight.bold,
                                           letterSpacing: 0.6,
@@ -581,7 +578,6 @@ class _CompleteCardViewState extends State<CompleteCardView> {
 }
 
 
-
 class LiveSliderCardView extends StatefulWidget {
   final MatchModel match;
 
@@ -598,14 +594,31 @@ class _LiveSliderCardViewState extends State<LiveSliderCardView> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MatchDetailPage(
-              match: widget.match,
+
+
+        final dateTime = DateTime.parse(widget.match.matchDateTime);
+        final _timeLeft = dateTime.difference(DateTime.now());
+        if(_timeLeft.isNegative) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MyMatchDetailPage(
+                match: widget.match,
+              ),
             ),
-          ),
-        );
+          );
+        }else{
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MatchDetailPage(
+                match: widget.match,
+              ),
+            ),
+          );
+        }
+
+
       },
       child: Row(
         children: [
@@ -632,7 +645,7 @@ class _LiveSliderCardViewState extends State<LiveSliderCardView> {
                           children: [
                             Expanded(
                               child: Text(
-                                AppLocalizations.of(widget.match.title),
+                                AppLocalizations.of(widget.match.competitionName),
                                 style: Theme.of(context).textTheme.caption!.copyWith(
                                   color: Theme.of(context).textTheme.caption!.color,
                                   fontWeight: FontWeight.bold,
@@ -751,7 +764,7 @@ class _LiveSliderCardViewState extends State<LiveSliderCardView> {
                                   Column(
                                     children: [
                                       Text(
-                                        widget.match.team1.teamShortName??"",
+                                        widget.match.team2.teamShortName??"",
                                         style: Theme.of(context).textTheme.headline6!.copyWith(
                                           color: Theme.of(context).textTheme.headline6!.color,
                                           fontWeight: FontWeight.bold,
@@ -761,7 +774,7 @@ class _LiveSliderCardViewState extends State<LiveSliderCardView> {
                                       ),
                                       SizedBox(height: 6,),
                                       Text(
-                                        AppLocalizations.of(widget.match.team1Score??""),
+                                        AppLocalizations.of(widget.match.team2Score??""),
                                         style: Theme.of(context).textTheme.caption!.copyWith(
                                           color: Theme.of(context).textTheme.caption!.color,
                                           fontWeight: FontWeight.bold,
@@ -921,21 +934,19 @@ class FeedCardView extends StatefulWidget {
   _FeedCardViewState createState() => _FeedCardViewState();
 }
 
-
-
 class _FeedCardViewState extends State<FeedCardView> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Commentary(
-              match: widget.match,
-            ),
-          ),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => Commentary(
+        //       match: widget.match,
+        //     ),
+        //   ),
+        // );
       },
       child: Row(
         children: [
@@ -962,7 +973,7 @@ class _FeedCardViewState extends State<FeedCardView> {
                           children: [
                             Expanded(
                               child: Text(
-                                AppLocalizations.of(widget.match.title),
+                                AppLocalizations.of(widget.match.competitionName),
                                 style: Theme.of(context).textTheme.caption!.copyWith(
                                   color: Theme.of(context).textTheme.caption!.color,
                                   fontWeight: FontWeight.bold,

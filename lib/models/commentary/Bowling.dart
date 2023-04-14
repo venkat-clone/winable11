@@ -6,10 +6,10 @@ class Bowling {
       this.bowlingTeamReviewAvailable ="",});
 
   Bowling.fromJson(dynamic json) {
-    bowlingTeamTotalReview = json['bowling_team_total_review'];
-    bowlingTeamReviewSuccess = json['bowling_team_review_success'];
-    bowlingTeamReviewFailed = json['bowling_team_review_failed'];
-    bowlingTeamReviewAvailable = json['bowling_team_review_available'];
+    bowlingTeamTotalReview = json['bowling_team_total_review']??"";
+    bowlingTeamReviewSuccess = json['bowling_team_review_success']??"";
+    bowlingTeamReviewFailed = json['bowling_team_review_failed']??"";
+    bowlingTeamReviewAvailable = json['bowling_team_review_available']??"";
   }
   String bowlingTeamTotalReview ="";
   String bowlingTeamReviewSuccess ="";

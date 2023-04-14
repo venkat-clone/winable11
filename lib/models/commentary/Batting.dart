@@ -6,10 +6,10 @@ class Batting {
       this.battingTeamReviewAvailable ="",});
 
   Batting.fromJson(dynamic json) {
-    battingTeamTotalReview = json['batting_team_total_review'];
-    battingTeamReviewSuccess = json['batting_team_review_success'];
-    battingTeamReviewFailed = json['batting_team_review_failed'];
-    battingTeamReviewAvailable = json['batting_team_review_available'];
+    battingTeamTotalReview = json['batting_team_total_review']??"";
+    battingTeamReviewSuccess = json['batting_team_review_success']??"";
+    battingTeamReviewFailed = json['batting_team_review_failed']??"";
+    battingTeamReviewAvailable = json['batting_team_review_available']??"";
   }
   String battingTeamTotalReview = "";
   String battingTeamReviewSuccess = "";

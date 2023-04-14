@@ -1,25 +1,40 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: deprecated_member_use
+import 'package:csc_picker/csc_picker.dart';
+import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:newsports/Language/appLocalizations.dart';
+import 'package:newsports/constance/constance.dart';
+import 'package:newsports/main.dart';
+import 'package:newsports/models/AuthUser.dart';
+import 'package:newsports/widget/customButton.dart';
+import 'package:newsports/widget/customTextField.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../Language/appLocalizations.dart';
-import '../../constance/constance.dart';
 import '../../controllers/AuthController.dart';
 import '../../utils/constants.dart';
-import '../../widget/customButton.dart';
-import '../../widget/customTextField.dart';
+import '../login/otp.dart';
 
+class PasswordPage extends StatefulWidget {
 
-class PasswordReset extends StatefulWidget {
-  const PasswordReset({Key? key}) : super(key: key);
+  String email;
+  String uName;
+
+  PasswordPage({
+    required this.email,
+    required this.uName,
+  });
+
 
   @override
-  StateMVC<PasswordReset> createState() => _PasswordResetState();
+  _PasswordPageState createState() => _PasswordPageState();
 }
 
-class _PasswordResetState extends StateMVC<PasswordReset> {
+class _PasswordPageState extends StateMVC<PasswordPage> {
 
   TextEditingController _passwordController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
   TextEditingController _conformPasswordController = TextEditingController();
   String errorString = "";
 
@@ -27,7 +42,7 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
 
   late AuthController _con;
 
-  _PasswordResetState() : super(AuthController()) {
+  _PasswordPageState() : super(AuthController()) {
     _con = controller as AuthController;
   }
 
@@ -39,18 +54,6 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
     }
     return true;
   }
-  bool validateEmail() {
-    final password = _emailController.text;
-    if (password.isEmpty) {
-      setError("Please provide an email or mobile");
-      return false;
-    }
-    final isEmail = RegExp(Constants.emailRegX).hasMatch(password);
-    final isMobile = RegExp(Constants.mobileRegX).hasMatch(password);
-
-    return true;
-  }
-
   bool conformPassword(){
     if(_passwordController.text!=_conformPasswordController.text){
       setError("conform and password are same");
@@ -60,7 +63,6 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
   }
 
   bool validateData() {
-    if(!validateEmail()) return false;
     if(!validatePassword()) return false;
     if(!conformPassword()) return false;
     return true;
@@ -127,17 +129,6 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text("Forgot Password",style: Theme.of(context).textTheme.titleLarge,),
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    CustomTextField(
-                                      controller: _emailController,
-                                      hintText: AppLocalizations.of('email/mobile'),
-                                    ),
                                     SizedBox(
                                       height: 15,
                                     ),
@@ -173,11 +164,22 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
                                       padding: const EdgeInsets.only(
                                           left: 5, right: 5),
                                       child: CustomButton(
-                                        text: AppLocalizations.of('Reset Password'),
+                                        text: AppLocalizations.of('Register'),
                                         onTap: () async {
-                                         if(validateData()){
+                                          if(!validateData()) {
+                                            return;
+                                          }
 
-                                         }
+                                          final result = await _con.registerWithServer(context,AuthUser(
+                                            email: widget.email,
+                                            name: widget.uName,
+                                            password: _passwordController.text,
+                                          ));
+                                          if(result) {
+                                            _con.successSnackBar("Account Created Successfully", context);
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).pop();
+                                          }
                                         },
                                       ),
                                     ),
@@ -207,7 +209,8 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
       ),
     );
   }
+
+
+
+
 }
-
-
-

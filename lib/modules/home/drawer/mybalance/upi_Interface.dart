@@ -53,22 +53,7 @@ class _UPIInterfaceState extends StateMVC<UPIInterface> {
 
 
 
-  senMoney() async {
-    try{
-      final res = await EasyUpiPaymentPlatform.instance.startPayment(
-      EasyUpiPaymentModel(
-        payeeVpa: '7905406363@kotak',
-        payeeName: 'Venkey',
-        amount: 10.0,
-        description: 'Testing payment',
-      ),
-    );
-    // TODO: add your success logic here
-    print(res);
-    } on EasyUpiPaymentException {
-      // TODO: add your exception logic here
-    }
-  }
+
 
   // Future<UpiTransactionResponse> initiateUPITransaction(ApplicationMeta app,String amount) async {
   //   final transactionRef = FirebaseAuth.instance.currentUser?.uid??""+Random.secure().nextInt(1 << 32).toString();

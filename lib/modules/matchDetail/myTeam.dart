@@ -6,6 +6,7 @@ import 'package:newsports/constance/constance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:newsports/models/player.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../controllers/ContestController.dart';
 import '../../controllers/TeamController.dart';
 import '../../models/MatchModel.dart';
@@ -16,12 +17,14 @@ import '../createTeam/teamPreview.dart';
 
 class MyTeamPage extends StatefulWidget {
   final MatchModel match;
+  TeamController con ;
 
   MyTeamPage({
     required this.match,
+    required this.con,
   });
   @override
-  _MyTeamPageState createState() => _MyTeamPageState();
+  _MyTeamPageState createState() => _MyTeamPageState(con);
 }
 
 class _MyTeamPageState extends StateMVC<MyTeamPage> {
@@ -29,9 +32,12 @@ class _MyTeamPageState extends StateMVC<MyTeamPage> {
 
   late TeamController _con ;
 
-  _MyTeamPageState():super(TeamController()){
+  _MyTeamPageState(TeamController con):super(con){
     _con = controller as TeamController;
   }
+
+  RefreshController _refreshController = RefreshController(initialRefresh: false);
+
 
   @override
   void initState() {
@@ -39,23 +45,31 @@ class _MyTeamPageState extends StateMVC<MyTeamPage> {
     super.initState();
   }
 
+  _refresh() async{
+    await _con.getMyTeam(widget.match.matchId);
+    _refreshController.refreshCompleted();
+  }
+
   @override
   Future<bool> initAsync()  async{
     await _con.getSport();
-    _con.getMyTeam(widget.match.matchId);
+    if(_con.myTeams.value==null){
+      _con.getMyTeam(widget.match.matchId);
+    }
     return super.initAsync();
   }
 
   @override
   Widget build(BuildContext context) {
 
-    if(_con.myTeams.loading) return Expanded(
-      child: Center(
-        child: CircularProgressIndicator(),
-      ),
+    if(_con.myTeams.loading) return Center(
+      child: CircularProgressIndicator(),
     );
     if(_con.myTeams.value!.isEmpty){
-      return Expanded(
+      return SmartRefresher(
+        controller: _refreshController,
+        onRefresh: _refresh,
+        enablePullUp: true,
         child: Center(
           child: Text("there are no teams for this match please create team",style: TextStyle(
               color: Colors.grey
@@ -64,7 +78,10 @@ class _MyTeamPageState extends StateMVC<MyTeamPage> {
       );
     }
 
-    return Expanded(
+    return SmartRefresher(
+      controller: _refreshController,
+      onRefresh: _refresh,
+      enablePullUp: true,
       child: ListView(
         children: [
           ..._con.myTeams.value!.map((e) {

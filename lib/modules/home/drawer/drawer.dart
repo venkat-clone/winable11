@@ -97,8 +97,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            FirebaseAuth.instance.currentUser?.displayName ??
-                                "",
+                            currentUser.value.name,
                             style:
                                 Theme.of(context).textTheme.bodyText2!.copyWith(
                                       color: Theme.of(context)
@@ -136,202 +135,195 @@ class _DrawerScreenState extends State<DrawerScreen> {
             Expanded(
               child: Container(
                 color: Theme.of(context).appBarTheme.color!.withOpacity(0.7),
-                child: ListView(
-                  padding: EdgeInsets.zero,
+                child: Column(
                   children: [
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Column(
-                      children: [
-                        customRow(
-                          AppLocalizations.of('My Balance'),
-                          Icons.wallet_giftcard,
-                          () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MyBalancePage(),
-                              ),
-                            );
-                          },
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        customRow(
-                          AppLocalizations.of('KYC'),
-                          Icons.account_balance,
-                          () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => KYCForm(),
-                              ),
-                            );
-                          },
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        customRow(
-                          AppLocalizations.of('Invite Friends'),
-                          Icons.inbox,
-                          () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => InviteFriendPage(),
-                              ),
-                            );
-                          },
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        customRow(
-                          AppLocalizations.of('Find People'),
-                          Icons.search,
-                          () {},
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        customRow(
-                          AppLocalizations.of('My Coupons'),
-                          Icons.wallet_giftcard,
-                          () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => OfferScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        customRow(
-                          AppLocalizations.of('Winable Points System'),
-                          Icons.gamepad,
-                          () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PointSystemPage(),
-                              ),
-                            );
-                          },
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        customRow(
-                          AppLocalizations.of('Weekly Leaderboard'),
-                          Icons.wallet_giftcard,
-                          () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    TournamentLeaderBoardPage(),
-                              ),
-                            );
-                          },
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        customRow(
-                          AppLocalizations.of('My Info & Settings'),
-                          Icons.wallet_giftcard,
-                          () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SettingPage(),
-                              ),
-                            );
-                          },
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        customRow(
-                          AppLocalizations.of('More'),
-                          Icons.wallet_giftcard,
-                          () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MorePage(),
-                              ),
-                            );
-                          },
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        customRow(
-                          AppLocalizations.of('Theme'),
-                          FontAwesomeIcons.moon,
-                          () {
-                            openShowPopup(context);
-                          },
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        customRow(
-                          AppLocalizations.of('Language'),
-                          Icons.language,
-                          () {
-                            openShowPopupLanguage();
-                          },
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        customRow(
-                          AppLocalizations.of('Logout'),
-                          Icons.logout_rounded,
-                          () {
-                            logout();
-                          },
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                      ],
-                    ),
-                    Divider(
-                      thickness: 2,
+                    SizedBox(height: 10,),
+                    customRow(
+                      AppLocalizations.of('My Balance'),
+                      Icons.wallet_giftcard,
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MyBalancePage(),
+                          ),
+                        );
+                      },
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 25,
                     ),
-                    Row(
-                      children: [
-                        customRow(
-                          AppLocalizations.of('Helpdesk'),
-                          Icons.help_rounded,
-                          () {},
-                        ),
-                        Expanded(child: SizedBox()),
-                        customRow(
-                          AppLocalizations.of('Chat With us'),
-                          Icons.wallet_giftcard,
-                          () {},
-                        ),
-                      ],
+                    customRow(
+                      AppLocalizations.of('KYC'),
+                      Icons.account_balance,
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => KYCForm(),
+                          ),
+                        );
+                      },
                     ),
                     SizedBox(
-                      height: 15,
+                      height: 25,
+                    ),
+                    customRow(
+                      AppLocalizations.of('Invite Friends'),
+                      Icons.inbox,
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => InviteFriendPage(),
+                          ),
+                        );
+                      },
+                    ),
+                    // SizedBox(
+                    //   height: 25,
+                    // ),
+                    // customRow(
+                    //   AppLocalizations.of('Find People'),
+                    //   Icons.search,
+                    //   () {},
+                    // ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    customRow(
+                      AppLocalizations.of('My Coupons'),
+                      Icons.wallet_giftcard,
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OfferScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    customRow(
+                      AppLocalizations.of('Winable Points System'),
+                      Icons.gamepad,
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PointSystemPage(),
+                          ),
+                        );
+                      },
+                    ),
+                    // SizedBox(
+                    //   height: 25,
+                    // ),
+                    // customRow(
+                    //   AppLocalizations.of('Weekly Leaderboard'),
+                    //   Icons.wallet_giftcard,
+                    //   () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (context) =>
+                    //             TournamentLeaderBoardPage(),
+                    //       ),
+                    //     );
+                    //   },
+                    // ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    customRow(
+                      AppLocalizations.of('My Info & Settings'),
+                      Icons.wallet_giftcard,
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SettingPage(),
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    customRow(
+                      AppLocalizations.of('More'),
+                      Icons.wallet_giftcard,
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MorePage(),
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    customRow(
+                      AppLocalizations.of('Theme'),
+                      FontAwesomeIcons.moon,
+                      () {
+                        openShowPopup(context);
+                      },
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    customRow(
+                      AppLocalizations.of('Language'),
+                      Icons.language,
+                      () {
+                        openShowPopupLanguage();
+                      },
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    customRow(
+                      AppLocalizations.of('Logout'),
+                      Icons.logout_rounded,
+                      () {
+                        logout();
+                      },
+                    ),
+                    SizedBox(
+                      height: 25,
                     ),
                   ],
                 ),
               ),
+            ),
+            Divider(
+              thickness: 2,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              children: [
+                customRow(
+                  AppLocalizations.of('Helpdesk'),
+                  Icons.help_rounded,
+                      () {},
+                ),
+                Expanded(child: SizedBox()),
+                customRow(
+                  AppLocalizations.of('Chat With us'),
+                  Icons.wallet_giftcard,
+                      () {},
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 15,
             ),
           ],
         ),

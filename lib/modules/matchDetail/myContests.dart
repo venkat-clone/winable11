@@ -3,6 +3,7 @@
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../controllers/ContestController.dart';
 import '../../models/MatchModel.dart';
@@ -22,7 +23,7 @@ class MyContestsPage extends StatefulWidget {
 class _MyContestsPageState extends StateMVC<MyContestsPage> {
 
   late ContestController _con ;
-
+  RefreshController _refreshController = RefreshController(initialRefresh: false);
   _MyContestsPageState({required ContestController con}):super(con){
     _con = controller as ContestController;
   }
@@ -35,86 +36,102 @@ class _MyContestsPageState extends StateMVC<MyContestsPage> {
   @override
   Future<bool> initAsync() async {
     await _con.initSport();
-    await _con.getMyContests(widget.match.matchId,context);
+    if(_con.myContests.value==null){
+      await _con.getMyContests(widget.match.matchId,context);
+    }
     return super.initAsync();
   }
 
+  void _onRefresh() async{
+    await _con.getMyContests(widget.match.matchId,context);
+    setState(() {
+      _refreshController.refreshCompleted();
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    if(_con.myContests.loading) return Expanded(
-      child: Center(
-        child: CircularProgressIndicator(),
-      ),
+    if(_con.myContests.loading) return Center(
+      child: CircularProgressIndicator(),
     );
     if(_con.myContests.error!=null){
-      return Expanded(
-        child: Center(
-          child: Text(_con.myContests.error!),
-        ),
+      return Center(
+        child: Text(_con.myContests.error!),
       );
     }
-    if(_con.myContests.value!.isEmpty){
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 100,
-            ),
-            Text(
-              AppLocalizations.of("You haven't joined a contest yet!"),
-              style: Theme.of(context).textTheme.caption!.copyWith(
-                    color: Colors.black54,
-                    letterSpacing: 0.6,
-                    fontSize: 16,
-                  ),
-            ),
-            SizedBox(
-              height: 50,
-            ),
-            Text(
-              AppLocalizations.of('What are you waiting for?'),
-              style: Theme.of(context).textTheme.caption!.copyWith(
-                    color: Colors.black54,
-                    letterSpacing: 0.6,
-                    fontSize: 14,
-                  ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6),
+    if(_con.myContests.value!.isEmpty ){
+      return SmartRefresher(
+        controller: _refreshController,
+        enablePullDown: true,
+        enablePullUp: false,
+        onRefresh: _onRefresh,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 100,
               ),
-              child: Container(
-                height: 40,
-                width: 140,
-                decoration: BoxDecoration(
-                  color: Color(0xff317E2F),
+              Text(
+                AppLocalizations.of("You haven't joined a contest yet!"),
+                style: Theme.of(context).textTheme.caption!.copyWith(
+                      color: Colors.black54,
+                      letterSpacing: 0.6,
+                      fontSize: 16,
+                    ),
+              ),
+              SizedBox(
+                height: 50,
+              ),
+              Text(
+                AppLocalizations.of('What are you waiting for?'),
+                style: Theme.of(context).textTheme.caption!.copyWith(
+                      color: Colors.black54,
+                      letterSpacing: 0.6,
+                      fontSize: 14,
+                    ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Card(
+                shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(6),
                 ),
-                child: Center(
-                  child: Text(
-                    AppLocalizations.of('Join A Contest'),
-                    style: Theme.of(context).textTheme.caption!.copyWith(
-                          color: Colors.white,
-                          letterSpacing: 0.6,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                child: Container(
+                  height: 40,
+                  width: 140,
+                  decoration: BoxDecoration(
+                    color: Color(0xff317E2F),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Center(
+                    child: Text(
+                      AppLocalizations.of('Join A Contest'),
+                      style: Theme.of(context).textTheme.caption!.copyWith(
+                            color: Colors.white,
+                            letterSpacing: 0.6,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     }
 
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: SmartRefresher(
+        controller: _refreshController,
+        enablePullDown: true,
+        enablePullUp: false,
+        onRefresh: _onRefresh,
         child: ListView.builder(
             itemCount: _con.myContests.value!.length,
             shrinkWrap: true,

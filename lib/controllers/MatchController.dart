@@ -107,7 +107,6 @@ class MatchController extends BaseController {
 
 
   getUpcomingCricketMatches(BuildContext context) async {
-    if(upcomingCricketMatchList.value!=null) return;
     try{
       final list  = await _matchRepository.getCricketMatches("upcoming");
       setState(() {
@@ -187,7 +186,7 @@ class MatchController extends BaseController {
 
 
   getMyLiveCricketMatches(BuildContext context) async{
-    if(myLiveCricketMatchList.value!=null) return;
+
     try{
       final list  = await _matchRepository.getCricketMatches("live");
       setState(() {
@@ -199,15 +198,14 @@ class MatchController extends BaseController {
       setState(() {
         myLiveCricketMatchList = ValueState(error: "unexpected error please try again") ;
       });
-      errorSnackBar(error.toString(), context);
       if (kDebugMode) {
+        errorSnackBar(error.toString(), context);
         print("getMatches Error ${error.toString()}");
         print("getMatches Error stackTrace $stackTrace");
       }
     }
   }
   getMyLiveFootballMatches(BuildContext context) async{
-    if(myLiveFootballMatchList.value!=null) return;
     try{
       final list  = await _matchRepository.getCricketMatches("live");
       setState(() {

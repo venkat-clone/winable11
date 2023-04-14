@@ -16,7 +16,7 @@ class MatchesRepository {
       List<MatchModel> list = [];
       (response['data'] as List<dynamic>).forEach(
           (e) {
-            final match = MatchModel.fromJson(e['match_details'] as Map<String, dynamic>);
+            final match = MatchModel.fromJson(e['match_details'] as Map<String, dynamic>,e['competition_name'],e['default']);
             match.team1 = Team.fromJson(e['team_a'] as Map<String, dynamic>);
             match.team2 = Team.fromJson(e['team_b'] as Map<String, dynamic>);
             list.add(
@@ -41,7 +41,7 @@ class MatchesRepository {
       List<MatchModel> list = [];
       (response['data'] as List<dynamic>).forEach(
           (e) {
-            final match = MatchModel.fromJson(e['match_details'] as Map<String, dynamic>);
+            final match = MatchModel.fromJson(e['match_details'] as Map<String, dynamic>,response['competition_name'],response['default']);
             match.team1 = Team.fromJson(e['team_a'] as Map<String, dynamic>);
             match.team2 = Team.fromJson(e['team_b'] as Map<String, dynamic>);
             list.add(

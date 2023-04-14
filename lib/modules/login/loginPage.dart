@@ -128,7 +128,7 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                                     CustomTextField(
                                       controller: _userNameController,
                                       hintText: AppLocalizations.of(
-                                          'Mobile No/UserName/Email'),
+                                          'Mobile No/Email'),
                                     ),
                                     SizedBox(
                                       height: 15,

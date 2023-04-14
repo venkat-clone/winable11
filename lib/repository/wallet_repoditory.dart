@@ -44,7 +44,7 @@ class WalletRepository{
 
   Future<String> addCash(String amount) async {
     try{
-      final userId ="";
+      final userId = currentUser.value.user_id;
       final url = _getUrl('wallet/add/$userId/$amount');
       final result = await _apiServices.getGetApiResponse(url);
       currentWallet.value = await getWallet();
@@ -58,7 +58,10 @@ class WalletRepository{
   Future<Wallet> getWallet() async{
     try{
       final result = await _apiServices.getGetApiResponse(_getUrl("wallet/getwallectdetails/${currentUser.value.user_id}"));
-      return Wallet.fromJson(result["response"]);
+      final newWallet = Wallet.fromJson(result["response"]);
+      currentWallet.value  = newWallet;
+      currentWallet.notifyListeners();
+      return newWallet;
     }catch(e){
       rethrow;
     }

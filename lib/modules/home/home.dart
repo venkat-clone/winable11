@@ -2,6 +2,7 @@
 
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/modules/home/drawer/drawer.dart';
+import 'package:newsports/modules/home/drawer/profile/profile.dart';
 import 'package:newsports/modules/home/mainPage.dart';
 import 'package:newsports/modules/navigationBar/feed/feed.dart';
 import 'package:newsports/modules/navigationBar/group.dart';
@@ -49,7 +50,7 @@ class HomeScreen extends StatelessWidget {
                     size: 22,
                     color: objIsSelect.match ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
                   ),
-                  text: AppLocalizations.of('My Matches'),
+                  text: AppLocalizations.of('Matches'),
                   ontap: () {
                     Navigator.push(
                       context,
@@ -77,16 +78,16 @@ class HomeScreen extends StatelessWidget {
                 ),
                 BottomAppBarWidget(
                   icon: Icon(
-                    FontAwesomeIcons.layerGroup,
+                    FontAwesomeIcons.userLarge,
                     size: 22,
                     color: objIsSelect.group ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
                   ),
-                  text: AppLocalizations.of('Groups'),
+                  text: AppLocalizations.of('Profile'),
                   ontap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => GroupPage(),
+                        builder: (context) => ProfilePage(),
                       ),
                     );
                   },

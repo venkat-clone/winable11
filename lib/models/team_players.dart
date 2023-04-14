@@ -77,7 +77,7 @@ class TeamPlayers{
 
   UserTeamPlayer? _viseCaptain;
   get viceCaptainName{
-    return captain.name;
+    return viceCaptain.name;
   }
   UserTeamPlayer get viceCaptain{
     if(_viseCaptain!=null) return _viseCaptain!;

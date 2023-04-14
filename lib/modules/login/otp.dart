@@ -88,6 +88,7 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
           stopLoading();
           print("credential $cred");
           Navigator.of(context).pushNamed(Routes.LOGIN);
+
         },
         verificationFailed: (exception){
           stopLoading();

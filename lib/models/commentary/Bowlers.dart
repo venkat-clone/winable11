@@ -1,31 +1,67 @@
 class Bowlers {
   Bowlers({
-      this.runsConceded = 0,
-      this.maidens = 0,
-      this.wickets = 0,
-      this.bowlerId = 0,
-      this.overs = 0,});
+      this.name = "",
+      this.bowlerId = "",
+      this.bowling = "",
+      this.position = "",
+      this.overs = "",
+      this.maidens = "",
+      this.runsConceded = "",
+      this.wickets = "",
+      this.noballs = "",
+      this.wides = "",
+      this.econ = "",
+      this.run0 = "",
+      this.bowledcount = "",
+      this.lbwcount = "",});
 
   Bowlers.fromJson(dynamic json) {
-    runsConceded = json['runs_conceded'];
-    maidens = json['maidens'];
-    wickets = json['wickets'];
-    bowlerId = json['bowler_id'];
-    overs = json['overs'];
+    name = json['name']??"";
+    bowlerId = json['bowler_id']??"";
+    bowling = json['bowling']??"";
+    position = json['position']??"";
+    overs = json['overs']??"";
+    maidens = json['maidens']??"";
+    runsConceded = json['runs_conceded']??"";
+    wickets = json['wickets']??"";
+    noballs = json['noballs']??"";
+    wides = json['wides']??"";
+    econ = json['econ']??"";
+    run0 = json['run0']??"";
+    bowledcount = json['bowledcount']??"";
+    lbwcount = json['lbwcount']??"";
   }
-  int runsConceded = 0;
-  int maidens = 0;
-  int wickets = 0;
-  int bowlerId = 0;
-  double overs = 0;
+  String name = "";
+  String bowlerId = "";
+  String bowling = "";
+  String position = "";
+  String overs = "";
+  String maidens = "";
+  String runsConceded = "";
+  String wickets = "";
+  String noballs = "";
+  String wides = "";
+  String econ = "";
+  String run0 = "";
+  String bowledcount = "";
+  String lbwcount = "";
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    map['runs_conceded'] = runsConceded;
-    map['maidens'] = maidens;
-    map['wickets'] = wickets;
+    map['name'] = name;
     map['bowler_id'] = bowlerId;
+    map['bowling'] = bowling;
+    map['position'] = position;
     map['overs'] = overs;
+    map['maidens'] = maidens;
+    map['runs_conceded'] = runsConceded;
+    map['wickets'] = wickets;
+    map['noballs'] = noballs;
+    map['wides'] = wides;
+    map['econ'] = econ;
+    map['run0'] = run0;
+    map['bowledcount'] = bowledcount;
+    map['lbwcount'] = lbwcount;
     return map;
   }
 

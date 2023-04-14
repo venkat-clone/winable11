@@ -30,37 +30,37 @@ class Players {
 
   Players.fromJson(dynamic json) {
     pid = json['pid'];
-    title = json['title'];
-    shortName = json['short_name'];
-    firstName = json['first_name'];
-    lastName = json['last_name'];
-    middleName = json['middle_name'];
-    birthdate = json['birthdate'];
-    birthplace = json['birthplace'];
-    country = json['country'];
+    title = json['title']??"";
+    shortName = json['short_name']??"";
+    firstName = json['first_name']??"";
+    lastName = json['last_name']??"";
+    middleName = json['middle_name']??"";
+    birthdate = json['birthdate']??"";
+    birthplace = json['birthplace']??"";
+    country = json['country']??"";
     // if (json['primary_team'] != null) {
     //   primaryTeam = [];
     //   json['primary_team'].forEach((v) {
     //     primaryTeam.add(Dynamic.fromJson(v));
     //   });
     // }
-    logoUrl = json['logo_url'];
-    playingRole = json['playing_role'];
-    battingStyle = json['batting_style'];
-    bowlingStyle = json['bowling_style'];
-    fieldingPosition = json['fielding_position'];
-    recentMatch = json['recent_match'];
-    recentAppearance = json['recent_appearance'];
-    fantasyPlayerRating = json['fantasy_player_rating'];
-    altName = json['alt_name'];
-    facebookProfile = json['facebook_profile'];
-    twitterProfile = json['twitter_profile'];
-    instagramProfile = json['instagram_profile'];
-    debutData = json['debut_data'];
-    thumbUrl = json['thumb_url'];
-    nationality = json['nationality'];
-    role = json['role'];
-    roleStr = json['role_str'];
+    logoUrl = json['logo_url']??"";
+    playingRole = json['playing_role']??"";
+    battingStyle = json['batting_style']??"";
+    bowlingStyle = json['bowling_style']??"";
+    fieldingPosition = json['fielding_position']??"";
+    recentMatch = json['recent_match']??0;
+    recentAppearance = json['recent_appearance']??0;
+    fantasyPlayerRating = (json['fantasy_player_rating']??0)*1.0;
+    altName = json['alt_name']??"";
+    facebookProfile = json['facebook_profile']??"";
+    twitterProfile = json['twitter_profile']??"";
+    instagramProfile = json['instagram_profile']??"";
+    debutData = json['debut_data']??"";
+    thumbUrl = json['thumb_url']??"";
+    nationality = json['nationality']??"";
+    role = json['role']??"";
+    roleStr = json['role_str']??"";
   }
   int pid =0;
   String title = "";

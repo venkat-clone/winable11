@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:newsports/models/user.dart';
 import '../base_classes/networkAPIService.dart';
@@ -29,23 +30,31 @@ class AuthRepository{
     return AuthUser();
   }
 
-  Future<AppUser> login(String email,String password ) async{
+  Future<AppUser> login(AuthUser user) async{
     final String url = '${Constants.BaseUrl}user/login';
+
+
     try{
       final client = new http.Client();
+      print(json.encode({
+        "phone":user.mobile.isNotEmpty?user.mobile:null,
+        "email":user.email.isNotEmpty?user.email:null,
+        "password":user.password
+      }));
       final response = await client.post(
         Uri.parse(url),
         headers: {HttpHeaders.contentTypeHeader: 'application/json'},
         body: json.encode({
-          "email":email,
-          "mobile":email,
-          "password":password
+          "phone":user.mobile.isNotEmpty?user.mobile:null,
+          "email":user.email.isNotEmpty?user.email:null,
+          "password":user.password
         }),
       );
     final result = _apiService.returnResponse(response);
 
     return AppUser.formJson(_apiService.getData(result));
-    }catch(error){
+    }catch(e,s){
+      print("$e,$s");
       rethrow;
     }
   }
@@ -64,5 +73,8 @@ class AuthRepository{
     }
   }
 
+  Future resetPassword(String? email,String name,String password) async{
+
+  }
 
 }

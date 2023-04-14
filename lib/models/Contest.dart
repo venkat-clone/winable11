@@ -39,8 +39,7 @@ class Contest{
     this.winningNote = "", this.matchId = "", this.type = ""
   });
 
-  static fromJson(Map<String,dynamic> json)
-  => Contest(
+  static fromJson(Map<String,dynamic> json) => Contest(
         contestId:json['contest_id']??"",
         contestName:json['contest_name']??"",
         contestTag:json['contest_tag']??"",

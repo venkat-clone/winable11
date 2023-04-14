@@ -3,6 +3,7 @@
 import 'package:newsports/base_classes/baseApiService.dart';
 import 'package:newsports/base_classes/networkAPIService.dart';
 
+import '../models/commentary/Commentaries.dart';
 import '../models/commentary/MatchComentry.dart';
 
 class FeedRepository{
@@ -14,12 +15,24 @@ class FeedRepository{
   Future<MatchCommentary> getMatchFeed(String matchId,String inning ) async{
     try{
       final result = await _apiServices.getGetApiResponse(_url("Match/getLiveComentary/$matchId/$inning"));
-      return MatchCommentary.fromJson(result);
+      final matchInning =  MatchCommentary.fromJson(_apiServices.typeCast<Map<String,dynamic>>(result["response"]));
+      matchInning.commentaries = sortCommentaries(matchInning.commentaries);
+      return matchInning;
     }catch(e,s){
       print("$e\n$s");
       rethrow;
     }
   }
+
+  List<Commentaries> sortCommentaries(List<Commentaries> list){
+    if(list.first.over!="1")
+      return list.reversed.toList();
+    return list;
+  }
+
+
+
+
 
 
 }

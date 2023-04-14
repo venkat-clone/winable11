@@ -264,22 +264,24 @@ class _JoinContestCardState extends State<JoinContestCard> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("CONFORMATION",
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("CONFORMATION",
+                                style: Theme.of(context).textTheme.caption!.copyWith(
+                                  color: Theme.of(context).textTheme.headline6!.color,
+                                  letterSpacing: 0.6,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),),
+                            Text("Amount Added (Utilised) + Winnings = ₹${currentWallet.value.totalBalance}",
                               style: Theme.of(context).textTheme.caption!.copyWith(
-                                color: Theme.of(context).textTheme.headline6!.color,
                                 letterSpacing: 0.6,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
                               ),),
-                          Text("Amount Added (Utilised) + Winnings = ₹${currentWallet.value.totalBalance}",
-                            style: Theme.of(context).textTheme.caption!.copyWith(
-                              letterSpacing: 0.6,
-                              fontSize: 12,
-                            ),),
-                        ],
+                          ],
+                        ),
                       ),
 
                       GestureDetector(

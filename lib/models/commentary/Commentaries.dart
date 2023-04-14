@@ -1,5 +1,5 @@
-import 'Batsmen.dart';
-import 'Bowlers.dart';
+import 'CommentryBatsmen.dart';
+import 'CommentryBowlers.dart';
 
 class Commentaries {
   Commentaries({
@@ -9,7 +9,7 @@ class Commentaries {
   this.bowlerId = "",
   this.over = "",
   this.ball = "",
-  this.score =0,
+  this.score ="0",
   this.commentary ="",
   this.noballDismissal= false,
   this.text = "",
@@ -29,27 +29,27 @@ class Commentaries {
   });
 
   Commentaries.fromJson(dynamic json) {
-    eventId = json['event_id'];
-    event = json['event'];
-    batsmanId = json['batsman_id'];
-    bowlerId = json['bowler_id'];
-    over = json['over'];
-    ball = json['ball'];
-    score = json['score'];
-    commentary = json['commentary'];
-    noballDismissal = json['noball_dismissal'];
-    text = json['text'];
-    timestamp = json['timestamp'];
-    run = json['run'];
-    noballRun = json['noball_run'];
-    wideRun = json['wide_run'];
-    byeRun = json['bye_run'];
-    legbyeRun = json['legbye_run'];
-    batRun = json['bat_run'];
-    noball = json['noball'];
-    wideball = json['wideball'];
-    six = json['six'];
-    four = json['four'];
+    eventId = json['event_id']??"";
+    event = json['event']??"";
+    batsmanId = json['batsman_id']??"";
+    bowlerId = json['bowler_id']??"";
+    over = (json['over']??"").toString();
+    ball = (json['ball']??"").toString();
+    score = (json['score']??0).toString();
+    commentary = json['commentary']??"";
+    noballDismissal = json['noball_dismissal']??false;
+    text = json['text']??"";
+    timestamp = json['timestamp']??0;
+    run = json['run']??json['runs']??0;
+    noballRun = json['noball_run']??"";
+    wideRun = json['wide_run']??"";
+    byeRun = json['bye_run']??"";
+    legbyeRun = json['legbye_run']??"";
+    batRun = json['bat_run']??"";
+    noball = json['noball']?? false;
+    wideball = json['wideball']?? false;
+    six = json['six']?? false;
+    four = json['four']?? false;
     if (json['batsmen'] != null) {
       batsmen = [];
       json['batsmen'].forEach((v) {
@@ -69,7 +69,7 @@ class Commentaries {
   String bowlerId = "";
   String over = "";
   String ball = "";
-  int score =0;
+  String score ="0";
   String commentary ="";
   bool noballDismissal= false;
   String text = "";

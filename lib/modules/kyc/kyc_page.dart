@@ -47,7 +47,7 @@ class _KYCFormState extends StateMVC<KYCForm> {
   @override
   void initState() {
     super.initState();
-    SharedPreferenceService.getKYC().then((v) => setState(() => requested = v));
+    // SharedPreferenceService.getKYC().then((v) => setState(() => requested = v));
   }
 
   @override
@@ -237,19 +237,19 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                     return null;
                                   },
                                 ),
-                                TextFormField(
-                                  decoration: InputDecoration(
-                                      labelText: 'Aadhaar Card Status'),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter a Aadhaar card status';
-                                    }
-                                    return null;
-                                  },
-                                  onSaved: (value) {
-                                    kyc.AadharStatus = value!;
-                                  },
-                                ),
+                                // TextFormField(
+                                //   decoration: InputDecoration(
+                                //       labelText: 'Aadhaar Card Status'),
+                                //   validator: (value) {
+                                //     if (value == null || value.isEmpty) {
+                                //       return 'Please enter a Aadhaar card status';
+                                //     }
+                                //     return null;
+                                //   },
+                                //   onSaved: (value) {
+                                //     kyc.AadharStatus = value!;
+                                //   },
+                                // ),
                                 TextFormField(
                                   decoration:
                                       InputDecoration(labelText: 'Pan Number'),
@@ -374,20 +374,21 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                   alignment: Alignment.bottomCenter,
                                   child: ElevatedButton(
                                     onPressed: () async {
-                                      if (_formKey.currentState!.validate() || true) {
+                                      if (_formKey.currentState!.validate()) {
                                         _formKey.currentState!.save();
-                                        final success = await _con.requestForKYC(kyc,
+                                        final success = await _con.requestForKYC(context,
+                                            kyc,
                                             File(aadhaarCardPath),
                                             File(panCardPath)
                                         );
 
-                                        _authController.upDateKYCStatus(FirebaseAuth.instance.currentUser!.uid, true);
+                                        // _authController.upDateKYCStatus(FirebaseAuth.instance.currentUser!.uid, true);
 
                                         setState(() {
                                           requested = success;
                                         });
-                                        success ? showToast("KYC details uploaded successful")
-                                            : showToast("KYC details uploaded successful");
+                                        // success ? showToast("KYC details uploaded successful")
+                                        //     : showToast("KYC details uploaded successful");
                                       }
                                     },
                                     child: Text('Submit'),
@@ -415,14 +416,14 @@ class _KYCFormState extends StateMVC<KYCForm> {
     );
   }
 
-  showToast(text) {
-    return Fluttertoast.showToast(
-        msg: text,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        fontSize: 16.0);
-  }
+  // showToast(text) {
+  //   return Fluttertoast.showToast(
+  //       msg: text,
+  //       toastLength: Toast.LENGTH_SHORT,
+  //       gravity: ToastGravity.BOTTOM,
+  //       timeInSecForIosWeb: 1,
+  //       fontSize: 16.0);
+  // }
 
 
 // ----------------------convert file into base64-----------------------//
@@ -439,20 +440,18 @@ class _KYCFormState extends StateMVC<KYCForm> {
         builder: (context) {
           return AlertDialog(
             titlePadding: EdgeInsets.zero,
-            title: Expanded(
-              child: Container(
-                padding: EdgeInsets.all(20),
-                height: 70,
-                color: Theme.of(context).primaryColor,
-                child: Text(
-                  AppLocalizations.of("Pick or Capture Image"),
-                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.6,
-                        fontSize: 18,
-                      ),
-                ),
+            title: Container(
+              padding: EdgeInsets.all(20),
+              height: 70,
+              color: Theme.of(context).primaryColor,
+              child: Text(
+                AppLocalizations.of("Pick or Capture Image"),
+                style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.6,
+                      fontSize: 18,
+                    ),
               ),
             ),
             content: SizedBox(),

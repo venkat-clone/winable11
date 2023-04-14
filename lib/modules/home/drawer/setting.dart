@@ -613,20 +613,7 @@ class _SettingPageState extends State<SettingPage> {
                             gender: isMale ? "male" : "female",
                           );
                           startLoading();
-                          if (_passwordController.text.isNotEmpty) {
-                            updatePassword(_passwordController.text.trim())
-                                .then((value) {
-                              value
-                                  ? showToast("Update password successful")
-                                  : showToast("Update password failed");
-                            }).whenComplete(() {});
-                          }
-
-                          updateToFirebase(user).then((value) {
-                            value
-                                ? showToast("Update successful")
-                                : showToast("Update failed");
-                          }).whenComplete(() => stopLoading());
+                          stopLoading();
                           SharedPreferenceService.setAllowSmsNotification(
                               isSwitched1);
                           SharedPreferenceService.setDiscoverable(isSwitched1);

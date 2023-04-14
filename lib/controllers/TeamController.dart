@@ -300,7 +300,7 @@ class TeamController extends BaseController {
   }
   
   Future getMyCricketTeams(String matchId) async{
-    if(myCricketPlayers.value!=null) return;
+
     final result = await _repository.getMyCricketTeams(matchId);
     setState(() {
       myCricketPlayers = ValueState(value: result);

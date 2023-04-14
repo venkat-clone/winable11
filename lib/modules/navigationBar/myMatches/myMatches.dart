@@ -39,7 +39,7 @@ class _MyMatchesPageState extends StateMVC<MyMatchesPage> {
         centerTitle: false,
         backgroundColor: Theme.of(context).primaryColor,
         title: Text(
-          AppLocalizations.of('My Matches'),
+          AppLocalizations.of('Matches'),
           style: Theme.of(context).textTheme.caption!.copyWith(
                 color: Colors.white,
                 letterSpacing: 0.6,

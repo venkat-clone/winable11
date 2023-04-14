@@ -11,6 +11,7 @@ import 'package:newsports/modules/matchDetail/myTeam.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../controllers/TeamController.dart';
 import '../../models/MatchModel.dart';
 import '../../models/Team.dart';
 import '../../utils/utils.dart';
@@ -29,6 +30,7 @@ class MatchDetailPage extends StatefulWidget {
 class _MatchDetailPageState extends StateMVC<MatchDetailPage> {
 
   late ContestController _con;
+  TeamController teamController = TeamController();
   _MatchDetailPageState():super(ContestController()){
     _con = controller as ContestController;
   }
@@ -522,11 +524,11 @@ class _MatchDetailPageState extends StateMVC<MatchDetailPage> {
                     )
                   : SizedBox(),
               isContests
-                  ? ContestsPage(match: widget.match,con: _con,entryFilter: entryFilter,prizePollFilter: prizePollFilter,)
+                  ? Expanded(child: ContestsPage(match: widget.match,con: _con,entryFilter: entryFilter,prizePollFilter: prizePollFilter,))
                   : isMyContests
-                      ? MyContestsPage(match: widget.match,con: _con,)
+                      ? Expanded(child: MyContestsPage(match: widget.match,con: _con,))
                       : isMyTeams
-                          ? MyTeamPage(match: widget.match,)
+                          ? Expanded(child: MyTeamPage(match: widget.match,con: teamController,))
                           : SizedBox(),
             ],
           ),

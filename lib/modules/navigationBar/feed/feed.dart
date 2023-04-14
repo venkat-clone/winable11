@@ -79,7 +79,7 @@ class _FeedPageState extends StateMVC<FeedPage> {
           itemCount: _con.myLiveMatchList.value!.length,
           itemBuilder: (c, index) {
             final match = _con.myLiveMatchList.value![index];
-            return FeedCardView(
+            return LiveSliderCardView(
               match: match,
             );
           },

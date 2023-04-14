@@ -56,7 +56,6 @@ class ContestController extends BaseController{
   }
 
   getCricketContests(String matchId,BuildContext context) async{
-    if(cricketContests.value!=null) return;
     try {
       print("cricket contests fetching");
       final result = await _repository.getContests(matchId);
@@ -85,7 +84,6 @@ class ContestController extends BaseController{
     }
   }
   getFootballContests(String matchId,BuildContext context) async{
-    if(footballContests.value!=null) return;
     try {
       final result = await _repository.getContests(matchId);
       setState(() {
@@ -120,7 +118,7 @@ class ContestController extends BaseController{
 
 
   getMyCricketContests(String matchId,BuildContext context) async{
-    if(myCricketContests.value!=null) return;
+    // if(myCricketContests.value!=null) return;
     try {
       final result = await _repository.getContests(matchId);
       setState(() {
@@ -146,7 +144,6 @@ class ContestController extends BaseController{
     }
   }
   getMyFootballContests(String matchId,BuildContext context) async{
-    if(myFootballContests.value!=null) return;
     try {
       final result = await _repository.getContests(matchId);
       setState(() {
@@ -179,17 +176,17 @@ class ContestController extends BaseController{
     }
   }
 
-  void joinContest(String contestId,String teamId,BuildContext context) {
+  void joinContest(BuildContext context,String contestId,String teamId,String type) {
     if(sport=="Cricket"){
-      joinCricketContest(contestId,teamId,context);
+      joinCricketContest(context,contestId,teamId,type);
     }else if(sport=="FootBall"){
 
     }
   }
 
-  void joinCricketContest(String contestId,String teamId,BuildContext context) async{
+  void joinCricketContest(BuildContext context,String contestId,String teamId,String type) async{
     try{
-      await _repository.joinCricketContest(contestId, teamId);
+      await _repository.joinCricketContest(contestId, teamId,type);
       successSnackBar("Joined the Contest", context);
     }catch(e){
 
