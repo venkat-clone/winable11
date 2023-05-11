@@ -1,5 +1,7 @@
 
 
+import 'package:flutter/foundation.dart';
+
 class AppUser{
   String user_id = "";
   String name = "";
@@ -16,12 +18,8 @@ class AppUser{
   String photo ="";
 
   int level = 0;
-  int followers = 0;
-  int following = 0;
-  int posts = 0;
   int contests =0;
   int matches = 0;
-  int series =0;
   int wins =0;
 
 
@@ -49,11 +47,12 @@ class AppUser{
     this.email = json['email']??"";
     this.dob = json['dob']??"";
     this.gender = json['gender']??"";
-    this.address = json['address']??"";
+    // this.address = json['address']??"";
     this.city = json['city']??"";
     this.pincode = json['pincode']??"";
     this.state = json['state']??"";
     this.country = json['country']??"";
+    this.photo = json['image']??'';
   }
 
   Map<String,dynamic> toJson()=>{
@@ -68,6 +67,7 @@ class AppUser{
     "pincode": pincode,
     "state": state,
     "country": country,
+    "image":photo
   };
 
 
@@ -76,5 +76,23 @@ class AppUser{
       return "";
     else return name[0].toUpperCase();
   }
+
+
+  get getAddress {
+
+    String s = '';
+    if(city.isNotEmpty) {
+      s += (s.isNotEmpty?', ':' ') + city;
+    }
+    if(state.isNotEmpty) {
+      s +=  (s.isNotEmpty?', ':' ') + state;
+    }
+    if(country.isNotEmpty) {
+      s += (s.isNotEmpty?', ':' ') + country;
+    }
+    return s;
+  }
+
+  get isAddressPresent => (city+state+country+pincode+address).isNotEmpty;
 
 }

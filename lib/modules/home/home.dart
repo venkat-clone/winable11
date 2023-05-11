@@ -1,14 +1,19 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:flutter/foundation.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/modules/home/drawer/drawer.dart';
+import 'package:newsports/modules/home/drawer/profile/profile.dart';
 import 'package:newsports/modules/home/mainPage.dart';
-import 'package:newsports/modules/navigationBar/feed.dart';
+import 'package:newsports/modules/navigationBar/feed/feed.dart';
 import 'package:newsports/modules/navigationBar/group.dart';
 import 'package:newsports/modules/navigationBar/myMatches/myMatches.dart';
-import 'package:newsports/modules/navigationBar/winner.dart';
+import 'package:newsports/modules/navigationBar/winner/winner.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../dev/api_routes.dart';
+import '../navigationBar/winner/winner_oldui.dart';
 
 class HomeScreen extends StatelessWidget {
   final IsSelect objIsSelect = new IsSelect();
@@ -47,7 +52,7 @@ class HomeScreen extends StatelessWidget {
                     size: 22,
                     color: objIsSelect.match ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
                   ),
-                  text: AppLocalizations.of('My Matches'),
+                  text: AppLocalizations.of('Matches'),
                   ontap: () {
                     Navigator.push(
                       context,
@@ -66,27 +71,25 @@ class HomeScreen extends StatelessWidget {
                   ),
                   text: AppLocalizations.of('Winners'),
                   ontap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => WinnerPage(),
-                      ),
-                    );
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => WinnerPage(),
+                    ));
+
                   },
                   color: objIsSelect.win ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
                 ),
                 BottomAppBarWidget(
                   icon: Icon(
-                    FontAwesomeIcons.layerGroup,
+                    FontAwesomeIcons.userLarge,
                     size: 22,
                     color: objIsSelect.group ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
                   ),
-                  text: AppLocalizations.of('Groups'),
+                  text: AppLocalizations.of('Profile'),
                   ontap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => GroupPage(),
+                        builder: (context) => ProfilePage(),
                       ),
                     );
                   },
@@ -112,6 +115,21 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+      floatingActionButton: !kDebugMode?null:InkWell(
+        onTap: (){
+          Navigator.of(context).push(MaterialPageRoute(builder: (c)=>ApiRoutes()));
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.indigo,
+            borderRadius: BorderRadius.circular(8)
+          ),
+          padding: EdgeInsets.all(12),
+          child: Text('Network debug',style: TextStyle(
+            color: Colors.white,
+          ),),
         ),
       ),
     );

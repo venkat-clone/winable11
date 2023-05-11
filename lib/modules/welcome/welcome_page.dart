@@ -191,7 +191,7 @@ class _WelcomePageState extends State<WelcomePage> {
               Expanded(child: SizedBox()),
               InkWell(
                 onTap: () {
-                  Navigator.pushReplacementNamed(context, Routes.LOGIN);
+                  Navigator.pushNamed(context, Routes.LOGIN);
                 },
                 child: Text(
                   AppLocalizations.of('Log In'),

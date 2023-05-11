@@ -45,6 +45,10 @@ class _FootballPageState extends StateMVC<FootballPage> {
   @override
   Widget build(BuildContext context) {
 
+    return Center(
+      child: Text("coming Soon"),
+    );
+
     if(_con.upcomingFootballMatchList.loading){
       return Expanded(
         child: Center(

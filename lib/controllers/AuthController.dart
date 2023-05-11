@@ -13,6 +13,7 @@ import 'package:newsports/models/AuthUser.dart';
 import 'package:newsports/repository/auth_repository.dart';
 import 'package:newsports/utils/app_execptions.dart';
 import '../models/user.dart';
+import '../modules/register/password.dart';
 import '../utils/constants.dart';
 import '../utils/shared_preference_services.dart';
 import '../utils/value_notifiers.dart';
@@ -24,55 +25,28 @@ class AuthController extends BaseController {
     _repository = AuthRepository();
   }
 
-
   Future wait(int seconds) async {
     return Future.delayed(
         Duration(seconds: seconds), () => print('Waited $seconds seconds'));
   }
 
-  Future<bool> login(String uName, String password) async {
-    // return false;
-    var longedIn = false;
-    final isEmail = RegExp(Constants.emailRegX).hasMatch(uName);
-    final isMobile = RegExp(Constants.mobileRegX).hasMatch(uName);
-    print("isEmail=$isEmail");
-    // return false;
-    if (isEmail)
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: uName, password: password)
-          .then((value) {
-        print("loged in with email");
-        longedIn = true;
-
-        // we get Firebase User
-      }).onError((error, stackTrace) {
-        print(error);
-        print(stackTrace);
-      });
-    else if (isMobile)
-      await FirebaseAuth.instance.signInWithPhoneNumber(uName).then((value) {
-        longedIn = true;
-        // we get Firebase User
-      }).onError((error, stackTrace) {
-        print(error);
-        print(stackTrace);
-      });
-
-
-    setUpLocalUser();
-    return longedIn;
-  }
-
-  Future<bool> loginWithGoogle() async {
+  Future<bool> loginWithGoogle(BuildContext context) async {
     try{
       await lodeWhile(() async {
-        final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+        final GoogleSignInAccount? gUser = await GoogleSignIn(scopes: [
+          'https://www.googleapis.com/auth/user.birthday.read',
+          'https://www.googleapis.com/auth/user.addresses.read'
+        ]).signIn();
 
         if (gUser == null) return false;
+        Navigator.of(context).push(MaterialPageRoute(builder: (c)=>PasswordPage(email: gUser.email,uName: gUser.displayName??"",)));
+        return false;
         final GoogleSignInAuthentication aAuth = await gUser.authentication;
         // print(gUser.toString());
-
         final credential = GoogleAuthProvider.credential(accessToken: aAuth.accessToken, idToken: aAuth.idToken);
+
+
+        /// https://www.googleapis.com/auth/user.addresses.read
 
 
         // print(credential.asMap());
@@ -80,10 +54,10 @@ class AuthController extends BaseController {
         // throw Exception();
 
         // sign in
-        final signIn =
-            await FirebaseAuth.instance.signInWithCredential(credential);
+        // final signIn =
+        //     await FirebaseAuth.instance.signInWithCredential(credential);
         final email = FirebaseAuth.instance.currentUser?.providerData[0].email;
-        setKYCStatus(FirebaseAuth.instance.currentUser!.uid, false);
+        // setKYCStatus(FirebaseAuth.instance.currentUser!.uid, false);
         if (email != null && email != "") {
           // update email to server and handle password from UI
           final user = AuthUser(
@@ -93,11 +67,11 @@ class AuthController extends BaseController {
           await _repository.registerUser(user);
           // make api call to register User
         }
-        SharedPreferenceService.setGoogleAccessToken(
-            signIn.credential?.accessToken ?? "");
+        // SharedPreferenceService.setGoogleAccessToken(
+        //     signIn.credential?.accessToken ?? "");
         setUpLocalUser();
       });
-      return true;
+      return false;
     }catch(e,s){
       stopLoading();
       if(kDebugMode){
@@ -130,7 +104,7 @@ class AuthController extends BaseController {
         final signIn =
             await FirebaseAuth.instance.signInWithCredential(credential);
         final email = FirebaseAuth.instance.currentUser?.providerData[0].email;
-        setKYCStatus(FirebaseAuth.instance.currentUser!.uid, false);
+        // setKYCStatus(FirebaseAuth.instance.currentUser!.uid, false);
         if (email != null && email != "") {
           // update email to server and handle password from UI
           final user = AuthUser(
@@ -169,49 +143,6 @@ class AuthController extends BaseController {
     currentUser.value = user;
   }
 
-  Future<bool> registerUser(AuthUser user) async {
-    bool UserCreated = false;
-
-
-    print(user.email);
-    await lodeWhile(() async {
-      try{
-        await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-                email: user.email, password: user.password)
-            .then((value) async {
-          UserCreated = true;
-          print("user created");
-          await FirebaseAuth.instance.currentUser?.updateDisplayName(user.name);
-          await FirebaseAuth.instance.currentUser
-              ?.linkWithPhoneNumber(user.mobile);
-
-          await _repository.registerUser(user).then((value) {
-            UserCreated = true;
-          });
-          if (FirebaseAuth.instance.currentUser != null)
-            setKYCStatus(FirebaseAuth.instance.currentUser!.uid, false);
-
-          SharedPreferenceService.setUser(user);
-          currentUser.value = user;
-        }).onError((error, stackTrace) {
-          // show Toast
-        });
-
-      }catch(e,s){
-        if(!UserCreated)
-          UserCreated=false;
-        if(kDebugMode){
-          print("Registration Error \t $e \n $s");
-        }
-        errorSnackBar("Some Thing Went Wrong", lastContext!);
-      }
-
-    });
-    return UserCreated;
-    // return UserCreated;
-  }
-
   Future<bool> registerWithServer(BuildContext context,AuthUser user) async{
 
     var status = false;
@@ -233,10 +164,11 @@ class AuthController extends BaseController {
 
   Future loginToServer(String id,String password,BuildContext context) async{
     await lodeWhile(() async{
-      // final isEmail = RegExp(Constants.emailRegX).hasMatch(id);
-      final isEmail = true;
+      final isEmail = RegExp(Constants.emailRegX).hasMatch(id);
+      // final isEmail = true;
       final isMobile = RegExp(Constants.mobileRegX).hasMatch(id);
 
+      print("info $id");
       AuthUser user = AuthUser(password: password);
       if(isEmail){
         user.email = id;
@@ -246,7 +178,7 @@ class AuthController extends BaseController {
       }
 
       try{
-        final loginUser = await _repository.login(id,password);
+        final loginUser = await _repository.login(user);
         SharedPreferenceService.setUser(loginUser);
         SharedPreferenceService.setLoggedIn(true);
         currentUser.value = loginUser;
@@ -267,7 +199,6 @@ class AuthController extends BaseController {
     });
 
   }
-
 
   // call after OTP validation
   updateUserToServer(AuthUser user) async {
@@ -306,46 +237,21 @@ class AuthController extends BaseController {
     return OTPSent;
   }
 
-  // move this to KYC Controller
-  setKYCStatus(authID, status) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection("user")
-          .doc(authID)
-          .get()
-          .then((value) async {
-        if (value.exists) {
-          getKYCStatus(authID);
-        } else {
-          await FirebaseFirestore.instance.collection("user").doc(authID).set(
-              {"kycStatus": status}).whenComplete(() => getKYCStatus(authID));
-        }
+  reSetPassword(BuildContext context,String id,String password) async{
+
+  }
+
+  upDateProfile(BuildContext context,AppUser user) async{
+    try{
+      await _repository.updateProfile(user);
+      SharedPreferenceService.setUser(user);
+      setState(() {
+        currentUser.value = user;
       });
-    } catch (e) {
-      print(e.toString());
+    }catch(e,s){
+      print("$e\n$s");
+      errorSnackBar("something went wrong", context);
     }
-  }
-
-  getKYCStatus(authID) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection("user")
-          .doc(authID)
-          .get()
-          .then((value) =>
-              SharedPreferenceService.setKYC(value.data()!['kycStatus']));
-    } catch (e) {}
-  }
-
-  upDateKYCStatus(authID, status) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection("user")
-          .doc(authID)
-          .update({"kycStatus": status})
-          .onError((error, stackTrace) => print(error))
-          .whenComplete(() => getKYCStatus(authID));
-    } catch (e) {}
   }
 
 }

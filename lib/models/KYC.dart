@@ -1,4 +1,5 @@
-import 'dart:io';
+
+import 'package:newsports/utils/value_notifiers.dart';
 
 class KYCDetails {
   String city = "";
@@ -38,14 +39,16 @@ class KYCDetails {
       this.PanCardDOB = "",
       this.PanCardIMAGE = ""});
   Map<String, dynamic> toJson() => {
+    'email':currentUser.value.email,
+    'user_id':currentUser.value.user_id,
         "city": city,
         "pincode": pinCode,
         "state": state,
-        "user_acc_name": userAccountName,
-        "acc_no": accountNumber,
+        "bank_account_name": userAccountName,
+        "account_no": accountNumber,
         "bank_name": bankName,
         "ifsc_code": ifscCode,
-        "aadhar": accountNumber,
+        "aadhar_number": accountNumber,
         "aadhar_card_name": NameInAadher,
         "aadhar_card_status": AadharStatus,
         "aadhar_card_dob": DOBInAadher,

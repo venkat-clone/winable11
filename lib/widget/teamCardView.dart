@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../models/player.dart';
 
-class PlayerCardView extends StatelessWidget {
+class PlayerCardView extends StatefulWidget {
   final String? txt1;
   final String? txt2;
   final String? txt3;
@@ -28,6 +28,12 @@ class PlayerCardView extends StatelessWidget {
     this.player,
     this.selected = false
   }) : super(key: key);
+
+  @override
+  State<PlayerCardView> createState() => _PlayerCardViewState();
+}
+
+class _PlayerCardViewState extends State<PlayerCardView> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -52,8 +58,11 @@ class PlayerCardView extends StatelessWidget {
                           color: Theme.of(context).primaryColor,
                           shape: BoxShape.circle,
                           image: DecorationImage(
-                            image: image1!,
+                            image: widget.image1!,
                             fit: BoxFit.cover,
+                            onError:(o,s){
+
+                            }
                           ),
                         ),
                       ),
@@ -61,7 +70,7 @@ class PlayerCardView extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(2.0),
                           child: Text(
-                            txt1!,
+                            widget.txt1!,
                             style:
                                 Theme.of(context).textTheme.bodyText2!.copyWith(
                                       color: Theme.of(context)
@@ -83,7 +92,7 @@ class PlayerCardView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        txt2!,
+                        widget.txt2!,
                         style: Theme.of(context).textTheme.bodyText2!.copyWith(
                               color:
                                   Theme.of(context).textTheme.headline6!.color,
@@ -96,7 +105,7 @@ class PlayerCardView extends StatelessWidget {
                         height: 4,
                       ),
                       Text(
-                        txt3!,
+                        widget.txt3!,
                         style: Theme.of(context).textTheme.bodyText2!.copyWith(
                               fontWeight: FontWeight.bold,
                               letterSpacing: 0.6,
@@ -121,7 +130,7 @@ class PlayerCardView extends StatelessWidget {
                             width: 5,
                           ),
                           Text(
-                            txt4!,
+                            widget.txt4!,
                             style:
                                 Theme.of(context).textTheme.bodyText2!.copyWith(
                                       color: Theme.of(context).primaryColor,
@@ -135,7 +144,7 @@ class PlayerCardView extends StatelessWidget {
                   ),
                   Expanded(child: SizedBox()),
                   Text(
-                    txt5!,
+                    widget.txt5!,
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(
                           letterSpacing: 0.6,
                           fontSize: 12,
@@ -144,7 +153,7 @@ class PlayerCardView extends StatelessWidget {
                   ),
                   Expanded(child: SizedBox()),
                   Text(
-                    txt6!,
+                    widget.txt6!,
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(
                           letterSpacing: 0.6,
                           fontSize: 12,
@@ -161,10 +170,10 @@ class PlayerCardView extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color:selected? Colors.red:Color(0xff317E2F),
+                        color:widget.selected? Colors.red:Color(0xff317E2F),
                       ),
                     ),
-                    child: selected? Icon(
+                    child: widget.selected? Icon(
                       Icons.remove,
                       color: Colors.red,
                       size: 22,

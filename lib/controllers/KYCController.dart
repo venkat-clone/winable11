@@ -2,35 +2,44 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:mime/mime.dart';
 import 'package:newsports/base_classes/base_controller.dart';
+import 'package:newsports/base_classes/value_state.dart';
 import 'package:newsports/models/KYC.dart';
+import 'package:newsports/models/kycStatus.dart';
 import 'package:newsports/utils/shared_preference_services.dart';
 
 import '../repository/kyc_repository.dart';
 import '../utils/app_execptions.dart';
 
 class KYCController extends BaseController {
-  Future requestForKYC(KYCDetails details,File aadhaar,File panCard) async {
-    lodeWhile(() async{
+
+
+  KYCRepository _repository = KYCRepository();
+
+  ValueState<KYCStatus> kycStatus = ValueState.loading();
+
+
+  Future requestForKYC(BuildContext context,KYCDetails details,File aadhaar,File panCard) async {
+    bool ans = false;
+    await lodeWhile(() async{
       try{
-        await KYCRepository.requestKYC(details,aadhaar,panCard).then((value) {
-          SharedPreferenceService.setKYC(true);
-        });
+        // SharedPreferenceService.setKYC(true);
+        final result =  await _repository.requestKYC(details,aadhaar,panCard);
+        ans = true;
+        successSnackBar("Uploaded your kyc details", context);
+        SharedPreferenceService.setKYC(true);
       } on FileNotUploadedException catch(e){
-        errorSnackBar(e.getMessage()+" please try again", lastContext!);
-      }
-
-      catch(e,s){
+        errorSnackBar(e.getMessage()+" please try again", context);
+      } catch(e,s){
 
       }
-
-
-
 
     });
+    return ans;
     // details.PanCardIMAGE =
     //     "https://w7.pngwing.com/pngs/157/146/png-transparent-pan-card.png";
     // details.AadharImage =
@@ -55,9 +64,6 @@ class KYCController extends BaseController {
     return Future.value(uploadTask);
   }
 
-
-
-
   setKYCStatus(authID, status) async {
     try {
       await FirebaseFirestore.instance
@@ -77,15 +83,15 @@ class KYCController extends BaseController {
     }
   }
 
-  getKYCStatus(authID) async {
+  getKYCStatus(BuildContext context) async {
     try {
-      await FirebaseFirestore.instance
-          .collection("user")
-          .doc(authID)
-          .get()
-          .then((value) =>
-          SharedPreferenceService.setKYC(value.data()!['kycStatus']));
-    } catch (e) {}
+      final result = await _repository.kycStatus();
+      setState(() {
+        kycStatus = ValueState(value: result);
+      });
+    } catch (e) {
+      errorSnackBar("unExpected Error occurred", context);
+    }
   }
 
   upDateKYCStatus(authID, status) async {
@@ -98,10 +104,6 @@ class KYCController extends BaseController {
           .whenComplete(() => getKYCStatus(authID));
     } catch (e) {}
   }
-
-
-
-
 
 
 }

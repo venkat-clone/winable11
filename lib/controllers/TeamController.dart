@@ -9,11 +9,13 @@ import 'package:newsports/models/userTeamPlayer.dart';
 import 'package:newsports/repository/team_repository.dart';
 import 'package:newsports/constance/global.dart' as globals;
 import 'package:newsports/utils/shared_preference_services.dart';
+import '../base_classes/value_state.dart';
 import '../models/MatchModel.dart';
 import '../models/Team.dart';
 import '../models/team_players.dart';
 import '../utils/app_execptions.dart';
 import '../utils/designations.dart';
+import '../utils/value_notifiers.dart';
 
 class TeamController extends BaseController {
 
@@ -23,26 +25,29 @@ class TeamController extends BaseController {
   List<Player> cricketPlayers = [];
 
   List<UserTeamPlayer> userTeamPlayer = [];
-
   /// Batsman
   List<UserTeamPlayer> players1 = [];
-
   /// Bowler
   List<UserTeamPlayer> players2 = [];
-
   /// AllRounder
   List<UserTeamPlayer> players3 = [];
-
   /// wicket keeper
   List<UserTeamPlayer> players4 = [];
 
   double credits = 0;
   double creditsLimit = 100;
   TeamPlayers cricketTeam = TeamPlayers();
+  TeamPlayers? oldTeam = TeamPlayers();
 
   double get creditsLeft {
     return creditsLimit - credits;
   }
+
+
+  ValueState<List<TeamPlayers>> myCricketPlayers = ValueState.loading();
+  ValueState<List<TeamPlayers>> myFootballPlayers = ValueState.loading();
+
+
 
   getSport() async {
     sport = await SharedPreferenceService.getSport();
@@ -50,14 +55,20 @@ class TeamController extends BaseController {
   }
 
   createTeam(TeamPlayers team, BuildContext context) async {
-
     try{
-      await _teamRepo.sendTeamPlayers(sport,team);
+      team.userId = currentUser.value.user_id;
+      print(team.userId);
+      if(team.newTeam) await _repository.sendTeamPlayers(sport,team);
+      else {
+        print("Con:oldTeamId:${oldTeam!.teamId}");
+        await _repository.editCricketTeam(team,oldTeam!);
+      }
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+      successSnackBar("Team ${team.newTeam?'Created':'Edited'} successfully", context);
     }catch(exception){
       errorSnackBar("something went wrong", context);
     }
-
-
   }
 
   String getShortDesignation(int id) {
@@ -67,13 +78,13 @@ class TeamController extends BaseController {
   }
 
 
-  final _teamRepo = TeamRepository();
+  final _repository = TeamRepository();
 
 
   getTeams(BuildContext context) {
     lodeWhile(() async {
       try {
-        final result = await _teamRepo.getAllTeams();
+        final result = await _repository.getAllTeams();
         setState(() {
           cricketTeams = result;
         });
@@ -82,7 +93,7 @@ class TeamController extends BaseController {
         errorSnackBar("Please check you internet connection", context);
       } on InvalidResponseException {
         setState(() {});
-        workingSnackBar("No Contest Fond For this Match", context);
+        workingSnackBar("No Contest found For this Match", context);
       } catch (e, s) {
         errorSnackBar("Something went Wrong please try again later", context);
         if (kDebugMode) {
@@ -106,7 +117,7 @@ class TeamController extends BaseController {
   //       errorSnackBar("Please check you internet connection", context);
   //     } on InvalidResponseException {
   //       setState(() { });
-  //       workingSnackBar("No Contest Fond For this Match", context);
+  //       workingSnackBar("No Contest found For this Match", context);
   //     }catch (e,s){
   //       errorSnackBar("Something went Wrong please try again later",context);
   //       if(kDebugMode){
@@ -121,23 +132,39 @@ class TeamController extends BaseController {
   getMatchPlayers(BuildContext context, MatchModel match) {
     lodeWhile(() async {
       try {
-        final teamA = match.team1;
-        teamA.teamId = "1";
-        final teamB = match.team2;
-        teamB.teamId = "2";
-        // final list = await _teamRepo.getTeamPlayers(teamA);
-        // list.addAll(await _teamRepo.getTeamPlayers(teamB));
-        final list = await _teamRepo.getTeamPlayers(sport, teamA);
-        list.addAll(await _teamRepo.getTeamPlayers(sport, teamB));
-        setState(() {
-          userTeamPlayer = list;
-        });
+        // final teamA = match.team1;
+        // final teamB = match.team2;
+        // // final list = await _repository.getTeamPlayers(sport,teamA);
+        // // list.addAll(await _repository.getTeamPlayers(sport,teamB));
+        // final date = DateTime.parse(match.matchDateTime);
+        // if(date.difference(DateTime.now().add(Duration(minutes: 30))).isNegative){
+        //   var list = await _repository.getMatchPlayers(sport, match);
+        //   if(list.isEmpty){
+        //     // list = await _repository.getMatchPlayers(sport, match);
+        //     list = await _repository.getTeamPlayers(sport,teamA);
+        //     list.addAll(await _repository.getTeamPlayers(sport,teamB));
+        //   }
+        //   setState(() {
+        //     userTeamPlayer = list;
+        //   });
+        // }else{
+        //   // final list = await _repository.getMatchPlayers(sport, match);
+        //   final list = await _repository.getTeamPlayers(sport,teamA);
+        //   list.addAll(await _repository.getTeamPlayers(sport,teamB));
+        //   setState(() {
+        //     userTeamPlayer = list;
+        //   });
+        // }
+        final list = await _repository.getMatchPlayers(sport, match);
+          setState(() {
+            userTeamPlayer = list;
+          });
         deviceCricketPlayers();
       } on FetchDataException {
         errorSnackBar("Please check you internet connection", context);
       } on InvalidResponseException {
         setState(() {});
-        workingSnackBar("No Contest Fond For this Match", context);
+        workingSnackBar("No Contest found For this Match", context);
       } catch (e, s) {
         errorSnackBar("Something went Wrong please try again later", context);
         if (kDebugMode) {
@@ -179,6 +206,19 @@ class TeamController extends BaseController {
       errorSnackBar("max 7 players from a team", context);
       return;
     }
+
+    final test ={
+      "1":cricketTeam.players1,
+      "2":cricketTeam.players2,
+      "3":cricketTeam.players3,
+      "4":cricketTeam.players4,
+    };
+    if(test[player.designationId]?.length==8){
+      errorSnackBar("Max 8 ${Designation.getDesignation(sport, int.parse(player.designationId)).fullName}s", context);
+      return;
+    }
+
+
     credits = credits + double.parse(player.creditPoints);
     cricketTeam.players.add(player);
     player.selected = true;
@@ -255,4 +295,48 @@ class TeamController extends BaseController {
     });
     setState(() {});
   }
+
+
+  ValueState<List<TeamPlayers>> get myTeams{
+    switch(sport) {
+      case "Cricket":
+        return myCricketPlayers;
+      case "Football":
+          return myFootballPlayers;
+      default:
+        return myCricketPlayers;
+    }
+
+  }
+
+  /// Match iD,User ID
+  getMyTeam(MatchModel match) async {
+    try{
+      if (sport == "Cricket") {
+        await getMyCricketTeams(match);
+      } else {
+        await getMyFootballTeams(match);
+      }
+    }catch(e){
+      print(e);
+    }
+  }
+  
+  Future getMyCricketTeams(MatchModel match) async{
+
+    final result = await _repository.getMyCricketTeams(match);
+    setState(() {
+      myCricketPlayers = ValueState(value: result);
+    });
+    print(result);
+  }
+  
+  Future getMyFootballTeams(MatchModel match) async{
+    if(myFootballPlayers.value!=null) return;
+    final result = await _repository.getMyFootballTeams(match.matchId);
+
+  }
+  
+  
+  
 }

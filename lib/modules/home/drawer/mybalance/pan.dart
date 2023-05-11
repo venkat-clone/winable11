@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:image_picker/image_picker.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -62,25 +63,32 @@ class _PanPageState extends State<PanPage> {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 14, right: 14),
-                          child: Container(
-                            height: 45,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Center(
-                              child: Text(
-                                AppLocalizations.of('Upload PAN Card Image'),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2!
-                                    .copyWith(
-                                      color:
-                                          Theme.of(context).appBarTheme.color,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                      letterSpacing: 0.6,
-                                    ),
+                          child: InkWell(
+                            onTap: (){
+                              pickImages(context,(f){
+
+                              });
+                            },
+                            child: Container(
+                              height: 45,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  AppLocalizations.of('Upload PAN Card Image'),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText2!
+                                      .copyWith(
+                                        color:
+                                            Theme.of(context).appBarTheme.color,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        letterSpacing: 0.6,
+                                      ),
+                                ),
                               ),
                             ),
                           ),
@@ -197,4 +205,100 @@ class _PanPageState extends State<PanPage> {
       ),
     );
   }
+
+  pickImages(context,Function(XFile) onComplete) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            titlePadding: EdgeInsets.zero,
+            title: Expanded(
+              child: Container(
+                padding: EdgeInsets.all(20),
+                height: 70,
+                color: Theme.of(context).primaryColor,
+                child: Text(
+                  AppLocalizations.of("Pick or Capture Image"),
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.6,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            ),
+            content: SizedBox(),
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Column(
+                    children: [
+                      IconButton(
+                          onPressed: () async {
+                            Navigator.of(context).pop();
+                            var _picker = ImagePicker();
+                            var img = await _picker.pickImage(
+                              source: ImageSource.camera ,
+                            );
+                            if(img!=null) {
+                              onComplete(img);
+                            }
+                          },
+                          icon: Icon(Icons.camera_alt,
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .color)),
+                      Text(
+                        AppLocalizations.of("Camera"),
+                        style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                          color:
+                          Theme.of(context).textTheme.headline6!.color,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.6,
+                          fontSize: 12,
+                        ),
+                      )
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      IconButton(
+                          onPressed: () async {
+                            Navigator.of(context).pop();
+                            var _picker = ImagePicker();
+                            var img = await _picker.pickImage(
+                              source: ImageSource.gallery,
+                            );
+
+                          },
+                          icon: Icon(Icons.image,
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .color)),
+                      Text(
+                        AppLocalizations.of("Gallery"),
+                        style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                          color:
+                          Theme.of(context).textTheme.headline6!.color,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.6,
+                          fontSize: 12,
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
+  }
+
+
+
 }

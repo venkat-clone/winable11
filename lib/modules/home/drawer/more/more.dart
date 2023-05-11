@@ -69,21 +69,21 @@ class _MorePageState extends State<MorePage> {
                   );
                 },
               ),
-              SizedBox(
-                height: 4,
-              ),
-              container(
-                AppLocalizations.of('WhatsApp Updates'),
-                FontAwesomeIcons.whatsapp,
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => WhatsAppUpdatePage(),
-                    ),
-                  );
-                },
-              ),
+              // SizedBox(
+              //   height: 4,
+              // ),
+              // container(
+              //   AppLocalizations.of('WhatsApp Updates'),
+              //   FontAwesomeIcons.whatsapp,
+              //   () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //         builder: (context) => WhatsAppUpdatePage(),
+              //       ),
+              //     );
+              //   },
+              // ),
               SizedBox(
                 height: 4,
               ),

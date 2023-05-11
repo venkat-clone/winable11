@@ -33,4 +33,15 @@ class Team {
     return map;
   }
 
+  Team.fromComeantryJson(dynamic json) {
+    teamId = json['tid'].toString()??"";
+    uniqueId = teamId;
+    teamName = json['title']??"";
+    teamShortName = json['abbr']?? json['alt_name']??"";
+    teamImage = json['thumb_url']??json['logo_url']??"";
+  }
+
+
+
+
 }

@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:easy_upi_payment/easy_upi_payment.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cferrorresponse/cferrorresponse.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfdropcheckoutpayment.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfpaymentcomponents/cfpaymentcomponent.dart';
@@ -12,10 +12,12 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/base_classes/base_controller.dart';
 import 'package:newsports/models/CashFreeTransaction.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
+import 'package:newsports/utils/value_notifiers.dart';
 import 'package:upi_india/upi_india.dart';
 import 'package:upi_india/upi_response.dart';
 import '../models/CashFreeTransactionResponse.dart';
 import '../models/payment.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import '../models/payment_types.dart';
 import '../repository/wallet_repoditory.dart';
 
@@ -24,13 +26,14 @@ class WalletController extends BaseController {
   UpiResponse? _upiResponse;
   UpiResponse? get upiResponse => _upiResponse;
   List<UpiApp> apps = [];
-  double totalBalance = 0;
+  double totalBalance = currentWallet.value.totalBalance;
 
   late CashFreeTransaction transaction ;
   CashFreeTransactionResponse? transactionResponse;
   WalletRepository _walletRepository = WalletRepository();
   var cfPaymentGatewayService = CFPaymentGatewayService();
   UpiIndia _upiIndia = UpiIndia();
+  Razorpay _razorpay = Razorpay();
 
   UpiIndia get upiIndia => _upiIndia;
 
@@ -45,33 +48,55 @@ class WalletController extends BaseController {
     super.initState();
   }
 
+  @override
+  Future<bool> initAsync() {
+
+    return super.initAsync();
+  }
+
+
 
   /// UPI Methods
   /// Hello World
-  Future initiateUPITransaction(UpiApp app, String amount) async {
+  Future initiateUPITransaction(BuildContext context,UpiApp app, String amount) async {
     lodeWhile(() async{
       try {
         final salt = DateTime.now().millisecond;
         final upiResponse = await _upiIndia.startTransaction(
           app: app,
-          receiverUpiId: "7905406363@kotak",
+          receiverUpiId: "7388477549@ybl",
           receiverName: 'Winable Platforms Private Limited',
           // transactionRefId = userId
-          transactionRefId: "$salt"+ (FirebaseAuth.instance.currentUser?.uid ?? "") ,
+          transactionRefId: "$salt"+ (currentUser.value.user_id ?? "") ,
           transactionNote: 'payment',
+          merchantId:'BCR2DN4T5KI7F4YI',
           amount: double.parse(amount.trim()),
         );
-        if(
-        upiResponse.status == UpiPaymentStatus.SUCCESS &&
-        upiResponse.approvalRefNo !=null
-        ){
+
+        if(upiResponse.status == UpiPaymentStatus.SUCCESS ){
           final payment = Payment(amount: amount, transactionID: "");
           await addCash(amount);
+        }
+        else{
+          print("transaction not successful ${upiResponse.toString()}");
         }
         setState(() {
           _upiResponse = upiResponse;
         });
-      }catch (e,s){
+      }on UpiIndiaAppNotInstalledException {
+        errorSnackBar( 'Requested app not installed on device',context);
+      }
+      on UpiIndiaUserCancelledException{
+      errorSnackBar( 'You cancelled the transaction',context);
+      }
+      on UpiIndiaNullResponseException{
+      errorSnackBar( 'Requested app didn\'t return any response',context);
+      }
+      on UpiIndiaInvalidParametersException{
+      errorSnackBar( 'Requested app cannot handle the transaction',context);
+      }
+      catch (e,s){
+        errorSnackBar( 'Transaction not completed please try again later',context);
         print("Upi Transaction Error: $e\n$s");
       }
     });
@@ -94,6 +119,20 @@ class WalletController extends BaseController {
   }
 
 
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+
+  }
+
+  @override
+  void dispose() {
+    _razorpay.clear(); // Removes all listeners
+    super.dispose();
+  }
 
 // Callback methods
   void verifyPayment(String orderId) {
@@ -121,52 +160,14 @@ class WalletController extends BaseController {
 
   }
 
-  // maxBalance()=>_setAccountBalance(0);
-
-  _setAccountBalance(double amount){
-    lodeWhile(() async {
-          await FirebaseFirestore.instance
-              .collection("user")
-              .doc(FirebaseAuth.instance.currentUser!.uid)
-              .set({"Total_balance": amount});
-        });
-  }
 
   getWalletBalance() async {
     lodeWhile(() async{
-      final document = await FirebaseFirestore.instance.collection("user").doc(FirebaseAuth.instance.currentUser!.uid).get();
-      print(document.data()?["Total_balance"]);
-      if(document.data()?["Total_balance"]==null) {
-        print("Document Not Found");
-        await FirebaseFirestore.instance
-            .collection("user")
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .set({"Total_balance": 0});
-      }
-      else{
-        setState(() {totalBalance = document.data()?["Total_balance"]??0;});
-        print("balance:$totalBalance==${document.data()?["Total_balance"]??0}");
-      }
+
     });
   }
 
-  getCash(authID) {
-    try {
-      FirebaseFirestore.instance
-          .collection("user")
-          .doc(authID)
-          .collection("addedCash")
-          .get()
-          .then((value) {
-        for (var i = 0; i < value.docs.length; i++) {
-          totalBalance = double.parse(value.docs[i]['amount']);
-          print(totalBalance);
-        }
-      });
-    } catch (e) {
-      print(e.toString());
-    }
-  }
+
 
   CashFreeTransaction createMocOrder(){
     setState(() {
@@ -175,7 +176,7 @@ class WalletController extends BaseController {
         orderId: "90909090909099",
         currency: "INR",
         details: Details(
-          id:FirebaseAuth.instance.currentUser?.uid??"",
+          id:currentUser.value.user_id,
           name: "Venkey Dev",
           email: "Lingampally.venkey@gmail.com",
           phone: "8184926683"
@@ -235,13 +236,7 @@ class WalletController extends BaseController {
   }
 
 
-  // withdraw amount
 
-  // pay contest fee
-  payContestFee(double fee,String contestId){
-    /// PAY FEE
-    /// JOIN CONTEST
-  }
 
   payWithWallet() async {
     // call payment api for transaction
@@ -249,6 +244,48 @@ class WalletController extends BaseController {
   }
 
 
+  initiateUPITransactionEasyPayments(double amount) async {
+    try{
+      final res = await EasyUpiPaymentPlatform.instance.startPayment(
+        EasyUpiPaymentModel(
+          payeeVpa: '7388477549@okbizaxis',
+          payeeName: 'Winable Platforms Private Limited',
+          amount: amount,
+          description: 'Winable Platforms Private Limited',
+          payeeMerchantCode: 'BCR2DN4T5KI7F4YI',
+          transactionId: currentUser.value.user_id+DateTime.now().microsecondsSinceEpoch.toString(),
+          transactionRefId: 'Ref'+currentUser.value.user_id+DateTime.now().microsecondsSinceEpoch.toString()
+        )
+      );
+      addCash(amount.toString());
+
+    } on EasyUpiPaymentException catch(e,s){
+
+      print('message:${e.message}\n details:${e.details} \n stacktrace:$s');
+    }
+  }
+
+
+  makePaymentWithRazorpay(double amount) async{
+    var options = {
+      'key': 'rzp_test_191RXLi8OghRpg',
+      'amount': amount*100,
+      'name': 'Winable Platforms Private Limited',
+      'description': 'add funds to your kyc account',
+      'currency':'INR',
+      'prefill': {
+        'contact': currentUser.value.name,
+        'email': currentUser.value.email
+      }
+    };
+
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, (s){
+      addCash(amount.toString());
+    });
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    _razorpay.open(options);
+  }
 
 
 }

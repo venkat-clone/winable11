@@ -1,7 +1,11 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:math';
+
+import 'package:flutter/gestures.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
+import 'package:newsports/controllers/ContestController.dart';
 import 'package:newsports/controllers/WalletController.dart';
 import 'package:newsports/models/Contest.dart';
 import 'package:newsports/modules/matchDetail/contestDetail/contestDetail.dart';
@@ -10,15 +14,21 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../models/MatchModel.dart';
 import '../models/Team.dart';
+import '../modules/home/drawer/more/Tarms.dart';
+import '../modules/matchDetail/contestDetail/select_team.dart';
 import '../utils/utils.dart';
+import '../utils/value_notifiers.dart';
 
 class MatchDetailCardView extends StatelessWidget {
   final MatchModel match;
   final Contest contest;
-  const MatchDetailCardView({
+  void Function() joinContest;
+
+  MatchDetailCardView({
     Key? key,
     required this.contest,
     required this.match,
+    required this.joinContest,
 
   }) : super(key: key);
   @override
@@ -28,7 +38,7 @@ class MatchDetailCardView extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ContestDetailPage(contest: contest,match: match,),
+            builder: (context) => ContestDetailPage(contest: contest,match: match, joinContest: joinContest,),
           ),
         );
       },
@@ -70,7 +80,7 @@ class MatchDetailCardView extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      '₹${Utils.convertToIndianCurrency(int.parse(contest.prizePool))}',
+                      '₹${Utils.convertToIndianCurrency(double.parse(contest.prizePool))}',
                       style: Theme.of(context).textTheme.caption!.copyWith(
                             color: Theme.of(context).textTheme.headline6!.color,
                             letterSpacing: 0.6,
@@ -82,15 +92,11 @@ class MatchDetailCardView extends StatelessWidget {
 
                       InkWell(
                       onTap: (){
-                        if(match.isStarted){
-                          return;
-                        }
-                        /// check kyc
-                        ///  show dialog for payment
-                        ///
-
+                        // if(match.isStarted){
+                        //   return;
+                        // }
                         showDialog(context: context, builder: (context)=>
-                            JoinContestCard(fee: double.parse(contest.entry),contestId: contest.contestId,),
+                            JoinContestCard(fee: double.parse(contest.entry),contestId: contest.contestId,accept: joinContest),
                           barrierDismissible: false,
 
                         );
@@ -122,7 +128,7 @@ class MatchDetailCardView extends StatelessWidget {
                 height: 15,
               ),
               LinearPercentIndicator(
-                percent: (double.parse(contest.joinTeam)/double.parse(contest.totalTeam)),
+                percent: min(1, (double.parse(contest.filledSpots)/double.parse(contest.totalTeam))),
                 progressColor: Theme.of(context).primaryColor,
                 backgroundColor: Theme.of(context).disabledColor,
               ),
@@ -137,7 +143,7 @@ class MatchDetailCardView extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      '${int.parse(contest.totalTeam)-int.parse(contest.joinTeam)} sports left',
+                      '${int.parse(contest.totalTeam)-int.parse(contest.filledSpots)} spots left',
                       style: Theme.of(context).textTheme.caption!.copyWith(
                             color: Color(0xffD30001),
                             letterSpacing: 0.6,
@@ -176,16 +182,16 @@ class MatchDetailCardView extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        AppLocalizations.of('₹1 Lakh'),
-                        style: Theme.of(context).textTheme.caption!.copyWith(
-                              color: Theme.of(context).textTheme.caption!.color,
-                              letterSpacing: 0.6,
-                              fontSize: 10,
-                            ),
-                      ),
-                      Expanded(child: SizedBox()),
-                      Text((double.parse(contest.joinTeam)/double.parse(contest.totalTeam)*100).toString(),
+                      // Text(
+                      //   AppLocalizations.of('₹1 Lakh'),
+                      //   style: Theme.of(context).textTheme.caption!.copyWith(
+                      //         color: Theme.of(context).textTheme.caption!.color,
+                      //         letterSpacing: 0.6,
+                      //         fontSize: 10,
+                      //       ),
+                      // ),
+                      // Expanded(child: SizedBox()),
+                      Text((double.parse(contest.filledSpots)/double.parse(contest.totalTeam)*100).toStringAsFixed(2),
                         style: Theme.of(context).textTheme.caption!.copyWith(
                               color: Theme.of(context).textTheme.caption!.color,
                               letterSpacing: 0.6,
@@ -222,29 +228,22 @@ class MatchDetailCardView extends StatelessWidget {
 class JoinContestCard extends StatefulWidget {
   final double fee;
   final String contestId;
-  JoinContestCard({Key? key, required this.fee,required this.contestId}) : super(key: key);
+  final void Function() accept;
+  JoinContestCard({Key? key, required this.fee,required this.contestId,required this.accept}) : super(key: key);
 
   @override
-  StateMVC<JoinContestCard> createState() => _JoinContestCardState();
+  State<JoinContestCard> createState() => _JoinContestCardState();
 }
 
-class _JoinContestCardState extends StateMVC<JoinContestCard> {
+class _JoinContestCardState extends State<JoinContestCard> {
 
-  late WalletController _con;
-  _JoinContestCardState():super(WalletController()){
-    _con = controller as WalletController;
-  }
+
 
   @override
   void initState() {
-
     super.initState();
   }
-  @override
-  Future<bool> initAsync() {
 
-    return super.initAsync();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -265,22 +264,24 @@ class _JoinContestCardState extends StateMVC<JoinContestCard> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("CONFORMATION",
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("CONFORMATION",
+                                style: Theme.of(context).textTheme.caption!.copyWith(
+                                  color: Theme.of(context).textTheme.headline6!.color,
+                                  letterSpacing: 0.6,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),),
+                            Text("Amount Added (Utilised) + Winnings = ₹${currentWallet.value.totalBalance}",
                               style: Theme.of(context).textTheme.caption!.copyWith(
-                                color: Theme.of(context).textTheme.headline6!.color,
                                 letterSpacing: 0.6,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
                               ),),
-                          Text("Amount Added (Unutilised) + Winnings = ₹${_con.totalBalance}",
-                            style: Theme.of(context).textTheme.caption!.copyWith(
-                              letterSpacing: 0.6,
-                              fontSize: 12,
-                            ),),
-                        ],
+                          ],
+                        ),
                       ),
 
                       GestureDetector(
@@ -321,7 +322,7 @@ class _JoinContestCardState extends StateMVC<JoinContestCard> {
                         fontWeight: FontWeight.bold,
                       ),
                       ),
-                      Text("₹${widget.contestId}", style: Theme.of(context).textTheme.caption!.copyWith(
+                      Text("₹${widget.fee}", style: Theme.of(context).textTheme.caption!.copyWith(
                         color: Theme.of(context).primaryColor,
                         letterSpacing: 0.6,
                         fontSize: 16,
@@ -330,17 +331,50 @@ class _JoinContestCardState extends StateMVC<JoinContestCard> {
                       ),
                     ],),
                   SizedBox(height: 20),
-                  Text("By joining this contest,you accept Winable11 T&C's",
-                    style: Theme.of(context).textTheme.caption!.copyWith(
-                    letterSpacing: 0.6,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),),
+                  RichText(
+                    text: TextSpan(
+                      text: 'By joining this contest, you accept Winable 11 ',
+                      style: Theme.of(context).textTheme.caption!.copyWith(
+                        letterSpacing: 0.6,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "terms & Conditions",
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: Colors.blue,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              // perform action on T&C's click
+                              Navigator.of(context).push(MaterialPageRoute(builder: (c)=>TermsAndConditions()));
+                            },
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Text("By joining this contest,you accept Winable 11 T&C's",
+                  //   style: Theme.of(context).textTheme.caption!.copyWith(
+                  //   letterSpacing: 0.6,
+                  //   fontSize: 12,
+                  //   fontWeight: FontWeight.bold,
+                  // ),),
                   SizedBox(height: 30,),
                   GestureDetector(
                     onTap: (){
-                      _con.payContestFee(widget.fee, widget.contestId);
-                    },
+                      if(currentWallet.value.totalBalance<widget.fee){
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          backgroundColor: Colors.amber,
+                            content: Text("Insufficient funds on your wallet"),
+
+                        ));
+                        return;
+                      }
+                      widget.accept();
+                      },
                     child: Container(
                       height: 40,
                       width:180,

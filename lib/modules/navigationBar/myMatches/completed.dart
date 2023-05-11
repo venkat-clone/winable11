@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/constance/constance.dart';
@@ -56,8 +57,10 @@ class _CompletedPageState extends StateMVC<CompletedPage> {
             height: 100,
           ),
           Text(
+
             AppLocalizations.of(
                 "You haven't joined any contests that are completed"),
+            textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.caption!.copyWith(
               color: Theme.of(context).textTheme.bodyText2!.color,
               letterSpacing: 0.6,
@@ -112,36 +115,24 @@ class _CompletedPageState extends StateMVC<CompletedPage> {
       );
     }
     return Expanded(
-      child: ListView.separated(
-        controller: scrollController,
-        shrinkWrap: true,
-        itemCount: _con.myPastMatchList.value!.length,
-        itemBuilder: (c,index){
-          final match = _con.myPastMatchList.value![index];
-          final teamA = match.team1;
-          final teamB = match.team2;
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView.separated(
+          controller: scrollController,
+          shrinkWrap: true,
+          itemCount: _con.myPastMatchList.value!.length,
+          itemBuilder: (c,index){
+            final match = _con.myPastMatchList.value![index];
 
-          return CompleteCardView(
-            txt1: AppLocalizations.of(match.title),
-            txt2: AppLocalizations.of(teamA.teamName??""),
-            txt3: AppLocalizations.of(teamB.teamName??""),
-            txt4: teamA.teamShortName??"",
-            txt5: AppLocalizations.of('Completed'),
-            txt6: teamB.teamShortName??"",
-            txt7: AppLocalizations.of('1 Team'),
-            image1: Image.network(
-                teamA.teamImage??"",
-            ),
-            image2: Image.network(
-                teamB.teamImage??"",
-            ),
-            match: match,
-          );
+            return CompleteCardView(
+              match: match,
+            );
 
-          return CardView(
-            match: match,
-          );
-        }, separatorBuilder: (BuildContext context, int index) =>SizedBox(height: 15,),
+            return CardView(
+              match: match,
+            );
+          }, separatorBuilder: (BuildContext context, int index) =>SizedBox(height: 15,),
+        ),
       ),
     );
   }

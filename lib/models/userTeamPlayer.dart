@@ -3,7 +3,12 @@ import 'package:newsports/models/player.dart';
 
 class UserTeamPlayer extends Player{
 
-  UserTeamPlayer();
+  UserTeamPlayer({
+    this.teamShortName ="",
+    name ="",
+    designationId ="",
+  });
+  String teamImage="";
   String teamShortName = "";
   /// player selected to team
   bool selected = false;
@@ -24,14 +29,14 @@ class UserTeamPlayer extends Player{
 
 
   UserTeamPlayer.fromJson(Map<String,dynamic> json){
-    id = json['id']??"";
-    pid = json['pid']??"";
+    pid = json['pid']??json['playerid']??"";
+    id = json['id'].toString()??"";
     name = json['name']??"";
     designationId = json['designationid']??"";
-    teamId = json['team_id']??"";
+    teamId = json['teamid']??"";
     playingStatus = json['playing_status'].toString()??"";
-    creditPoints = json['credit_points']??"";
-    points = json['points']??"";
+    creditPoints = json['credit_points']??"0";
+    points = json['points']??"0";
     image = json['image']??"";
     dob = json['dob']??"";
     nationality = json['nationality']??"";
@@ -39,11 +44,13 @@ class UserTeamPlayer extends Player{
     bats = json['bats']??"";
     createdDate = json['created_date']??"";
     modifiedDate = json['modified_date']??"";
+    substitute = (json['is_substitute']??'0')=='1';
   }
 
   UserTeamPlayer.fromFootball(Map<String,dynamic> json){
-    id = json['id']??"";
+
     pid = json['pid']??"";
+    id = json['id']??"";
     name = json['name']??"";
     designationId = getFootballDesignationId(json['designationid']??"");
     teamId = json['team_id']??"";
@@ -63,6 +70,31 @@ class UserTeamPlayer extends Player{
     "player":name,
     "player_id":pid,
     "designation_id":designationId
+  };
+
+  UserTeamPlayer.fromJsonUpload(Map<String,dynamic> json){
+    name = json["player"];
+    pid = json["player_id"];
+    designationId = json["designation_id"];
+  }
+  UserTeamPlayer.getFromJson(Map<String,dynamic> json){
+    name = json["player"]??"";
+    pid = json["player_id"]??"";
+    designationId = json["designation_id"]??"";
+    image = "https://admin.winable11.com/"+(json['image']??"");
+  }
+
+  getJsonUploadWithCaptain(
+      bool isCaptain,
+      bool isWiseCaptain,
+      String teamId
+      )=>{
+    "player":name,
+    "player_id":pid,
+    "designation_id":designationId,
+    "is_captian":isCaptain,
+    "is_vicecaptain":isWiseCaptain,
+    "team_id":teamId
   };
 
 

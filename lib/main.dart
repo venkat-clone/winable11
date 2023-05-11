@@ -94,7 +94,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   var routes = <String, WidgetBuilder>{
-    // Routes.SPLASH: (BuildContext context) => OnboardingScreen(),
+    // Routes.SPLASH: (BuildContext context) => HomeScreen(),
     Routes.SPLASH: (BuildContext context) => SplashScreen(),
     Routes.LOGIN: (BuildContext context) => LoginScreen(),
     Routes.REGISTER: (BuildContext context) => RegisterPage(),

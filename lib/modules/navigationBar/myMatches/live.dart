@@ -120,7 +120,7 @@ class _LivePageState extends StateMVC<LivePage> {
           itemCount: _con.myLiveMatchList.value!.length,
           itemBuilder: (c, index) {
             final match = _con.myLiveMatchList.value![index];
-            return CardView(
+            return LiveSliderCardView(
               match: match,
             );
           },

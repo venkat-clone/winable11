@@ -107,7 +107,6 @@ class MatchController extends BaseController {
 
 
   getUpcomingCricketMatches(BuildContext context) async {
-    if(upcomingCricketMatchList.value!=null) return;
     try{
       final list  = await _matchRepository.getCricketMatches("upcoming");
       setState(() {
@@ -187,26 +186,26 @@ class MatchController extends BaseController {
 
 
   getMyLiveCricketMatches(BuildContext context) async{
-    if(myLiveCricketMatchList.value!=null) return;
+
     try{
       final list  = await _matchRepository.getCricketMatches("live");
       setState(() {
         myLiveCricketMatchList = ValueState(value: list);
       });
+      // print(list);
+      // successSnackBar("message", context);
     } catch(error, stackTrace) {
       setState(() {
         myLiveCricketMatchList = ValueState(error: "unexpected error please try again") ;
       });
-
-      errorSnackBar(error.toString(), context);
       if (kDebugMode) {
+        errorSnackBar(error.toString(), context);
         print("getMatches Error ${error.toString()}");
         print("getMatches Error stackTrace $stackTrace");
       }
     }
   }
   getMyLiveFootballMatches(BuildContext context) async{
-    if(myLiveFootballMatchList.value!=null) return;
     try{
       final list  = await _matchRepository.getCricketMatches("live");
       setState(() {
@@ -236,17 +235,21 @@ class MatchController extends BaseController {
 
 
   getMyPastCricketMatches(BuildContext context) async{
-    if(myPastCricketMatchList.value!=null) return;
     try{
-      final list  = await _matchRepository.getCricketMatches("completed");
+      final list  = await _matchRepository.getMyCricketMatches();
       setState(() {
-        myPastCricketMatchList = ValueState(value: list);
+        myPastCricketMatchList = ValueState(value: list.reversed.toList());
       });
+    } on InvalidResponseException {
+      setState(() {
+        myPastCricketMatchList = ValueState(value: []);
+      });
+      successSnackBar("you haven't joined any match", context);
     } catch(error, stackTrace) {
       setState(() {
         myPastCricketMatchList = ValueState(error: "unexpected error please try again") ;
       });
-
+      print(error.runtimeType.runtimeType);
       errorSnackBar(error.toString(), context);
       if (kDebugMode) {
         print("getMatches Error ${error.toString()}");

@@ -10,12 +10,15 @@ import '../../models/team_players.dart';
 import '../../models/player.dart';
 
 import '../../models/userTeamPlayer.dart';
+import '../../utils/utils.dart';
+import '../../widget/timeLeft.dart';
 
 class ChooseCaptainPage extends StatefulWidget {
   
   TeamPlayers team;
-
-  ChooseCaptainPage({required this.team});
+  String matchDateTime ="";
+  TeamPlayers? teamPlayers;
+  ChooseCaptainPage({required this.team,required this.matchDateTime,this.teamPlayers});
 
   @override
   _ChooseCaptainPageState createState() => _ChooseCaptainPageState();
@@ -36,7 +39,11 @@ class _ChooseCaptainPageState extends StateMVC<ChooseCaptainPage> {
   @override
   void initState() {
     _con.cricketTeam = widget.team;
+    if(widget.teamPlayers!=null) {
+      _con.oldTeam = widget.teamPlayers;
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -152,105 +159,6 @@ class _ChooseCaptainPageState extends StateMVC<ChooseCaptainPage> {
                           return cardView(player);
                         }),
 
-                        // cardView(
-                        //   AppLocalizations.of('RR'),
-                        //   "WX",
-                        //   AppLocalizations.of('archer'),
-                        //   "391",
-                        //   "C",
-                        //   "5.8%",
-                        //   "VC",
-                        //   "5.97%",
-                        //   AssetImage(ConstanceData.archer),
-                        // ),
-                        // cardView(
-                        //   "RR",
-                        //   "WX",
-                        //   AppLocalizations.of('chahal'),
-                        //   "268",
-                        //   "c",
-                        //   "5.8%",
-                        //   "VC",
-                        //   "11.16%",
-                        //   AssetImage(ConstanceData.chahal),
-                        // ),
-                        // cardView(
-                        //   "RR",
-                        //   "WX",
-                        //   AppLocalizations.of('finch'),
-                        //   "0",
-                        //   "C",
-                        //   "0.4%",
-                        //   "1.5x",
-                        //   "5.97%",
-                        //   AssetImage(ConstanceData.finch),
-                        // ),
-                        // cardView(
-                        //   "RR",
-                        //   "BAT",
-                        //   AppLocalizations.of('jaiswal'),
-                        //   "246",
-                        //   "C",
-                        //   "0.4%",
-                        //   "1.5x",
-                        //   "5.97%",
-                        //   AssetImage(ConstanceData.jaiswal),
-                        // ),
-                        // cardView(
-                        //   "RR",
-                        //   "BAT",
-                        //   AppLocalizations.of('joshi'),
-                        //   "0",
-                        //   "C",
-                        //   "0.4%",
-                        //   "1.5x",
-                        //   "5.97%",
-                        //   AssetImage(ConstanceData.joshi),
-                        // ),
-                        // cardView(
-                        //   "RR",
-                        //   "BAT",
-                        //   AppLocalizations.of('morris'),
-                        //   "0",
-                        //   "C",
-                        //   "0.4%",
-                        //   "1.5x",
-                        //   "5.97%",
-                        //   AssetImage(ConstanceData.morris),
-                        // ),
-                        // cardView(
-                        //   "RR",
-                        //   "BAT",
-                        //   AppLocalizations.of('siraj'),
-                        //   "246",
-                        //   "C",
-                        //   "0.4%",
-                        //   "1.5x",
-                        //   "5.97%",
-                        //   AssetImage(ConstanceData.siraj),
-                        // ),
-                        // cardView(
-                        //   "RR",
-                        //   "BAT",
-                        //   AppLocalizations.of('smith'),
-                        //   "0",
-                        //   "C",
-                        //   "0.4%",
-                        //   "1.5x",
-                        //   "5.97%",
-                        //   AssetImage(ConstanceData.smith),
-                        // ),
-                        // cardView(
-                        //   "RR",
-                        //   "BAT",
-                        //   AppLocalizations.of('steyn'),
-                        //   "0",
-                        //   "C",
-                        //   "0.4%",
-                        //   "1.5x",
-                        //   "5.97%",
-                        //   AssetImage(ConstanceData.steyn),
-                        // ),
                         SizedBox(
                           height: MediaQuery.of(context).padding.bottom + 70,
                         )
@@ -355,8 +263,8 @@ class _ChooseCaptainPageState extends StateMVC<ChooseCaptainPage> {
     if(player.image.isEmpty){
       image1 = NetworkImage(player.image);
     }
-    final isCaptain = player.id == captainId;
-    final isWiseCaptain = player.id == wiseCaptainId;
+    final isCaptain = player.pid == captainId;
+    final isWiseCaptain = player.pid == wiseCaptainId;
 
     return Card(
       child: Container(
@@ -468,12 +376,12 @@ class _ChooseCaptainPageState extends StateMVC<ChooseCaptainPage> {
                   InkWell(
                     onTap: (){
 
-                      if(wiseCaptainId==player.id){
+                      if(wiseCaptainId==player.pid){
                         wiseCaptainId = "";
                       }
 
                       setState(() {
-                        captainId = player.id;
+                        captainId = player.pid;
                       });
                     },
                     child: Container(
@@ -502,7 +410,7 @@ class _ChooseCaptainPageState extends StateMVC<ChooseCaptainPage> {
                     height: 5,
                   ),
                   Text(
-                    "",
+                    "2x",
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(
                           color: Theme.of(context).textTheme.bodyText2!.color,
                           letterSpacing: 0.6,
@@ -520,12 +428,12 @@ class _ChooseCaptainPageState extends StateMVC<ChooseCaptainPage> {
                   InkWell(
                     onTap: (){
 
-                      if(player.id==captainId){
+                      if(player.pid==captainId){
                         captainId = "";
                       }
 
                       setState(() {
-                        wiseCaptainId = player.id;
+                        wiseCaptainId = player.pid;
                       });
                     },
                     child: Container(
@@ -554,7 +462,7 @@ class _ChooseCaptainPageState extends StateMVC<ChooseCaptainPage> {
                     height: 5,
                   ),
                   Text(
-                    "",
+                    "1.5x",
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(
                           color: Theme.of(context).textTheme.bodyText2!.color,
                           letterSpacing: 0.6,
@@ -586,8 +494,8 @@ class _ChooseCaptainPageState extends StateMVC<ChooseCaptainPage> {
             ),
           ),
           Expanded(child: SizedBox()),
-          Text(
-            "5h 47m left",
+          TimeLeftText(
+            widget.matchDateTime,
             style: Theme.of(context).textTheme.caption!.copyWith(
                   color: Colors.white,
                   letterSpacing: 0.6,

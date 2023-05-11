@@ -1,9 +1,11 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/constance/constance.dart';
@@ -16,7 +18,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../controllers/AuthController.dart';
 import '../../main.dart';
+import '../../utils/constants.dart';
 import '../../utils/shared_preference_services.dart';
+import '../register/passwordReset.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -33,6 +37,12 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
   }
 
   bool loading = false;
+  /// 0 empty
+  /// 1 email
+  /// 2 mobile
+  int fieldType = 0;
+  String code ='+91';
+
   setLoading(bool loading) => setState(() => this.loading = loading);
   startLoading() => setLoading(true);
   stopLoading() => setLoading(false);
@@ -86,9 +96,14 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Icon(
-                                      Icons.close,
-                                      color: Colors.white,
+                                    InkWell(
+                                      onTap:(){
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Icon(
+                                        Icons.close,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -112,18 +127,74 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                             padding: EdgeInsets.zero,
                             children: [
                               Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 20, right: 20),
+                                padding: const EdgeInsets.only(left: 20, right: 20),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SizedBox(
                                       height: 15,
                                     ),
-                                    CustomTextField(
-                                      controller: _userNameController,
-                                      hintText: AppLocalizations.of(
-                                          'Mobile No/UserName/Email'),
+
+                                    // CustomTextField(
+                                    //   controller: _userNameController,
+                                    //   hintText: AppLocalizations.of(
+                                    //       'Mobile No/Email'),
+                                    // ),
+                                    Card(
+                                      elevation: 8,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      child: TextFormField(
+                                        controller: _userNameController,
+                                        onChanged: (s){
+                                          if(s.isEmpty){
+                                            setState(() { fieldType = 0;});
+                                          }
+                                          else{
+                                            final isEmail = RegExp(Constants.emailRegX).hasMatch(s);
+                                            final isMobile = RegExp(Constants.mobileRegX).hasMatch(s);
+                                            if(isMobile){
+                                              setState(() { fieldType = 2;});
+                                            }
+                                            if(isEmail){
+                                              setState(() { fieldType = 1;});
+                                            }
+
+                                          }
+                                        },
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.only(left: 14, right: 14),
+                                          hintText: "email/phone",
+                                          hintStyle: Theme.of(context).textTheme.headline6!.copyWith(
+                                            color: Theme.of(context).textTheme.caption!.color,
+                                            letterSpacing: 0.6,
+                                            fontSize: 14,
+                                          ),
+                                          prefixIcon: fieldType==1?Icon(Icons.alternate_email):fieldType==2?InkWell(
+                                            onTap: () async {
+                                              final countryPicker = const  FlCountryCodePicker(
+                                                showSearchBar: true,
+                                                localize: false,
+                                              );
+                                              final code = await countryPicker.showPicker(context: context);
+                                              if(code!=null){
+                                                this.code = code.dialCode;
+                                              }
+                                            },
+                                            child: Container(
+                                              width: 20,
+                                              height: 20,
+                                              // color: Colors.green,
+                                              child: Center(child: Text(code,style: TextStyle(
+                                              ),)),
+                                            ),
+                                          ):null,
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(30),
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                     SizedBox(
                                       height: 15,
@@ -163,7 +234,8 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
 
 
                                           try{
-                                            await _con.loginToServer(_userNameController.text.trim(), _passwordController.text.trim(), context);
+                                            print("Uname ${_userNameController.text.trim()}");
+                                            await _con.loginToServer((fieldType==2?code:'')+_userNameController.text.trim(), _passwordController.text.trim(), context);
                                             Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(builder: (context) => HomeScreen(),),
@@ -184,26 +256,55 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                                     SizedBox(
                                       height: 10,
                                     ),
-                                    Center(
-                                      child: Text(
-                                        AppLocalizations.of('Forgot Password?'),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText2!
-                                            .copyWith(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              fontWeight: FontWeight.bold,
-                                              letterSpacing: 0.6,
-                                              fontSize: 16,
-                                              decoration:
-                                                  TextDecoration.underline,
-                                            ),
+                                    InkWell(
+                                      onTap: (){
+                                        Navigator.of(context).push(MaterialPageRoute(builder: (c)=>PasswordReset()));
+                                      },
+                                      child: Center(
+                                        child: Text(
+                                          AppLocalizations.of('Forgot Password?'),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText2!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                                fontWeight: FontWeight.bold,
+                                                letterSpacing: 0.6,
+                                                fontSize: 16,
+                                                decoration:
+                                                    TextDecoration.underline,
+                                              ),
+                                        ),
                                       ),
                                     ),
                                     SizedBox(
                                       height: 40,
                                     ),
+
+                                    if(kDebugMode)
+                                      CustomButton(
+                                        text:"Dev Login",
+                                        onTap: ()async{
+                                          try{
+                                            await _con.loginToServer('lingampally.venkey@gmail.com', '12345678', context);
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => HomeScreen(),),
+                                            ).then((value) {
+                                              print(value);
+                                              Navigator.popUntil(
+                                                  context, (route) => false);
+                                            });
+                                          }catch (e){
+                                            if(kDebugMode){
+                                              print(e);
+                                            }
+                                          }
+                                        },
+                                      ),
+
+
                                     rowContent(),
                                   ],
                                 ),
@@ -233,7 +334,7 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
       children: [
         Row(
           children: [
-            Expanded(
+            if(false)Expanded(
               child: Card(
                 shadowColor: Color(0xff1877F2),
                 elevation: 5,
@@ -291,7 +392,7 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
             SizedBox(
               width: 2,
             ),
-            Expanded(
+            if(false)Expanded(
               child: Card(
                 shadowColor: Color(0xffD30001),
                 elevation: 5,
@@ -302,7 +403,7 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                   onTap: () async {
                     setState(() => loading = true);
 
-                    _con.loginWithGoogle().then((value) {
+                    _con.loginWithGoogle(context).then((value) {
                       setState(() => loading = false);
                       if (value) if (value)
                         Navigator.of(context).pushNamed(Routes.HOME);

@@ -1,4 +1,6 @@
+import 'dart:math';
 import 'package:newsports/models/Team.dart';
+import 'Contest.dart';
 
 class MatchModel {
   MatchModel({
@@ -32,10 +34,11 @@ class MatchModel {
 
 
   bool get isStarted{
+    // return false;
     return DateTime.parse(matchDateTime).difference(DateTime.now()).isNegative;
   }
 
-  MatchModel.fromJson(dynamic json) {
+  MatchModel.fromJson(dynamic json,String s,dynamic contest) {
     matchId = json['match_id']??"";
     uniqueId = json['unique_id']??"";
     competitionId = json['competition_id']??"";
@@ -62,6 +65,14 @@ class MatchModel {
     modifiedDate = json['modified_date']??"";
     team1 = Team.fromJson(json['team1']??{});
     team2 = Team.fromJson(json['team2']??{});
+    competitionName = s;
+    contests = [];
+
+    if(contest!=null){
+      (contest as List<dynamic>).forEach((element) {
+        contests.add(Contest.fromJson(element));
+    });
+    }
   }
   String matchId ="";
   String uniqueId ="";
@@ -87,8 +98,10 @@ class MatchModel {
   String matchStatusNote ="";
   String createdDate ="";
   String modifiedDate ="";
+  String competitionName ="";
   Team team1 = Team();
   Team team2 = Team();
+  List<Contest> contests = [];
 
 
   Map<String, dynamic> toJson() {
@@ -122,4 +135,12 @@ class MatchModel {
     return map;
   }
 
+  List<String> _contestTypes = [];
+  List<String> get getContestTypes{
+    if(_contestTypes.isNotEmpty) return _contestTypes;
+    _contestTypes = contests.map((e) => e.contestName.replaceAll("Contest", "").replaceAll("contest", "")).toSet().toList();
+    _contestTypes = _contestTypes.sublist(0,min(3,_contestTypes.length));
+    return _contestTypes;
+  }
+  
 }
