@@ -2,6 +2,7 @@
 
 import 'package:newsports/base_classes/baseApiService.dart';
 import 'package:newsports/base_classes/networkAPIService.dart';
+import 'package:newsports/models/Contest.dart';
 import 'package:newsports/models/team_players.dart';
 import 'package:newsports/models/winner.dart';
 import 'package:newsports/repository/contest_repository.dart';
@@ -53,28 +54,37 @@ class WinnersRepository{
     }
   }
 
-  Future<List<ContestWinners>> getCricketMatchWinners(String matchId) async {
+  // Future<List<Contest>> getCricketMatchWinners() async{
+  //   try{
+  //
+  //   }catch(e,s){
+  //
+  //   }
+  // }
+
+  Future<List<ContestWinners>> getCricketMatchWinners(String matchId) async{
     try{
-      final contestRepo = ContestRepository();
-      final contestList = await contestRepo.getContests(matchId);
-      List<ContestWinners> contestWinners = [];
-      contestList.forEach((element) async{
-        final result = await _apiServices.getGetApiResponse("https://admin.winable11.com/contest_winners/get/17");
-        List<Winner> winners =[];
-        (result['data'] as List<dynamic>).forEach((e) {
-          winners.add(Winner.fromJson(e));
-        });
-        contestWinners.add(ContestWinners(
-            prizePool: element.prizePool,
-            winners: winners,
-            id: element.contestId
-        ));
+
+      final contestsMap = await _apiServices.getGetApiResponse("https://admin.winable11.com/default_contest/get_contest_list/$matchId");
+      final contestWinnerMap = await _apiServices.getGetApiResponse("https://admin.winable11.com/contest_winners/get/$matchId");
+      List<Contest> contestList = [];
+      _apiServices.typeCast<List<dynamic>>(contestsMap['response']).forEach((element) {
+        contestList.add(Contest.fromJson(element));
       });
-      return contestWinners;
+      List<ContestWinners> contestWinnersList = [];
+      (contestWinnerMap['data']??[]).forEach((element) {
+        final contest = ContestWinners.fromJsonWinners(element);
+        contest.contest = contestList.firstWhere((element) => element.contestId==contest.id);
+        contestWinnersList.add(contest);
+      });
+
+      return contestWinnersList;
     }catch(e,s){
+      print(e);
       print(s);
       rethrow;
     }
   }
+
 
 }

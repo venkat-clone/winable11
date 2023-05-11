@@ -153,8 +153,12 @@ class _ContestsPageState extends StateMVC<ContestsPage> {
                     joinContest: (){
                       Navigator.of(context).push(MaterialPageRoute(builder: (c)=>SelectTeam(
                         matchId: widget.match.matchId,
+                        match: widget.match,
                         saveTeam: (team)async{
-                          _con.joinContest(context,contest.contestId,team.teamId,contest.type);
+                          // print(contest.matchId);
+                          contest.matchId = widget.match.matchId;
+                          _con.joinContest(context,contest,team.teamId);
+
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
                           _con.successSnackBar("Successfully joined the contest", context);

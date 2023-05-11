@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
 import '../../Language/appLocalizations.dart';
@@ -40,15 +41,14 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
     return true;
   }
   bool validateEmail() {
-    final password = _emailController.text;
-    if (password.isEmpty) {
+    final email = _emailController.text;
+    if (email.isEmpty) {
       setError("Please provide an email or mobile");
       return false;
     }
-    final isEmail = RegExp(Constants.emailRegX).hasMatch(password);
-    final isMobile = RegExp(Constants.mobileRegX).hasMatch(password);
-
-    return true;
+    final isEmail = RegExp(Constants.emailRegX).hasMatch(email);
+    final isMobile = RegExp(Constants.mobileRegX).hasMatch(email);
+    return isEmail || isMobile;
   }
 
   bool conformPassword(){
@@ -65,6 +65,15 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
     if(!conformPassword()) return false;
     return true;
   }
+
+
+  /// not send =0
+  /// send = 1
+  /// verified = 2
+
+  int otpStatus = 0;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -134,21 +143,99 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
                                     SizedBox(
                                       height: 15,
                                     ),
-                                    CustomTextField(
-                                      controller: _emailController,
-                                      hintText: AppLocalizations.of('email/mobile'),
+
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: CustomTextField(
+                                            controller: _emailController,
+                                            hintText: AppLocalizations.of('email'),
+                                          ),
+                                        ),
+                                        if(false)
+                                          InkWell(
+                                          onTap: (){
+                                            if(validateEmail())
+                                            _con.sendEmailOTP(_emailController.text);
+                                          },
+                                          child: Card(
+                                            elevation: 8,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(30),
+                                            ),
+                                            color: Colors.black,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(12.0),
+                                              child: Text('get OTP',style: TextStyle(
+                                                color: Colors.white
+                                              ),),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     SizedBox(
                                       height: 15,
                                     ),
-                                    CustomTextField(
+                                    if(otpStatus==1)
+                                      Row(
+                                      children: [
+                                        Expanded(
+                                          child: Card(
+                                            elevation: 8,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(30),
+                                            ),
+                                            child: TextFormField(
+                                              controller: _emailController,
+                                              maxLines: 1,
+                                              maxLength: 4,
+                                              buildCounter: (context, {currentLength =0, isFocused= false, maxLength}) {},
+                                              decoration: InputDecoration(
+                                                contentPadding: EdgeInsets.only(left: 14, right: 14),
+                                                hintText: 'OTP',
+                                                hintStyle: Theme.of(context).textTheme.headline6!.copyWith(
+                                                  color: Theme.of(context).textTheme.caption!.color,
+                                                  letterSpacing: 0.6,
+                                                  fontSize: 14,
+                                                ),
+
+                                                border: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.circular(30),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Card(
+                                          elevation: 8,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(30),
+                                          ),
+                                          color: Colors.black,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(12.0),
+                                            child: Text('Validate OTP',style: TextStyle(
+                                              color: Colors.white
+                                            ),),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    if(otpStatus==2 || true)
+                                      CustomTextField(
                                       controller: _passwordController,
                                       hintText: AppLocalizations.of('Password'),
                                     ),
                                     SizedBox(
                                       height: 15,
                                     ),
-                                    CustomTextField(
+                                    if(otpStatus==2 || true)
+                                      CustomTextField(
                                       controller: _conformPasswordController,
                                       hintText: 'conform Password',
                                     ),

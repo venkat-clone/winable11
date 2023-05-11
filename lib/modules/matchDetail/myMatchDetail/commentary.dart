@@ -98,31 +98,27 @@ class _CommentaryState extends StateMVC<Commentary> {
       onLoading: _onLoading,
       onRefresh: _onLoading,
       child: ListView(
-        reverse: true,
+        // reverse: true,
         children: [
-
-          if(_con.inning2Commentary.value!=null) ..._con.inning2Commentary.value!.commentaries.map((e) {
-            return commentaryCard(e);
-          }),
           if(_con.inning2Commentary.value!=null) Column(
-                    children: [
-                      Container(
-                        margin : const EdgeInsets.only(top: 0,bottom: 15),
-                        width: MediaQuery.of(context).size.width,
-                        height: 1,
-                        color: Colors.black.withOpacity(0.4),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        color: Colors.black,
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text("2nd Inning",style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          color: Colors.white
-                        )),
-                      ),
-                    ],
-                  ),
-          if(_con.inning1Commentary.value!=null)..._con.inning1Commentary.value!.commentaries.map((e) {
+            children: [
+              Container(
+                margin : const EdgeInsets.only(top: 0,bottom: 15),
+                width: MediaQuery.of(context).size.width,
+                height: 1,
+                color: Colors.black.withOpacity(0.4),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                color: Colors.black,
+                padding: const EdgeInsets.all(16.0),
+                child: Text("2nd Inning",style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    color: Colors.white
+                )),
+              ),
+            ],
+          ),
+          if(_con.inning2Commentary.value!=null) ..._con.inning2Commentary.value!.commentaries.map((e) {
             return commentaryCard(e);
           }),
           if(_con.inning1Commentary.value!=null) Container(
@@ -133,6 +129,9 @@ class _CommentaryState extends StateMVC<Commentary> {
                 color: Colors.white
             )),
           ),
+          if(_con.inning1Commentary.value!=null)..._con.inning1Commentary.value!.commentaries.map((e) {
+            return commentaryCard(e);
+          }),
 
         ],
       ),

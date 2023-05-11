@@ -86,7 +86,7 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
                         }
                           return playerDetail(
                             AppLocalizations.of(player.name),
-                            AppLocalizations.of('9.5 Cr'),
+                            AppLocalizations.of(player.points),
                             image??Image.asset(
                               ConstanceData.buttler,
                               fit: BoxFit.cover,
@@ -153,7 +153,7 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
 
                         return playerDetail(
                           AppLocalizations.of(player.name),
-                          AppLocalizations.of('9.5 Cr'),
+                          AppLocalizations.of(player.points),
                           image??Image.asset(
                             ConstanceData.buttler,
                             fit: BoxFit.cover,
@@ -186,7 +186,7 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
                         }
                         return playerDetail(
                           AppLocalizations.of(player.name),
-                          AppLocalizations.of('9.5 Cr'),
+                          AppLocalizations.of(player.points),
                           image??Image.asset(
                             ConstanceData.buttler,
                             fit: BoxFit.cover,
@@ -219,7 +219,7 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
                         }
                         return playerDetail(
                           AppLocalizations.of(player.name),
-                          AppLocalizations.of('9.5 Cr'),
+                          AppLocalizations.of(player.points),
                           image??Image.asset(
                             ConstanceData.buttler,
                             fit: BoxFit.cover,

@@ -25,7 +25,7 @@ class FeedRepository{
   }
 
   List<Commentaries> sortCommentaries(List<Commentaries> list){
-    if(list.first.over!="1")
+    if(list.last.over!="1")
       return list.reversed.toList();
     return list;
   }

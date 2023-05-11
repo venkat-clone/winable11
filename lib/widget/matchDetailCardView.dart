@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:flutter/gestures.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/controllers/ContestController.dart';
@@ -13,6 +14,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../models/MatchModel.dart';
 import '../models/Team.dart';
+import '../modules/home/drawer/more/Tarms.dart';
 import '../modules/matchDetail/contestDetail/select_team.dart';
 import '../utils/utils.dart';
 import '../utils/value_notifiers.dart';
@@ -78,7 +80,7 @@ class MatchDetailCardView extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      '₹${Utils.convertToIndianCurrency(int.parse(contest.prizePool))}',
+                      '₹${Utils.convertToIndianCurrency(double.parse(contest.prizePool))}',
                       style: Theme.of(context).textTheme.caption!.copyWith(
                             color: Theme.of(context).textTheme.headline6!.color,
                             letterSpacing: 0.6,
@@ -90,11 +92,9 @@ class MatchDetailCardView extends StatelessWidget {
 
                       InkWell(
                       onTap: (){
-                        if(match.isStarted){
-                          return;
-                        }
-
-
+                        // if(match.isStarted){
+                        //   return;
+                        // }
                         showDialog(context: context, builder: (context)=>
                             JoinContestCard(fee: double.parse(contest.entry),contestId: contest.contestId,accept: joinContest),
                           barrierDismissible: false,
@@ -128,7 +128,7 @@ class MatchDetailCardView extends StatelessWidget {
                 height: 15,
               ),
               LinearPercentIndicator(
-                percent: min(1, (double.parse(contest.joinTeam)/double.parse(contest.totalTeam))),
+                percent: min(1, (double.parse(contest.filledSpots)/double.parse(contest.totalTeam))),
                 progressColor: Theme.of(context).primaryColor,
                 backgroundColor: Theme.of(context).disabledColor,
               ),
@@ -143,7 +143,7 @@ class MatchDetailCardView extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      '${int.parse(contest.totalTeam)-int.parse(contest.joinTeam)} spots left',
+                      '${int.parse(contest.totalTeam)-int.parse(contest.filledSpots)} spots left',
                       style: Theme.of(context).textTheme.caption!.copyWith(
                             color: Color(0xffD30001),
                             letterSpacing: 0.6,
@@ -182,16 +182,16 @@ class MatchDetailCardView extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        AppLocalizations.of('₹1 Lakh'),
-                        style: Theme.of(context).textTheme.caption!.copyWith(
-                              color: Theme.of(context).textTheme.caption!.color,
-                              letterSpacing: 0.6,
-                              fontSize: 10,
-                            ),
-                      ),
-                      Expanded(child: SizedBox()),
-                      Text((double.parse(contest.joinTeam)/double.parse(contest.totalTeam)*100).toStringAsFixed(2),
+                      // Text(
+                      //   AppLocalizations.of('₹1 Lakh'),
+                      //   style: Theme.of(context).textTheme.caption!.copyWith(
+                      //         color: Theme.of(context).textTheme.caption!.color,
+                      //         letterSpacing: 0.6,
+                      //         fontSize: 10,
+                      //       ),
+                      // ),
+                      // Expanded(child: SizedBox()),
+                      Text((double.parse(contest.filledSpots)/double.parse(contest.totalTeam)*100).toStringAsFixed(2),
                         style: Theme.of(context).textTheme.caption!.copyWith(
                               color: Theme.of(context).textTheme.caption!.color,
                               letterSpacing: 0.6,
@@ -331,12 +331,37 @@ class _JoinContestCardState extends State<JoinContestCard> {
                       ),
                     ],),
                   SizedBox(height: 20),
-                  Text("By joining this contest,you accept Winable 11 T&C's",
-                    style: Theme.of(context).textTheme.caption!.copyWith(
-                    letterSpacing: 0.6,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),),
+                  RichText(
+                    text: TextSpan(
+                      text: 'By joining this contest, you accept Winable 11 ',
+                      style: Theme.of(context).textTheme.caption!.copyWith(
+                        letterSpacing: 0.6,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "terms & Conditions",
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: Colors.blue,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              // perform action on T&C's click
+                              Navigator.of(context).push(MaterialPageRoute(builder: (c)=>TermsAndConditions()));
+                            },
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Text("By joining this contest,you accept Winable 11 T&C's",
+                  //   style: Theme.of(context).textTheme.caption!.copyWith(
+                  //   letterSpacing: 0.6,
+                  //   fontSize: 12,
+                  //   fontWeight: FontWeight.bold,
+                  // ),),
                   SizedBox(height: 30,),
                   GestureDetector(
                     onTap: (){

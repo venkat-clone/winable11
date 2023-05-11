@@ -1,16 +1,23 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:csc_picker/csc_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
+import 'package:newsports/controllers/AuthController.dart';
 import 'package:newsports/widget/customButton.dart';
 import 'package:newsports/widget/customTextField.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../controllers/AuthController.dart';
 import '../../../models/user.dart';
 import '../../../utils/shared_preference_services.dart';
+import '../../../utils/utils.dart';
 import '../../../utils/value_notifiers.dart';
 
 class SettingPage extends StatefulWidget {
@@ -18,33 +25,31 @@ class SettingPage extends StatefulWidget {
   _SettingPageState createState() => _SettingPageState();
 }
 
-class _SettingPageState extends State<SettingPage> {
+class _SettingPageState extends StateMVC<SettingPage> {
   AppUser user = currentUser.value;
 
-  TextEditingController _nameController =
-      TextEditingController(text: currentUser.value.name);
-  TextEditingController _emailController =
-      TextEditingController(text: currentUser.value.email);
+  TextEditingController _nameController = TextEditingController(text: currentUser.value.name);
+  TextEditingController _emailController = TextEditingController(text: currentUser.value.email);
   TextEditingController _passwordController = TextEditingController();
-  TextEditingController _birthDateController =
-      TextEditingController(text: currentUser.value.dob);
-  TextEditingController _numberController =
-      TextEditingController(text: currentUser.value.mobile);
-  TextEditingController _addressController =
-      TextEditingController(text: currentUser.value.address);
-  TextEditingController _cityController =
-      TextEditingController(text: currentUser.value.city);
-  TextEditingController _pinCodeController =
-      TextEditingController(text: currentUser.value.pincode);
-  TextEditingController _stateController =
-      TextEditingController(text: currentUser.value.state);
-  TextEditingController _countryController =
-      TextEditingController(text: currentUser.value.country);
-  bool isMale = currentUser.value.gender == "male";
-  bool isFemale = currentUser.value.gender == "female";
+  TextEditingController _birthDateController = TextEditingController(text: currentUser.value.dob);
+  TextEditingController _numberController = TextEditingController(text: Utils.removeCountryCode(currentUser.value.mobile));
+  String code = '+91';
+  TextEditingController _addressController = TextEditingController(text: currentUser.value.address);
+  String _cityName = currentUser.value.city;
+  TextEditingController _pinCodeController = TextEditingController(text: currentUser.value.pincode);
+  String _stateName = currentUser.value.state;
+  String _countryName = currentUser.value.country;
+  bool isMale = currentUser.value.gender.toLowerCase() == "male";
+  bool isFemale = currentUser.value.gender.toLowerCase() == "female";
   bool isSwitched1 = false;
   bool isSwitched2 = false;
   bool loading = false;
+  late AuthController _con;
+  _SettingPageState():super(AuthController()){
+    _con = controller as AuthController;
+  }
+
+
   setLoading(bool loading) => setState(() => this.loading = loading);
   startLoading() => setLoading(true);
   stopLoading() => setLoading(false);
@@ -176,9 +181,46 @@ class _SettingPageState extends State<SettingPage> {
                       SizedBox(
                         height: 5,
                       ),
-                      CustomTextField(
-                        hintText: AppLocalizations.of('Enter date of birth'),
-                        controller: _birthDateController,
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Row(
+                          children: [
+                            Card(
+                              shadowColor: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .color,
+                              elevation: 5,
+                              shape: CircleBorder(),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: (Theme.of(context)
+                                        .textTheme
+                                        .headline6!
+                                        .color)!,
+                                  ),
+                                ),
+                                child: IconButton(
+                                    onPressed: () async {
+                                      await pickDate();
+                                    },
+                                    icon: Icon(
+                                        Icons.calendar_month)),
+                              ),
+                            ),
+                            Expanded(
+                              child: CustomTextField(
+                                controller: _birthDateController,
+                                readOnly: true,
+                                hintText: AppLocalizations.of(
+                                    'Pick DOB'),
+                                onTap: pickDate,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                       SizedBox(
                         height: 15,
@@ -309,10 +351,37 @@ class _SettingPageState extends State<SettingPage> {
                       SizedBox(
                         height: 5,
                       ),
-                      CustomTextField(
-                        hintText: AppLocalizations.of('Enter mobile number'),
-                        controller: _numberController,
+
+                      Card(
+                        elevation: 8,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: IntlPhoneField(
+                          decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(left: 14, right: 14),
+                              hintText: "Mobile No",
+                              hintStyle: Theme.of(context).textTheme.headline6!.copyWith(
+                                color: Theme.of(context).textTheme.caption!.color,
+                                letterSpacing: 0.6,
+                                fontSize: 14,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              counterText: ""
+                          ),
+                          initialCountryCode: 'IN',
+
+                          onChanged: (phone) {
+                            print('phoneNumber:${phone.number}');
+                            _numberController.text = phone.number;
+                            code = phone.countryCode;
+                          },
+                        ),
                       ),
+
+
                     ],
                   ),
                 ),
@@ -488,10 +557,111 @@ class _SettingPageState extends State<SettingPage> {
                       SizedBox(
                         height: 5,
                       ),
-                      CustomTextField(
-                        hintText: AppLocalizations.of('Enter City'),
-                        controller: _cityController,
+                      CSCPicker(
+                        showStates: true,
+                        showCities: true,
+                        flagState: CountryFlag.ENABLE,
+                        dropdownDecoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                                offset: Offset(2, 4),
+                                blurRadius: 8,
+                                color:
+                                Color.fromARGB(88, 0, 0, 0))
+                          ],
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(30)),
+                          color:
+                          Theme.of(context).backgroundColor,
+                          border: Border.all(
+                            color: (Theme.of(context)
+                                .textTheme
+                                .caption!
+                                .color!),
+                          ),
+                        ),
+                        disabledDropdownDecoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                                offset: Offset(2, 4),
+                                blurRadius: 8,
+                                color:
+                                Color.fromARGB(88, 0, 0, 0))
+                          ],
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(30)),
+                          color: Colors.grey.shade300,
+                          border: Border.all(
+                            color: (Theme.of(context)
+                                .textTheme
+                                .caption!
+                                .color!),
+                          ),
+                        ),
+                        countrySearchPlaceholder:
+                        AppLocalizations.of("Country"),
+                        stateSearchPlaceholder:
+                        AppLocalizations.of("State"),
+                        citySearchPlaceholder:
+                        AppLocalizations.of("City"),
+                        countryDropdownLabel: AppLocalizations.of(_countryName ?? "Country"),
+                        stateDropdownLabel: AppLocalizations.of((_stateName.isNotEmpty )? _stateName : "State"),
+                        cityDropdownLabel: AppLocalizations.of((_cityName.isNotEmpty )? _cityName : "City"),
+                        defaultCountry: CscCountry.India,
+                        selectedItemStyle: Theme.of(context)
+                            .textTheme
+                            .headline6!
+                            .copyWith(
+                          color: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .color,
+                          letterSpacing: 0.6,
+                          fontSize: 14,
+                        ),
+                        dropdownHeadingStyle: Theme.of(context)
+                            .textTheme
+                            .headline6!
+                            .copyWith(
+                          color: Theme.of(context)
+                              .textTheme
+                              .caption!
+                              .color,
+                          letterSpacing: 0.6,
+                          fontSize: 14,
+                        ),
+                        dropdownItemStyle: Theme.of(context)
+                            .textTheme
+                            .headline6!
+                            .copyWith(
+                          color: Theme.of(context)
+                              .textTheme
+                              .caption!
+                              .color,
+                          letterSpacing: 0.6,
+                          fontSize: 14,
+                        ),
+                        dropdownDialogRadius: 10.0,
+                        searchBarRadius: 30.0,
+                        onCountryChanged: (value) {
+                          print("countryName:${value.split(' ').last.trim()}");
+                          setState(() {
+                            _countryName = value.split(' ').last.trim();
+
+                          });
+                        },
+                        onStateChanged: (value) {
+                          setState(() {
+                            _stateName = value??'';
+                          });
+                        },
+                        onCityChanged: (value) {
+                          setState(() {
+                            _cityName = value??'';
+                          });
+                        },
                       ),
+
                       SizedBox(
                         height: 15,
                       ),
@@ -527,13 +697,7 @@ class _SettingPageState extends State<SettingPage> {
                               ),
                         ),
                       ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      CustomTextField(
-                        hintText: AppLocalizations.of('Enter state'),
-                        controller: _stateController,
-                      ),
+
                       SizedBox(
                         height: 15,
                       ),
@@ -548,13 +712,7 @@ class _SettingPageState extends State<SettingPage> {
                               ),
                         ),
                       ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      CustomTextField(
-                        hintText: AppLocalizations.of('Enter country'),
-                        controller: _countryController,
-                      ),
+
                       SizedBox(
                         height: 25,
                       ),
@@ -600,24 +758,28 @@ class _SettingPageState extends State<SettingPage> {
                       CustomButton(
                         text: AppLocalizations.of('Update Profile'),
                         onTap: () async {
+                          print("userID,${currentUser.value.user_id}");
                           final user = AppUser(
+                            user_id: currentUser.value.user_id,
                             name: _nameController.value.text,
                             email: _emailController.value.text,
                             dob: _birthDateController.value.text,
-                            mobile: _numberController.value.text,
+                            mobile: code+_numberController.value.text,
                             address: _addressController.value.text,
-                            city: _cityController.value.text,
+                            city: _cityName??'',
                             pincode: _pinCodeController.value.text,
-                            state: _stateController.value.text,
-                            country: _countryController.value.text,
+                            state: _stateName??'',
+                            country: _countryName??'',
                             gender: isMale ? "male" : "female",
                           );
                           startLoading();
+                          await _con.upDateProfile(context, user);
+                          /// Update from Auth Repo
                           stopLoading();
                           SharedPreferenceService.setAllowSmsNotification(
                               isSwitched1);
                           SharedPreferenceService.setDiscoverable(isSwitched1);
-                          SharedPreferenceService.setUser(user);
+
                         },
                       ),
                     ],
@@ -648,34 +810,25 @@ class _SettingPageState extends State<SettingPage> {
         fontSize: 16.0);
   }
 
-  updateToFirebase(AppUser user) async {
-    bool isUpdated = false;
-
-    if (user.email != currentUser.value.email) {
-      // update Email
-      print("email Updating..");
-      await FirebaseAuth.instance.currentUser
-          ?.updateEmail(user.email.trim())
-          .whenComplete(() {
-        isUpdated = true;
-
-        print("Email updated successfully");
-      }).onError((error, stackTrace) {
-        isUpdated = false;
-        print(error.toString());
+  pickDate() async {
+    DateTime? pickedDate =
+    await showDatePicker(
+        context: context,
+        initialDate: DateTime(DateTime.now().year-17),
+        firstDate: DateTime(1950),
+        // lastDate: DateTime.now().subtract(Duration(days: 365*10)));
+        lastDate: DateTime(DateTime.now().year-17));
+    if (pickedDate != null) {
+      String formattedDate =
+      DateFormat(
+          'yyyy-MM-dd')
+          .format(
+          pickedDate);
+      setState(() {
+        _birthDateController.text =
+            formattedDate; //set output date to TextField value.
       });
-      print("email Updated");
-    }
-    if (user.name != currentUser.value.name) {
-      // update name
-      await FirebaseAuth.instance.currentUser
-          ?.updateDisplayName(user.name)
-          .whenComplete(() => isUpdated = true)
-          .onError((error, stackTrace) => isUpdated = false);
-    }
-
-    currentUser.value = user;
-    return isUpdated;
+    } else {}
   }
 
   updatePassword(password) async {

@@ -15,6 +15,7 @@ import '../../controllers/TeamController.dart';
 import '../../models/MatchModel.dart';
 import '../../models/Team.dart';
 import '../../utils/utils.dart';
+import '../../utils/value_notifiers.dart';
 import '../../widget/timeLeft.dart';
 
 class MatchDetailPage extends StatefulWidget {
@@ -399,7 +400,7 @@ class _MatchDetailPageState extends StateMVC<MatchDetailPage> {
                                         ),
                                         Center(
                                           child: Text(
-                                            "₹0",
+                                            "₹${currentWallet.value.totalBalance}",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .caption!
@@ -462,11 +463,11 @@ class _MatchDetailPageState extends StateMVC<MatchDetailPage> {
                                           endIndent: 14,
                                         ),
                                         row(AppLocalizations.of('Amount Added'),
-                                            "₹0"),
+                                            "₹${currentWallet.value.balanceDeposited}"),
                                         row(AppLocalizations.of('Winnings'),
-                                            "₹0"),
+                                            "₹${currentWallet.value.winnings}"),
                                         row(AppLocalizations.of('Cash Bonus'),
-                                            "₹0"),
+                                            "₹${currentWallet.value.cashBonus}"),
                                         SizedBox(
                                           height: 10,
                                         ),

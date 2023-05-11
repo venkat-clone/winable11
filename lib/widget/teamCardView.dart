@@ -60,6 +60,9 @@ class _PlayerCardViewState extends State<PlayerCardView> {
                           image: DecorationImage(
                             image: widget.image1!,
                             fit: BoxFit.cover,
+                            onError:(o,s){
+
+                            }
                           ),
                         ),
                       ),

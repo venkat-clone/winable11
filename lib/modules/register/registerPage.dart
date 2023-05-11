@@ -442,6 +442,50 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                     SizedBox(
                                       height: 20,
                                     ),
+                                    if(kDebugMode)Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 5, right: 5),
+                                      child: CustomButton(
+                                        text: AppLocalizations.of('Skip OTP'),
+                                        onTap: () async {
+                                          setError("");
+                                          if (!validateData()) return;
+                                          final user = AuthUser(
+                                            name: _userNameController.text,
+                                            mobile: _mobileController.text,
+                                            password: _passwordController.text,
+                                            email: _emailController.text,
+                                            dob: _dobController.text,
+                                            country: _countryName ?? "",
+                                            state: _stateName ?? "",
+                                            city: _cityName ?? "",
+                                          );
+
+                                          final create = await _con.registerWithServer(context,user);
+                                          if(!create) return;
+                                          // Navigator.push(
+                                          //     context,
+                                          //     MaterialPageRoute(
+                                          //         builder: (c) => OTPScreen(
+                                          //           phone: user.mobile,
+                                          //           user: user,
+                                          //         )));
+
+                                          // uncomment in next build
+                                          // try{
+                                          //   await _con.registerWithServer(user);
+                                          //   String phone = _mobileController.text;
+                                          //   if (phone.length <= 10) phone = "+91" + phone;
+                                          //   Navigator.push(context, MaterialPageRoute(builder: (c) => OTPScreen(phone: phone,)));
+                                          // }catch(e){
+                                          //   _con.errorSnackBar("Some thing went wrong", context);
+                                          //   if(kDebugMode){
+                                          //     print(e);
+                                          //   }
+                                          // }
+                                        },
+                                      ),
+                                    ),
                                     rowContent(),
                                   ],
                                 ),

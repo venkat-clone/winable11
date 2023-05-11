@@ -78,7 +78,7 @@ class DetailPage extends StatelessWidget {
                   itemBuilder: (c,index){
                     return row(
                         "# ${((winnings.value?[index].rank)??"").replaceAll("-0", "")}",
-                        '₹${Utils.convertToIndianCurrency(int.parse(winnings.value?[index].price??"0"))}',
+                        '₹${Utils.convertToIndianCurrency(double.parse(winnings.value?[index].price??"0"))}',
                         context
                     );
                   },

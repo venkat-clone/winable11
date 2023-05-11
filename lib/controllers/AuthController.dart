@@ -33,7 +33,10 @@ class AuthController extends BaseController {
   Future<bool> loginWithGoogle(BuildContext context) async {
     try{
       await lodeWhile(() async {
-        final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+        final GoogleSignInAccount? gUser = await GoogleSignIn(scopes: [
+          'https://www.googleapis.com/auth/user.birthday.read',
+          'https://www.googleapis.com/auth/user.addresses.read'
+        ]).signIn();
 
         if (gUser == null) return false;
         Navigator.of(context).push(MaterialPageRoute(builder: (c)=>PasswordPage(email: gUser.email,uName: gUser.displayName??"",)));
@@ -42,13 +45,17 @@ class AuthController extends BaseController {
         // print(gUser.toString());
         final credential = GoogleAuthProvider.credential(accessToken: aAuth.accessToken, idToken: aAuth.idToken);
 
+
+        /// https://www.googleapis.com/auth/user.addresses.read
+
+
         // print(credential.asMap());
 
         // throw Exception();
 
         // sign in
-        final signIn =
-            await FirebaseAuth.instance.signInWithCredential(credential);
+        // final signIn =
+        //     await FirebaseAuth.instance.signInWithCredential(credential);
         final email = FirebaseAuth.instance.currentUser?.providerData[0].email;
         // setKYCStatus(FirebaseAuth.instance.currentUser!.uid, false);
         if (email != null && email != "") {
@@ -60,8 +67,8 @@ class AuthController extends BaseController {
           await _repository.registerUser(user);
           // make api call to register User
         }
-        SharedPreferenceService.setGoogleAccessToken(
-            signIn.credential?.accessToken ?? "");
+        // SharedPreferenceService.setGoogleAccessToken(
+        //     signIn.credential?.accessToken ?? "");
         setUpLocalUser();
       });
       return false;
@@ -161,6 +168,7 @@ class AuthController extends BaseController {
       // final isEmail = true;
       final isMobile = RegExp(Constants.mobileRegX).hasMatch(id);
 
+      print("info $id");
       AuthUser user = AuthUser(password: password);
       if(isEmail){
         user.email = id;
@@ -229,17 +237,21 @@ class AuthController extends BaseController {
     return OTPSent;
   }
 
-  reSetPassword(String id,String password) async{
-    final isEmail = RegExp(Constants.emailRegX).hasMatch(id);
-    final isMobile = RegExp(Constants.mobileRegX).hasMatch(id);
-    String? email;
-    String? mobile;
-    // if(isEmail){
-    //   email =
-    // }
-    // await _repository.resetPassword();
+  reSetPassword(BuildContext context,String id,String password) async{
+
   }
 
-
+  upDateProfile(BuildContext context,AppUser user) async{
+    try{
+      await _repository.updateProfile(user);
+      SharedPreferenceService.setUser(user);
+      setState(() {
+        currentUser.value = user;
+      });
+    }catch(e,s){
+      print("$e\n$s");
+      errorSnackBar("something went wrong", context);
+    }
+  }
 
 }

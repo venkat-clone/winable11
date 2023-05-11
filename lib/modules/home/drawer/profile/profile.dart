@@ -9,6 +9,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../../../../constance/constance.dart';
 import '../../../../utils/value_notifiers.dart';
+import '../../../../widget/profileDetails.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -213,541 +214,620 @@ class _ProfilePageState extends State<ProfilePage> {
             SizedBox(
               height: 15,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Card(
-                  elevation: 5,
-                  child: Padding(
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Card(
+                  //   elevation: 5,
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.all(8.0),
+                  //     child: Column(
+                  //       crossAxisAlignment: CrossAxisAlignment.start,
+                  //       children: [
+                  //         Center(
+                  //           child: Text(
+                  //             AppLocalizations.of(
+                  //                 'To progress to a level 13 Champion'),
+                  //             style:
+                  //                 Theme.of(context).textTheme.caption!.copyWith(
+                  //                       color: Theme.of(context)
+                  //                           .textTheme
+                  //                           .headline6!
+                  //                           .color,
+                  //                       letterSpacing: 0.6,
+                  //                       fontSize: 12,
+                  //                     ),
+                  //           ),
+                  //         ),
+                  //         SizedBox(
+                  //           height: 8,
+                  //         ),
+                  //         Row(
+                  //           mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  //           children: [
+                  //             Column(
+                  //               children: [
+                  //                 Text(
+                  //                   AppLocalizations.of('Play for'),
+                  //                   style: Theme.of(context)
+                  //                       .textTheme
+                  //                       .caption!
+                  //                       .copyWith(
+                  //                         color: Theme.of(context)
+                  //                             .textTheme
+                  //                             .bodyText2!
+                  //                             .color,
+                  //                         letterSpacing: 0.6,
+                  //                         fontSize: 12,
+                  //                       ),
+                  //                 ),
+                  //                 SizedBox(
+                  //                   height: 3,
+                  //                 ),
+                  //                 Text(
+                  //                   "₹6",
+                  //                   style: Theme.of(context)
+                  //                       .textTheme
+                  //                       .caption!
+                  //                       .copyWith(
+                  //                         color: Theme.of(context)
+                  //                             .textTheme
+                  //                             .headline6!
+                  //                             .color,
+                  //                         letterSpacing: 0.6,
+                  //                         fontSize: 14,
+                  //                       ),
+                  //                 ),
+                  //                 SizedBox(
+                  //                   height: 3,
+                  //                 ),
+                  //                 Text(
+                  //                   AppLocalizations.of('more'),
+                  //                   style: Theme.of(context)
+                  //                       .textTheme
+                  //                       .caption!
+                  //                       .copyWith(
+                  //                         color: Theme.of(context)
+                  //                             .textTheme
+                  //                             .bodyText2!
+                  //                             .color,
+                  //                         letterSpacing: 0.6,
+                  //                         fontSize: 12,
+                  //                       ),
+                  //                 ),
+                  //               ],
+                  //             ),
+                  //             Text(
+                  //               AppLocalizations.of('OR'),
+                  //               style:
+                  //                   Theme.of(context).textTheme.caption!.copyWith(
+                  //                         color: Theme.of(context)
+                  //                             .textTheme
+                  //                             .bodyText2!
+                  //                             .color,
+                  //                         letterSpacing: 0.6,
+                  //                         fontSize: 12,
+                  //                       ),
+                  //             ),
+                  //             Column(
+                  //               children: [
+                  //                 Text(
+                  //                   AppLocalizations.of('Play for'),
+                  //                   style: Theme.of(context)
+                  //                       .textTheme
+                  //                       .caption!
+                  //                       .copyWith(
+                  //                         color: Theme.of(context)
+                  //                             .textTheme
+                  //                             .bodyText2!
+                  //                             .color,
+                  //                         fontSize: 12,
+                  //                       ),
+                  //                 ),
+                  //                 SizedBox(
+                  //                   height: 3,
+                  //                 ),
+                  //                 Text(
+                  //                   "₹6",
+                  //                   style: Theme.of(context)
+                  //                       .textTheme
+                  //                       .caption!
+                  //                       .copyWith(
+                  //                         color: Theme.of(context)
+                  //                             .textTheme
+                  //                             .headline6!
+                  //                             .color,
+                  //                         letterSpacing: 0.6,
+                  //                         fontSize: 14,
+                  //                       ),
+                  //                 ),
+                  //                 SizedBox(
+                  //                   height: 3,
+                  //                 ),
+                  //                 Text(
+                  //                   AppLocalizations.of('more'),
+                  //                   style: Theme.of(context)
+                  //                       .textTheme
+                  //                       .caption!
+                  //                       .copyWith(
+                  //                         color: Theme.of(context)
+                  //                             .textTheme
+                  //                             .bodyText2!
+                  //                             .color,
+                  //                         letterSpacing: 0.6,
+                  //                         fontSize: 12,
+                  //                       ),
+                  //                 ),
+                  //               ],
+                  //             ),
+                  //           ],
+                  //         ),
+                  //         SizedBox(
+                  //           height: 20,
+                  //         ),
+                  //         Card(
+                  //           elevation: 5,
+                  //           child: Padding(
+                  //             padding: const EdgeInsets.only(top: 8),
+                  //             child: Column(
+                  //               children: [
+                  //                 Padding(
+                  //                   padding: const EdgeInsets.only(left: 25),
+                  //                   child: Row(
+                  //                     children: [
+                  //                       Icon(
+                  //                         FontAwesomeIcons.trophy,
+                  //                         size: 60,
+                  //                         color: Theme.of(context).primaryColor,
+                  //                       ),
+                  //                       SizedBox(
+                  //                         width: 30,
+                  //                       ),
+                  //                       Column(
+                  //                         crossAxisAlignment:
+                  //                             CrossAxisAlignment.start,
+                  //                         children: [
+                  //                           Text(
+                  //                             "₹15",
+                  //                             style: Theme.of(context)
+                  //                                 .textTheme
+                  //                                 .caption!
+                  //                                 .copyWith(
+                  //                                   color: Theme.of(context)
+                  //                                       .textTheme
+                  //                                       .headline6!
+                  //                                       .color,
+                  //                                   letterSpacing: 0.6,
+                  //                                   fontSize: 22,
+                  //                                 ),
+                  //                           ),
+                  //                           Text(
+                  //                             AppLocalizations.of('Cash Bonus'),
+                  //                             style: Theme.of(context)
+                  //                                 .textTheme
+                  //                                 .caption!
+                  //                                 .copyWith(
+                  //                                   color: Theme.of(context)
+                  //                                       .textTheme
+                  //                                       .headline6!
+                  //                                       .color,
+                  //                                   letterSpacing: 0.6,
+                  //                                   fontSize: 12,
+                  //                                 ),
+                  //                           ),
+                  //                           SizedBox(
+                  //                             height: 2,
+                  //                           ),
+                  //                           Text(
+                  //                             AppLocalizations.of(
+                  //                                 'Use this cash bonus to join paid contests\nand win.'),
+                  //                             style: Theme.of(context)
+                  //                                 .textTheme
+                  //                                 .caption!
+                  //                                 .copyWith(
+                  //                                   color: Theme.of(context)
+                  //                                       .textTheme
+                  //                                       .bodyText2!
+                  //                                       .color,
+                  //                                   letterSpacing: 0.6,
+                  //                                   fontSize: 10,
+                  //                                 ),
+                  //                           ),
+                  //                         ],
+                  //                       )
+                  //                     ],
+                  //                   ),
+                  //                 ),
+                  //                 SizedBox(
+                  //                   height: 30,
+                  //                 ),
+                  //                 Row(
+                  //                   children: [
+                  //                     Expanded(
+                  //                       flex: 1,
+                  //                       child: Container(
+                  //                         height: 40,
+                  //                         color: Color(0xffFAFAFA),
+                  //                         child: Center(
+                  //                           child: Text(
+                  //                             AppLocalizations.of(
+                  //                                 'Offer Details'),
+                  //                             style: Theme.of(context)
+                  //                                 .textTheme
+                  //                                 .caption!
+                  //                                 .copyWith(
+                  //                                   color: Theme.of(context)
+                  //                                       .primaryColor,
+                  //                                   letterSpacing: 0.6,
+                  //                                   fontSize: 12,
+                  //                                 ),
+                  //                           ),
+                  //                         ),
+                  //                       ),
+                  //                     ),
+                  //                     Expanded(
+                  //                       flex: 3,
+                  //                       child: Container(
+                  //                         height: 40,
+                  //                         color: Color(0xffFAEDE3),
+                  //                         child: Center(
+                  //                           child: Row(
+                  //                             mainAxisAlignment:
+                  //                                 MainAxisAlignment.center,
+                  //                             children: [
+                  //                               Icon(
+                  //                                 Icons.lock,
+                  //                                 color: Colors.orange,
+                  //                                 size: 14,
+                  //                               ),
+                  //                               SizedBox(
+                  //                                 width: 5,
+                  //                               ),
+                  //                               Text(
+                  //                                 AppLocalizations.of(
+                  //                                     'Unlocks at level 20'),
+                  //                                 style: Theme.of(context)
+                  //                                     .textTheme
+                  //                                     .caption!
+                  //                                     .copyWith(
+                  //                                       color: Colors.orange,
+                  //                                       fontWeight:
+                  //                                           FontWeight.bold,
+                  //                                       letterSpacing: 0.6,
+                  //                                       fontSize: 12,
+                  //                                     ),
+                  //                               ),
+                  //                             ],
+                  //                           ),
+                  //                         ),
+                  //                       ),
+                  //                     )
+                  //                   ],
+                  //                 ),
+                  //               ],
+                  //             ),
+                  //           ),
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
+                  // SizedBox(
+                  //   height: 20,
+                  // ),
+                  // Card(
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.all(12.0),
+                  //     child: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  //       children: [
+                  //         Column(
+                  //           children: [
+                  //             Text(
+                  //               "0",
+                  //               style:
+                  //                   Theme.of(context).textTheme.caption!.copyWith(
+                  //                         color: Colors.blue,
+                  //                         letterSpacing: 0.6,
+                  //                         fontSize: 14,
+                  //                       ),
+                  //             ),
+                  //             SizedBox(
+                  //               height: 3,
+                  //             ),
+                  //             Text(
+                  //               AppLocalizations.of('Followers'),
+                  //               style:
+                  //                   Theme.of(context).textTheme.caption!.copyWith(
+                  //                         color: Theme.of(context)
+                  //                             .textTheme
+                  //                             .headline6!
+                  //                             .color,
+                  //                         letterSpacing: 0.6,
+                  //                         fontSize: 12,
+                  //                       ),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //         Container(
+                  //           height: 25,
+                  //           width: 1,
+                  //           color: Theme.of(context).disabledColor,
+                  //         ),
+                  //         Column(
+                  //           children: [
+                  //             Text(
+                  //               "0",
+                  //               style:
+                  //                   Theme.of(context).textTheme.caption!.copyWith(
+                  //                         color: Colors.blue,
+                  //                         letterSpacing: 0.6,
+                  //                         fontSize: 14,
+                  //                       ),
+                  //             ),
+                  //             SizedBox(
+                  //               height: 3,
+                  //             ),
+                  //             Text(
+                  //               AppLocalizations.of('Following'),
+                  //               style:
+                  //                   Theme.of(context).textTheme.caption!.copyWith(
+                  //                         color: Theme.of(context)
+                  //                             .textTheme
+                  //                             .headline6!
+                  //                             .color,
+                  //                         letterSpacing: 0.6,
+                  //                         fontSize: 12,
+                  //                       ),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //         Container(
+                  //           height: 25,
+                  //           width: 1,
+                  //           color: Theme.of(context).disabledColor,
+                  //         ),
+                  //         Column(
+                  //           children: [
+                  //             Text(
+                  //               "0",
+                  //               style:
+                  //                   Theme.of(context).textTheme.caption!.copyWith(
+                  //                         color: Colors.blue,
+                  //                         letterSpacing: 0.6,
+                  //                         fontSize: 14,
+                  //                       ),
+                  //             ),
+                  //             SizedBox(
+                  //               height: 3,
+                  //             ),
+                  //             Text(
+                  //               AppLocalizations.of('Posts'),
+                  //               style:
+                  //                   Theme.of(context).textTheme.caption!.copyWith(
+                  //                         color: Theme.of(context)
+                  //                             .textTheme
+                  //                             .headline6!
+                  //                             .color,
+                  //                         letterSpacing: 0.6,
+                  //                         fontSize: 12,
+                  //                       ),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
+
+                  // Padding(
+                  //   padding: const EdgeInsets.all(8.0),
+                  //   child: Text('Profile Details',style:Theme.of(context).textTheme.titleLarge!.copyWith()),
+                  // ),
+                  Card(
+                    elevation: 5,
+                    child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        alignment: Alignment.topLeft,
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Profile Details',style:Theme.of(context).textTheme.subtitle2!.copyWith()),
+                      ),
+                      InfoItem(icon: Icon(Icons.phone),text:currentUser.value.mobile),
+                      InfoItem(icon: Icon(Icons.alternate_email),text:currentUser.value.email),
+                      InfoItem(icon: Icon(Icons.cake),text:currentUser.value.dob),
+                    ],
+                    ),
+                  ),),
+
+                  if(currentUser.value.isAddressPresent) Card(
+                    elevation: 5,
+                    child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Wrap(
                       children: [
-                        Center(
+                        Container(
+                          alignment: Alignment.topLeft,
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text('Address',style:Theme.of(context).textTheme.subtitle2!.copyWith()),
+                        ),
+                        InfoItem(icon: Icon(Icons.home),text:currentUser.value.address),
+                        InfoItem(icon: Icon(Icons.pin_outlined),text:currentUser.value.pincode),
+                        InfoItem(icon: Icon(Icons.location_on),text:currentUser.value.getAddress),
+
+
+                      ],
+                    ),
+                  ),),
+
+
+
+                  // ProfileDetailsWidget(
+                  //   mobile:currentUser.value.mobile,
+                  //   address:currentUser.value.address,
+                  //   city:currentUser.value.city,
+                  //   email:currentUser.value.email,
+                  //   dob:currentUser.value.dob,
+                  //   gender:currentUser.value.gender,
+                  //   pinCode:currentUser.value.pincode,
+                  //   state:currentUser.value.state,
+                  //   country:currentUser.value.country,
+                  //   // name: currentUser.value.name,
+                  // ),
+                  SizedBox(
+                    height: 20,
+                  ),
+
+
+                  Card(
+                    elevation: 5,
+                    margin: EdgeInsets.zero,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 10, top: 10, bottom: 10),
                           child: Text(
-                            AppLocalizations.of(
-                                'To progress to a level 13 Champion'),
-                            style:
-                                Theme.of(context).textTheme.caption!.copyWith(
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .headline6!
-                                          .color,
-                                      letterSpacing: 0.6,
-                                      fontSize: 12,
-                                    ),
+                            AppLocalizations.of('Playing History'),
+                            style: Theme.of(context).textTheme.caption!.copyWith(
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .headline6!
+                                      .color,
+                                  letterSpacing: 0.6,
+                                  fontSize: 14,
+                                ),
                           ),
                         ),
                         SizedBox(
-                          height: 8,
+                          height: 10,
+                        ),
+                        Divider(),
+                        SizedBox(
+                          height: 10,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Column(
-                              children: [
-                                Text(
-                                  AppLocalizations.of('Play for'),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .caption!
-                                      .copyWith(
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .bodyText2!
-                                            .color,
-                                        letterSpacing: 0.6,
-                                        fontSize: 12,
-                                      ),
-                                ),
-                                SizedBox(
-                                  height: 3,
-                                ),
-                                Text(
-                                  "₹6",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .caption!
-                                      .copyWith(
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .headline6!
-                                            .color,
-                                        letterSpacing: 0.6,
-                                        fontSize: 14,
-                                      ),
-                                ),
-                                SizedBox(
-                                  height: 3,
-                                ),
-                                Text(
-                                  AppLocalizations.of('more'),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .caption!
-                                      .copyWith(
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .bodyText2!
-                                            .color,
-                                        letterSpacing: 0.6,
-                                        fontSize: 12,
-                                      ),
-                                ),
-                              ],
+                            column(
+                              Icons.dock_outlined,
+                              Colors.orange,
+                              currentUser.value.contests.toString(),
+                              AppLocalizations.of('Contests'),
                             ),
-                            Text(
-                              AppLocalizations.of('OR'),
-                              style:
-                                  Theme.of(context).textTheme.caption!.copyWith(
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .bodyText2!
-                                            .color,
-                                        letterSpacing: 0.6,
-                                        fontSize: 12,
-                                      ),
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  AppLocalizations.of('Play for'),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .caption!
-                                      .copyWith(
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .bodyText2!
-                                            .color,
-                                        fontSize: 12,
-                                      ),
-                                ),
-                                SizedBox(
-                                  height: 3,
-                                ),
-                                Text(
-                                  "₹6",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .caption!
-                                      .copyWith(
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .headline6!
-                                            .color,
-                                        letterSpacing: 0.6,
-                                        fontSize: 14,
-                                      ),
-                                ),
-                                SizedBox(
-                                  height: 3,
-                                ),
-                                Text(
-                                  AppLocalizations.of('more'),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .caption!
-                                      .copyWith(
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .bodyText2!
-                                            .color,
-                                        letterSpacing: 0.6,
-                                        fontSize: 12,
-                                      ),
-                                ),
-                              ],
+                            column(
+                              Icons.backup_sharp,
+                              Colors.blue,
+                              currentUser.value.matches.toString(),
+                              AppLocalizations.of('Matches'),
                             ),
                           ],
                         ),
                         SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
-                        Card(
-                          elevation: 5,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 25),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        FontAwesomeIcons.trophy,
-                                        size: 60,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                      SizedBox(
-                                        width: 30,
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "₹15",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption!
-                                                .copyWith(
-                                                  color: Theme.of(context)
-                                                      .textTheme
-                                                      .headline6!
-                                                      .color,
-                                                  letterSpacing: 0.6,
-                                                  fontSize: 22,
-                                                ),
-                                          ),
-                                          Text(
-                                            AppLocalizations.of('Cash Bonus'),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption!
-                                                .copyWith(
-                                                  color: Theme.of(context)
-                                                      .textTheme
-                                                      .headline6!
-                                                      .color,
-                                                  letterSpacing: 0.6,
-                                                  fontSize: 12,
-                                                ),
-                                          ),
-                                          SizedBox(
-                                            height: 2,
-                                          ),
-                                          Text(
-                                            AppLocalizations.of(
-                                                'Use this cash bonus to join paid contests\nand win.'),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption!
-                                                .copyWith(
-                                                  color: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText2!
-                                                      .color,
-                                                  letterSpacing: 0.6,
-                                                  fontSize: 10,
-                                                ),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 30,
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 1,
-                                      child: Container(
-                                        height: 40,
-                                        color: Color(0xffFAFAFA),
-                                        child: Center(
-                                          child: Text(
-                                            AppLocalizations.of(
-                                                'Offer Details'),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption!
-                                                .copyWith(
-                                                  color: Theme.of(context)
-                                                      .primaryColor,
-                                                  letterSpacing: 0.6,
-                                                  fontSize: 12,
-                                                ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 3,
-                                      child: Container(
-                                        height: 40,
-                                        color: Color(0xffFAEDE3),
-                                        child: Center(
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.lock,
-                                                color: Colors.orange,
-                                                size: 14,
-                                              ),
-                                              SizedBox(
-                                                width: 5,
-                                              ),
-                                              Text(
-                                                AppLocalizations.of(
-                                                    'Unlocks at level 20'),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption!
-                                                    .copyWith(
-                                                      color: Colors.orange,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      letterSpacing: 0.6,
-                                                      fontSize: 12,
-                                                    ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
+                        Divider(),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text(
-                              "0",
-                              style:
-                                  Theme.of(context).textTheme.caption!.copyWith(
-                                        color: Colors.blue,
-                                        letterSpacing: 0.6,
-                                        fontSize: 14,
-                                      ),
-                            ),
-                            SizedBox(
-                              height: 3,
-                            ),
-                            Text(
-                              AppLocalizations.of('Followers'),
-                              style:
-                                  Theme.of(context).textTheme.caption!.copyWith(
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .headline6!
-                                            .color,
-                                        letterSpacing: 0.6,
-                                        fontSize: 12,
-                                      ),
+                            // column(
+                            //   Icons.badge,
+                            //   Colors.green,
+                            //   currentUser.value.series.toString(),
+                            //   AppLocalizations.of('Series'),
+                            // ),
+                            column(
+                              FontAwesomeIcons.trophy,
+                              Colors.orange,
+                              currentUser.value.wins.toString(),
+                              AppLocalizations.of('Wins'),
                             ),
                           ],
                         ),
-                        Container(
-                          height: 25,
-                          width: 1,
-                          color: Theme.of(context).disabledColor,
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              "0",
-                              style:
-                                  Theme.of(context).textTheme.caption!.copyWith(
-                                        color: Colors.blue,
-                                        letterSpacing: 0.6,
-                                        fontSize: 14,
-                                      ),
-                            ),
-                            SizedBox(
-                              height: 3,
-                            ),
-                            Text(
-                              AppLocalizations.of('Following'),
-                              style:
-                                  Theme.of(context).textTheme.caption!.copyWith(
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .headline6!
-                                            .color,
-                                        letterSpacing: 0.6,
-                                        fontSize: 12,
-                                      ),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          height: 25,
-                          width: 1,
-                          color: Theme.of(context).disabledColor,
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              "0",
-                              style:
-                                  Theme.of(context).textTheme.caption!.copyWith(
-                                        color: Colors.blue,
-                                        letterSpacing: 0.6,
-                                        fontSize: 14,
-                                      ),
-                            ),
-                            SizedBox(
-                              height: 3,
-                            ),
-                            Text(
-                              AppLocalizations.of('Posts'),
-                              style:
-                                  Theme.of(context).textTheme.caption!.copyWith(
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .headline6!
-                                            .color,
-                                        letterSpacing: 0.6,
-                                        fontSize: 12,
-                                      ),
-                            ),
-                          ],
+                        SizedBox(
+                          height: 15,
                         ),
                       ],
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Card(
-                  elevation: 5,
-                  margin: EdgeInsets.zero,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 10, top: 10, bottom: 10),
-                        child: Text(
-                          AppLocalizations.of('Playing History'),
-                          style: Theme.of(context).textTheme.caption!.copyWith(
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .headline6!
-                                    .color,
-                                letterSpacing: 0.6,
-                                fontSize: 14,
-                              ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Divider(),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          column(
-                            Icons.dock_outlined,
-                            Colors.orange,
-                            currentUser.value.contests.toString(),
-                            AppLocalizations.of('Contests'),
-                          ),
-                          column(
-                            Icons.backup_sharp,
-                            Colors.blue,
-                            currentUser.value.matches.toString(),
-                            AppLocalizations.of('Matches'),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Divider(),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          column(
-                            Icons.badge,
-                            Colors.green,
-                            currentUser.value.series.toString(),
-                            AppLocalizations.of('Series'),
-                          ),
-                          column(
-                            FontAwesomeIcons.trophy,
-                            Colors.orange,
-                            currentUser.value.wins.toString(),
-                            AppLocalizations.of('Wins'),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                    ],
+                  SizedBox(
+                    height: 20,
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Card(
-                  elevation: 5,
-                  margin: EdgeInsets.zero,
-                  child: Container(
-                    height: 50,
-                    color: Theme.of(context).appBarTheme.color,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => TournamentLeaderBoardPage(),
-                            ),
-                          );
-                        },
-                        child: Row(
-                          children: [
-                            Text(
-                              AppLocalizations.of('Tournament Leaderboard'),
-                              style:
-                                  Theme.of(context).textTheme.caption!.copyWith(
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .headline6!
-                                            .color,
-                                        letterSpacing: 0.6,
-                                        fontSize: 16,
-                                      ),
-                            ),
-                            Expanded(child: SizedBox()),
-                            Icon(
-                              Icons.arrow_forward_ios,
-                              color:
-                                  Theme.of(context).textTheme.headline6!.color,
-                              size: 20,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+                  // Card(
+                  //   elevation: 5,
+                  //   margin: EdgeInsets.zero,
+                  //   child: Container(
+                  //     height: 50,
+                  //     color: Theme.of(context).appBarTheme.color,
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.only(left: 20, right: 20),
+                  //       child: InkWell(
+                  //         onTap: () {
+                  //           Navigator.push(
+                  //             context,
+                  //             MaterialPageRoute(
+                  //               builder: (context) => TournamentLeaderBoardPage(),
+                  //             ),
+                  //           );
+                  //         },
+                  //         child: Row(
+                  //           children: [
+                  //             Text(
+                  //               AppLocalizations.of('Tournament Leaderboard'),
+                  //               style:
+                  //                   Theme.of(context).textTheme.caption!.copyWith(
+                  //                         color: Theme.of(context)
+                  //                             .textTheme
+                  //                             .headline6!
+                  //                             .color,
+                  //                         letterSpacing: 0.6,
+                  //                         fontSize: 16,
+                  //                       ),
+                  //             ),
+                  //             Expanded(child: SizedBox()),
+                  //             Icon(
+                  //               Icons.arrow_forward_ios,
+                  //               color:
+                  //                   Theme.of(context).textTheme.headline6!.color,
+                  //               size: 20,
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                ],
+              ),
             ),
             SizedBox(
               height: 20,
             ),
+          ],
+        ),
+      ),
+    );
+  }
+  Widget InfoItem({required Widget icon,required String text}){
+    if(text.isEmpty) return Container();
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: IntrinsicWidth(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            icon,
+            SizedBox(width: 10,),
+            Expanded(child: Text(text,softWrap: true,))
           ],
         ),
       ),

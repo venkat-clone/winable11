@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:math';
+
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/constance/constance.dart';
@@ -52,8 +54,9 @@ class _ContestDetailPageState extends StateMVC<ContestDetailPage> {
   }
 
   @override
-  Future<bool> initAsync() {
+  Future<bool> initAsync() async{
     _con.getMatchWinnings(context,widget.contest.contestId);
+    _con.getContestParticipants(context,widget.contest);
     return super.initAsync();
   }
 
@@ -100,7 +103,7 @@ class _ContestDetailPageState extends StateMVC<ContestDetailPage> {
                 child: Row(
                   children: [
                     Text(
-                      '₹${Utils.convertToIndianCurrency(int.parse(contest.prizePool))}',
+                      '₹${Utils.convertToIndianCurrency(double.parse(contest.prizePool))}',
                       style: Theme.of(context).textTheme.caption!.copyWith(
                         color: Theme.of(context).textTheme.headline6!.color,
                         letterSpacing: 0.6,
@@ -117,7 +120,7 @@ class _ContestDetailPageState extends StateMVC<ContestDetailPage> {
                 height: 15,
               ),
               LinearPercentIndicator(
-                percent: 0.4,
+                percent: min(1, (double.parse(contest.filledSpots)/double.parse(contest.totalTeam))),
                 progressColor: Theme.of(context).primaryColor,
                 backgroundColor: Theme.of(context).disabledColor,
               ),
@@ -132,7 +135,7 @@ class _ContestDetailPageState extends StateMVC<ContestDetailPage> {
                 child: Row(
                   children: [
                     Text(
-                      AppLocalizations.of('${contest.joinTeam} sports left'),
+                      AppLocalizations.of('${int.parse(contest.totalTeam)-int.parse(contest.filledSpots)} sports left'),
                       style: Theme.of(context).textTheme.caption!.copyWith(
                         color: Color(0xffD30001),
                         letterSpacing: 0.6,
@@ -207,7 +210,7 @@ class _ContestDetailPageState extends StateMVC<ContestDetailPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        AppLocalizations.of('₹1 Lakh'),
+                        Utils.convertToIndianCurrency(double.parse(widget.contest.prizePool)),
                         style: Theme.of(context).textTheme.caption!.copyWith(
                           color: Theme.of(context).textTheme.caption!.color,
                           letterSpacing: 0.6,
@@ -215,7 +218,7 @@ class _ContestDetailPageState extends StateMVC<ContestDetailPage> {
                         ),
                       ),
                       Expanded(child: SizedBox()),
-                      Text((double.parse(contest.joinTeam)/double.parse(contest.totalTeam)*100).toString(),
+                      Text((double.parse(contest.filledSpots)/double.parse(contest.totalTeam)*100).toStringAsFixed(2),
                         style: Theme.of(context).textTheme.caption!.copyWith(
                           color: Theme.of(context).textTheme.caption!.color,
                           letterSpacing: 0.6,
@@ -278,7 +281,7 @@ class _ContestDetailPageState extends StateMVC<ContestDetailPage> {
             winnings: _con.winnings,
           )
               : isleaderboard == true
-                  ? LeaderboardPage()
+                  ? LeaderboardPage(contestTeam: _con.contestParticipants,)
                   : SizedBox(),
         ],
       ),

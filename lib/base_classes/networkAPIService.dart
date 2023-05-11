@@ -7,6 +7,9 @@ import '../utils/app_execptions.dart';
 import 'baseApiService.dart';
 import 'package:http/http.dart' as http;
 
+final List<List<String>> responseList = [];
+
+
 class NetworkAPIService extends BaseApiServices {
 
 
@@ -17,7 +20,9 @@ class NetworkAPIService extends BaseApiServices {
     try {
       if(kDebugMode) print("GET API call $url");
       final response = await http.get(Uri.parse(url),headers: headers).timeout(const Duration(seconds: 10));
+      if(kDebugMode)responseList.add([url.replaceAll("https://admin.winable11.com/", ""),response.body.trim()]);
       responseJson = returnResponse(response);
+
     }on SocketException {
       throw FetchDataException('No Internet Connection');
     }on JsonUnsupportedObjectError{
@@ -46,6 +51,7 @@ class NetworkAPIService extends BaseApiServices {
         headers: headers
       ).timeout(Duration(seconds: 10));
       print(response.body);
+      if(kDebugMode) responseList.add([url.replaceAll("https://admin.winable11.com/", ""),response.body.trim(),jsonEncode(data)]);
       responseJson = returnResponse(response);
     }on SocketException {
       throw FetchDataException('No Internet Connection');

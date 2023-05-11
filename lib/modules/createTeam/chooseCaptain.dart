@@ -17,7 +17,8 @@ class ChooseCaptainPage extends StatefulWidget {
   
   TeamPlayers team;
   String matchDateTime ="";
-  ChooseCaptainPage({required this.team,required this.matchDateTime});
+  TeamPlayers? teamPlayers;
+  ChooseCaptainPage({required this.team,required this.matchDateTime,this.teamPlayers});
 
   @override
   _ChooseCaptainPageState createState() => _ChooseCaptainPageState();
@@ -38,7 +39,11 @@ class _ChooseCaptainPageState extends StateMVC<ChooseCaptainPage> {
   @override
   void initState() {
     _con.cricketTeam = widget.team;
+    if(widget.teamPlayers!=null) {
+      _con.oldTeam = widget.teamPlayers;
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -154,105 +159,6 @@ class _ChooseCaptainPageState extends StateMVC<ChooseCaptainPage> {
                           return cardView(player);
                         }),
 
-                        // cardView(
-                        //   AppLocalizations.of('RR'),
-                        //   "WX",
-                        //   AppLocalizations.of('archer'),
-                        //   "391",
-                        //   "C",
-                        //   "5.8%",
-                        //   "VC",
-                        //   "5.97%",
-                        //   AssetImage(ConstanceData.archer),
-                        // ),
-                        // cardView(
-                        //   "RR",
-                        //   "WX",
-                        //   AppLocalizations.of('chahal'),
-                        //   "268",
-                        //   "c",
-                        //   "5.8%",
-                        //   "VC",
-                        //   "11.16%",
-                        //   AssetImage(ConstanceData.chahal),
-                        // ),
-                        // cardView(
-                        //   "RR",
-                        //   "WX",
-                        //   AppLocalizations.of('finch'),
-                        //   "0",
-                        //   "C",
-                        //   "0.4%",
-                        //   "1.5x",
-                        //   "5.97%",
-                        //   AssetImage(ConstanceData.finch),
-                        // ),
-                        // cardView(
-                        //   "RR",
-                        //   "BAT",
-                        //   AppLocalizations.of('jaiswal'),
-                        //   "246",
-                        //   "C",
-                        //   "0.4%",
-                        //   "1.5x",
-                        //   "5.97%",
-                        //   AssetImage(ConstanceData.jaiswal),
-                        // ),
-                        // cardView(
-                        //   "RR",
-                        //   "BAT",
-                        //   AppLocalizations.of('joshi'),
-                        //   "0",
-                        //   "C",
-                        //   "0.4%",
-                        //   "1.5x",
-                        //   "5.97%",
-                        //   AssetImage(ConstanceData.joshi),
-                        // ),
-                        // cardView(
-                        //   "RR",
-                        //   "BAT",
-                        //   AppLocalizations.of('morris'),
-                        //   "0",
-                        //   "C",
-                        //   "0.4%",
-                        //   "1.5x",
-                        //   "5.97%",
-                        //   AssetImage(ConstanceData.morris),
-                        // ),
-                        // cardView(
-                        //   "RR",
-                        //   "BAT",
-                        //   AppLocalizations.of('siraj'),
-                        //   "246",
-                        //   "C",
-                        //   "0.4%",
-                        //   "1.5x",
-                        //   "5.97%",
-                        //   AssetImage(ConstanceData.siraj),
-                        // ),
-                        // cardView(
-                        //   "RR",
-                        //   "BAT",
-                        //   AppLocalizations.of('smith'),
-                        //   "0",
-                        //   "C",
-                        //   "0.4%",
-                        //   "1.5x",
-                        //   "5.97%",
-                        //   AssetImage(ConstanceData.smith),
-                        // ),
-                        // cardView(
-                        //   "RR",
-                        //   "BAT",
-                        //   AppLocalizations.of('steyn'),
-                        //   "0",
-                        //   "C",
-                        //   "0.4%",
-                        //   "1.5x",
-                        //   "5.97%",
-                        //   AssetImage(ConstanceData.steyn),
-                        // ),
                         SizedBox(
                           height: MediaQuery.of(context).padding.bottom + 70,
                         )
@@ -504,7 +410,7 @@ class _ChooseCaptainPageState extends StateMVC<ChooseCaptainPage> {
                     height: 5,
                   ),
                   Text(
-                    "",
+                    "2x",
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(
                           color: Theme.of(context).textTheme.bodyText2!.color,
                           letterSpacing: 0.6,
@@ -556,7 +462,7 @@ class _ChooseCaptainPageState extends StateMVC<ChooseCaptainPage> {
                     height: 5,
                   ),
                   Text(
-                    "",
+                    "1.5x",
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(
                           color: Theme.of(context).textTheme.bodyText2!.color,
                           letterSpacing: 0.6,

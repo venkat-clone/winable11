@@ -70,6 +70,13 @@ class _PaymentMethodsState extends StateMVC<PaymentMethods> {
                       // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>UPIInterface(amount: amount.toString(),)));
                     }
                   ),
+                  PaymentOptionCard(
+                    title:"Razorpay",
+                    onClick:(){
+                      _con.makePaymentWithRazorpay(amount);
+                      // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>UPIInterface(amount: amount.toString(),)));
+                    }
+                  ),
                   // PaymentOptionCard(
                   //   title:"Easy Payment",
                   //   onClick:(){

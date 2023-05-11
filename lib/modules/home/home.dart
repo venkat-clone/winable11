@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:flutter/foundation.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/modules/home/drawer/drawer.dart';
 import 'package:newsports/modules/home/drawer/profile/profile.dart';
@@ -11,6 +12,7 @@ import 'package:newsports/modules/navigationBar/winner/winner.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../dev/api_routes.dart';
 import '../navigationBar/winner/winner_oldui.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -113,6 +115,21 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+      floatingActionButton: !kDebugMode?null:InkWell(
+        onTap: (){
+          Navigator.of(context).push(MaterialPageRoute(builder: (c)=>ApiRoutes()));
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.indigo,
+            borderRadius: BorderRadius.circular(8)
+          ),
+          padding: EdgeInsets.all(12),
+          child: Text('Network debug',style: TextStyle(
+            color: Colors.white,
+          ),),
         ),
       ),
     );

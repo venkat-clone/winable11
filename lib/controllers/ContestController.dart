@@ -8,6 +8,7 @@ import 'package:newsports/base_classes/base_controller.dart';
 
 import '../base_classes/value_state.dart';
 import '../models/Contest.dart';
+import '../models/ContestParticipants.dart';
 import '../models/Winnings.dart';
 import '../repository/contest_repository.dart';
 import '../utils/app_execptions.dart';
@@ -26,6 +27,7 @@ class ContestController extends BaseController{
 
 
   ValueState<List<Winning>> winnings = ValueState.loading();
+  ValueState<List<ContestParticipants>> contestParticipants = ValueState.loading();
 
   final _repository = ContestRepository();
 
@@ -120,7 +122,7 @@ class ContestController extends BaseController{
   getMyCricketContests(String matchId,BuildContext context) async{
     // if(myCricketContests.value!=null) return;
     try {
-      final result = await _repository.getContests(matchId);
+      final result = await _repository.getMyContests(matchId);
       setState(() {
         myCricketContests = ValueState(value: result);
       });
@@ -176,17 +178,17 @@ class ContestController extends BaseController{
     }
   }
 
-  void joinContest(BuildContext context,String contestId,String teamId,String type) {
+  void joinContest(BuildContext context,Contest contest,String teamId) {
     if(sport=="Cricket"){
-      joinCricketContest(context,contestId,teamId,type);
+      joinCricketContest(context,contest,teamId);
     }else if(sport=="FootBall"){
 
     }
   }
 
-  void joinCricketContest(BuildContext context,String contestId,String teamId,String type) async{
+  void joinCricketContest(BuildContext context,Contest contest,String teamId) async{
     try{
-      await _repository.joinCricketContest(contestId, teamId,type);
+      await _repository.joinCricketContest(contest,teamId);
       successSnackBar("Joined the Contest", context);
     }catch(e){
 
@@ -204,8 +206,28 @@ class ContestController extends BaseController{
     }
   }
 
+  void getContestParticipants(BuildContext context,Contest contest) async{
+    try{
+      final list = await _repository.getContestParticipants(contest.matchId, contest.contestId, contest.type);
+      contestParticipants = ValueState(value: list);
+    } on FetchDataException {
+      setState(() {
+        contestParticipants = ValueState(error: "please check your internet connection") ;
+      });
+      errorSnackBar("please check your internet connection", context);
 
+    }catch(e,s){
+      setState(() {
+        contestParticipants = ValueState(error: "unexpected error please try again") ;
+      });
 
+      errorSnackBar('Unexpected error occurred', context);
+      if (kDebugMode) {
+        print("getMatches Error $e");
+        print("getMatches Error stackTrace $s");
+      }
+    }
+  }
 
 
 }

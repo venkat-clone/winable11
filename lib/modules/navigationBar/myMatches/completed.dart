@@ -57,8 +57,10 @@ class _CompletedPageState extends StateMVC<CompletedPage> {
             height: 100,
           ),
           Text(
+
             AppLocalizations.of(
                 "You haven't joined any contests that are completed"),
+            textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.caption!.copyWith(
               color: Theme.of(context).textTheme.bodyText2!.color,
               letterSpacing: 0.6,

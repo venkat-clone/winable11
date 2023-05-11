@@ -1,34 +1,42 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:newsports/Language/appLocalizations.dart';
+import 'package:newsports/base_classes/value_state.dart';
 import 'package:newsports/constance/constance.dart';
 import 'package:flutter/material.dart';
 
-import '../../../models/contest_teams.dart';
+import '../../../models/ContestParticipants.dart';
 
 class LeaderboardPage extends StatefulWidget {
+  ValueState<List<ContestParticipants>> contestTeam;
+
   @override
   _LeaderboardPageState createState() => _LeaderboardPageState();
+
+  LeaderboardPage({required this.contestTeam});
 }
 
 class _LeaderboardPageState extends State<LeaderboardPage> {
 
-  List<ContestTeam> contestTeam =[
-    ContestTeam(
-      id: "1",
-      image: "",
-      name:"name"
-    ),
-    ContestTeam(
-      id: "1",
-      image: "",
-      name:"name"
-    ),
-  ];
+
 
 
   @override
   Widget build(BuildContext context) {
+
+
+    if(widget.contestTeam.loading)return Expanded(child: Center(
+      child: CircularProgressIndicator(),
+    ));
+    if(widget.contestTeam.error!=null)return Expanded(child: Center(
+      child: Text(widget.contestTeam.error??''),
+    ));
+    if(widget.contestTeam.value==null)return Expanded(child: Center(
+      child: Text('no one joined this contest be first to join the contest'),
+    ));
+
+
+
     return Expanded(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -61,7 +69,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
               Padding(
                 padding: const EdgeInsets.only(left: 14),
                 child: Text(
-                  AppLocalizations.of('All Teams (${contestTeam.length})'),
+                  AppLocalizations.of('All Teams (${widget.contestTeam.value!.length})'),
                   style: Theme.of(context).textTheme.caption!.copyWith(
                         color: Colors.black87,
                         letterSpacing: 0.6,
@@ -76,12 +84,12 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
               SizedBox(
                 height: 6,
               ),
-              if(contestTeam.length==0)
+              if(widget.contestTeam.value!.length==0)
                 Center(child: Text("Be first to join the contest"),),
-              ...contestTeam.map((e) {
+              ...widget.contestTeam.value!.map((e) {
                 ImageProvider img = AssetImage(ConstanceData.palyerProfilePic);
                 if(e.image!=""){ img = NetworkImage(e.image);}
-                 return row(e.name, img);
+                 return row(e.name,e.userTeamId, img);
                   }),
               Divider(),
             ],
@@ -91,7 +99,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     );
   }
 
-  Widget row(String txt1, ImageProvider image) {
+  Widget row(String txt1,String txt2, ImageProvider image) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 5),
       child: Padding(
@@ -105,13 +113,26 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
             SizedBox(
               width: 15,
             ),
-            Text(
-              txt1,
-              style: Theme.of(context).textTheme.caption!.copyWith(
-                    color: Colors.black87,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  txt1,
+                  style: Theme.of(context).textTheme.caption!.copyWith(
+                        color: Colors.black87,
+                        letterSpacing: 0.6,
+                        fontSize: 14,
+                      ),
+                ),
+                Text(
+                  'joined with team '+txt2,
+                  style: Theme.of(context).textTheme.caption!.copyWith(
+                    // color: Colors.black87,
                     letterSpacing: 0.6,
-                    fontSize: 14,
+                    fontSize: 12,
                   ),
+                ),
+              ],
             ),
           ],
         ),

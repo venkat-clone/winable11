@@ -9,6 +9,7 @@ class TeamPlayers{
 
   int teamACount =0;
   int teamBCount =0;
+  bool newTeam = true;
 
   List<UserTeamPlayer> players1 =[];
   List<UserTeamPlayer> players2 =[];
@@ -57,6 +58,11 @@ class TeamPlayers{
     (json["players"] as List<dynamic>).forEach((element) {
       players.add(UserTeamPlayer.getFromJson(element));
     });
+    players1 = players.where((element) => element.designationId=='1').toList();
+    players2 = players.where((element) => element.designationId=='2').toList();
+    players3 = players.where((element) => element.designationId=='3').toList();
+    players4 = players.where((element) => element.designationId=='4').toList();
+
 
   }
 
@@ -88,6 +94,9 @@ class TeamPlayers{
     return _viseCaptain!;
   }
 
+  fromTeamPlayers(Team){
+
+  }
 
 
 

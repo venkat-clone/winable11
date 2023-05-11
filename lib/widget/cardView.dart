@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/models/MatchModel.dart';
@@ -252,7 +253,7 @@ class _CardViewState extends State<CardView> {
                                   padding: const EdgeInsets.symmetric(horizontal: 3),
                                   child: Container(
                                     height: 25,
-                                    width: 60,
+                                    padding: const EdgeInsets.symmetric(horizontal: 3),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(4),
                                       border: Border.all(
@@ -593,12 +594,24 @@ class _LiveSliderCardViewState extends State<LiveSliderCardView> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+
+      onLongPress: kDebugMode?(){
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MatchDetailPage(
+              match: widget.match,
+            ),
+          ),
+        );
+      }:null,
+
       onTap: () {
 
 
         final dateTime = DateTime.parse(widget.match.matchDateTime);
         final _timeLeft = dateTime.difference(DateTime.now());
-        if(_timeLeft.isNegative) {
+        if(_timeLeft.isNegative ) {
           Navigator.push(
             context,
             MaterialPageRoute(

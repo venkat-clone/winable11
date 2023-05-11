@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:csc_picker/csc_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,6 +16,7 @@ import 'package:newsports/controllers/KYCController.dart';
 
 import 'package:newsports/utils/shared_preference_services.dart';
 import '../../models/KYC.dart';
+import '../../models/kycStatus.dart';
 import '../../repository/kyc_repository.dart';
 
 class KYCForm extends StatefulWidget {
@@ -31,6 +34,13 @@ class _KYCFormState extends StateMVC<KYCForm> {
   String panCardPath = "";
   String aadhaarCardPath ="";
 
+  String? _countryName ;
+  
+
+  
+  
+  
+
   AuthController _authController = AuthController();
   late KYCController _con;
   bool loading = false;
@@ -47,8 +57,16 @@ class _KYCFormState extends StateMVC<KYCForm> {
   @override
   void initState() {
     super.initState();
+    initAsync();
     // SharedPreferenceService.getKYC().then((v) => setState(() => requested = v));
   }
+
+  @override
+  Future<bool> initAsync() {
+    _con.getKYCStatus(context);
+    return super.initAsync();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -64,31 +82,57 @@ class _KYCFormState extends StateMVC<KYCForm> {
                 'KYC Form',
               ),
             ),
-            body: Padding(
+            body: _con.kycStatus.loading ? Center(child: CircularProgressIndicator(),) :
+            _con.kycStatus.value!.verified ?
+                Center(child: Text('Your Kyc is Verified'))
+                : Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: SingleChildScrollView(
-                  child: !requested
-                      ? Form(
+                  child: _con.kycStatus.value!.waiting
+                      ?Center(child: Text(
+                      "please check your kyc status after 12 hours",
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .copyWith(),
+                    ),
+                  ): Form(
                           key: _formKey,
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                if(_con.kycStatus.value!.rejected) statusWidget(_con.kycStatus.value!),
+                                // TextFormField(
+                                //   decoration:
+                                //       InputDecoration(labelText: 'City'),
+                                //   validator: (value) {
+                                //     if (value == null || value.isEmpty) {
+                                //       return 'Please enter a city';
+                                //     }
+                                //     return null;
+                                //   },
+                                //   onSaved: (value) {
+                                //     kyc.city = value ?? "";
+                                //   },
+                                // ),
+                                // TextFormField(
+                                //   decoration:
+                                //   InputDecoration(labelText: 'State'),
+                                //   validator: (value) {
+                                //     if (value == null || value.isEmpty) {
+                                //       return 'Please enter a state';
+                                //     }
+                                //     return null;
+                                //   },
+                                //   onSaved: (value) {
+                                //     kyc.state = value!;
+                                //   },
+                                // ),
+
+
+
                                 TextFormField(
-                                  decoration:
-                                      InputDecoration(labelText: 'City'),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter a city';
-                                    }
-                                    return null;
-                                  },
-                                  onSaved: (value) {
-                                    kyc.city = value ?? "";
-                                  },
-                                ),
-                                TextFormField(
-                                  decoration:
-                                      InputDecoration(labelText: 'Pin Code'),
+                                  decoration: InputDecoration(labelText: 'Pin Code'),
                                   keyboardType: TextInputType.number,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -101,19 +145,6 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                   },
                                   onSaved: (value) {
                                     kyc.pinCode = value!;
-                                  },
-                                ),
-                                TextFormField(
-                                  decoration:
-                                      InputDecoration(labelText: 'State'),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter a state';
-                                    }
-                                    return null;
-                                  },
-                                  onSaved: (value) {
-                                    kyc.state = value!;
                                   },
                                 ),
                                 TextFormField(
@@ -147,8 +178,7 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                   },
                                 ),
                                 TextFormField(
-                                  decoration:
-                                      InputDecoration(labelText: 'Bank Name'),
+                                  decoration: InputDecoration(labelText: 'Bank Name'),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Please enter a bank name';
@@ -160,8 +190,7 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                   },
                                 ),
                                 TextFormField(
-                                  decoration:
-                                      InputDecoration(labelText: 'IFSC Code'),
+                                  decoration: InputDecoration(labelText: 'IFSC Code'),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Please enter a ifsc code';
@@ -173,8 +202,7 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                   },
                                 ),
                                 TextFormField(
-                                  decoration: InputDecoration(
-                                      labelText: 'Aadhaar Number'),
+                                  decoration: InputDecoration(labelText: 'Aadhaar Number'),
                                   keyboardType: TextInputType.number,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -216,13 +244,9 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                         firstDate: DateTime(1900),
                                         lastDate: DateTime.now());
                                     if (pickedDate != null) {
-                                      String formattedDate =
-                                          DateFormat('yyyy-MM-dd')
-                                              .format(pickedDate);
-                                      print(formattedDate);
+                                      String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
                                       setState(() {
-                                        aadharDOBController.text =
-                                            formattedDate;
+                                        aadharDOBController.text = formattedDate;
                                       });
                                     }
                                   },
@@ -237,22 +261,8 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                     return null;
                                   },
                                 ),
-                                // TextFormField(
-                                //   decoration: InputDecoration(
-                                //       labelText: 'Aadhaar Card Status'),
-                                //   validator: (value) {
-                                //     if (value == null || value.isEmpty) {
-                                //       return 'Please enter a Aadhaar card status';
-                                //     }
-                                //     return null;
-                                //   },
-                                //   onSaved: (value) {
-                                //     kyc.AadharStatus = value!;
-                                //   },
-                                // ),
                                 TextFormField(
-                                  decoration:
-                                      InputDecoration(labelText: 'Pan Number'),
+                                  decoration: InputDecoration(labelText: 'Pan Number'),
                                   keyboardType: TextInputType.text,
                                   validator: (value) {
                                     if (value?.isEmpty == true) {
@@ -311,19 +321,93 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                     return null;
                                   },
                                 ),
+                                SizedBox(height: 10,),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text('Address',style: Theme.of(context).textTheme.titleMedium,),
+                                ),
+                                CSCPicker(
+                                  disableCountry: true,
+                                  showStates: true,
+                                  showCities: true,
+                                  flagState: CountryFlag.ENABLE,
+                                  dropdownDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                                    color:
+                                    Theme.of(context).backgroundColor,
+                                    border: Border.all(
+                                      color: (Theme.of(context)
+                                          .textTheme
+                                          .caption!
+                                          .color!),
+                                    ),
+                                  ),
+                                  disabledDropdownDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                                    color: Colors.grey.shade300,
+                                    border: Border.all(
+                                      color: (Theme.of(context)
+                                          .textTheme
+                                          .caption!
+                                          .color!),
+                                    ),
+                                  ),
+                                  countrySearchPlaceholder: AppLocalizations.of("Country"),
+                                  stateSearchPlaceholder: AppLocalizations.of("State"),
+                                  citySearchPlaceholder: AppLocalizations.of("City"),
+                                  countryDropdownLabel: AppLocalizations.of(_countryName ?? "Country"),
+                                  stateDropdownLabel: AppLocalizations.of(kyc.state.isNotEmpty ? kyc.state: "State"),
+                                  cityDropdownLabel: AppLocalizations.of(kyc.city.isNotEmpty ? kyc.city: "City"),
+                                  defaultCountry: CscCountry.India,
+                                  selectedItemStyle: Theme.of(context).textTheme.headline6!.copyWith(
+                                    color: Theme.of(context).textTheme.bodyMedium!.color,
+                                    letterSpacing: 0.6,
+                                    fontSize: 14,
+                                  ),
+                                  dropdownHeadingStyle: Theme.of(context).textTheme.headline6!.copyWith(
+                                    color: Theme.of(context).textTheme.caption!.color,
+                                    letterSpacing: 0.6,
+                                    fontSize: 14,
+                                  ),
+                                  dropdownItemStyle: Theme.of(context).textTheme.headline6!.copyWith(
+                                    color: Theme.of(context).textTheme.caption!.color,
+                                    letterSpacing: 0.6,
+                                    fontSize: 14,
+                                  ),
+                                  dropdownDialogRadius: 10.0,
+                                  searchBarRadius: 30.0,
+                                  onCountryChanged: (value) {
+                                    setState(() {
+                                      _countryName = value;
+                                    });
+                                  },
+                                  onStateChanged: (value) {
+                                    setState(() {
+                                      kyc.state = value??'';
+                                    });
+                                  },
+                                  onCityChanged: (value) {
+                                    setState(() {
+                                      kyc.city = value??'';
+                                    });
+                                  },
+                                ),
                                 // Pan card Image Field
                                 SizedBox(height: 20,),
                                 if(aadhaarCardPath.isNotEmpty)
                                   Container(
                                   padding: const EdgeInsets.all(8.0),
                                     alignment: Alignment.center,
-                                    child: Image.file(File(aadhaarCardPath),height: 200,),
+                                    child: Image.file(File(aadhaarCardPath),height: 200,errorBuilder: (c,o,s){
+                                      return Text("error");
+                                    },),
                                   ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: InkWell(
                                     onTap: (){
                                       pickImages(context,(file){
+                                        print(' file path ${file.path}');
                                         setState(() {
                                           aadhaarCardPath = file.path;
                                         });
@@ -352,6 +436,7 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                   child: InkWell(
                                     onTap: (){
                                       pickImages(context,(file){
+                                        print('file path :${file.path}');
                                           setState(() {
                                             panCardPath = file.path;
                                           });
@@ -374,7 +459,7 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                   alignment: Alignment.bottomCenter,
                                   child: ElevatedButton(
                                     onPressed: () async {
-                                      if (_formKey.currentState!.validate()) {
+                                      if (_formKey.currentState!.validate() || kDebugMode) {
                                         _formKey.currentState!.save();
                                         final success = await _con.requestForKYC(context,
                                             kyc,
@@ -394,19 +479,37 @@ class _KYCFormState extends StateMVC<KYCForm> {
                                     child: Text('Submit'),
                                   ),
                                 ),
-                              ]))
-                      : Center(
-                          child: Text(
-                            "Kyc Details uploaded",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium!
-                                .copyWith(),
-                          ),
-                        ),
+                                if(kDebugMode)
+                                  Container(
+                                  alignment: Alignment.bottomCenter,
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      kyc.pinCode ='500034';
+                                      kyc.accountNumber ='1234567890';
+                                      kyc.userAccountName ='Venkatesh';
+                                      kyc.bankName ='Union Bank';
+                                      kyc.ifscCode ='FC13243';
+                                      kyc.AadharNumber ='1234567890';
+                                      kyc.PanNumber ='1234567890';
+                                      kyc.NameInAadher ='Venkatesh';
+                                      kyc.NameInPanCard ='Venkatesh';
+                                      kyc.DOBInAadher = '2002-03-29';
+                                      aadharDOBController.text = '2002-03-29';
+                                      panDOBController.text = '2002-03-29';
+                                      kyc.PanCardDOB = '2002-03-29';
+                                      kyc.state ='Telangana';
+                                      kyc.city ='Hyderabad';
+                                      setState(() {});
+                                    },
+                                    child: Text('Load Moc'),
+                                  ),
+                                ),
+
+                              ])),
                 )),
           ),
-          if (_con.loading)
+
+          if (_con.loading )
             Container(
               color: Colors.grey.shade50.withOpacity(0.4),
               child: Center(child: CircularProgressIndicator()),
@@ -415,6 +518,48 @@ class _KYCFormState extends StateMVC<KYCForm> {
       ),
     );
   }
+
+  Widget statusWidget(KYCStatus status){
+    return Column(
+      children: [
+        Card(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(25)
+          ),
+          clipBehavior: Clip.hardEdge,
+          elevation: 5,
+          child: Container(
+            width: double.infinity,
+            height: 50,
+            color: status.panStatus!='2'?Colors.green:Colors.red,
+            alignment: Alignment.center,
+            child: Text(KYCStatus.getString(status.panStatus, "PAN Card"),style: TextStyle(
+              color: Colors.white
+            ),),
+          ),
+        ),
+        SizedBox(height: 10,),
+        Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25)
+          ),
+          clipBehavior: Clip.hardEdge,
+          elevation: 5,
+          child: Container(
+            width: double.infinity,
+            height: 50,
+            color: status.aadharStatus!='2'?Colors.green:Colors.red,
+            alignment: Alignment.center,
+            child: Text(KYCStatus.getString(status.aadharStatus, "Aadhar Card"),style: TextStyle(
+                color: Colors.white
+            )),
+          ),
+        ),
+        Divider()
+      ],
+    );
+  }
+
 
   // showToast(text) {
   //   return Fluttertoast.showToast(
@@ -499,6 +644,9 @@ class _KYCFormState extends StateMVC<KYCForm> {
                             var img = await _picker.pickImage(
                               source: ImageSource.gallery,
                             );
+                            if(img!=null) {
+                              onComplete(img);
+                            }
 
                           },
                           icon: Icon(Icons.image,

@@ -3,6 +3,10 @@
 class Designation{
   String fullName;
   String shortName;
+
+  static String cricket = 'Cricket';
+  static String football = 'FootBall';
+
   Designation({
     required this.fullName,
     required this.shortName,
@@ -13,10 +17,10 @@ class Designation{
   /// 3 = All Rounder = Midfielder \n
   /// 4 = Wicket Keeper = Forward \n
   static Designation getDesignation(String sport,int designationId){
-    if(sport=="Cricket"){
+    if(sport==cricket){
       return cricketDesignation[designationId];
     }
-    if(sport=="FootBall"){
+    if(sport==football){
       return footBallDesignation[designationId];
     }
     return cricketDesignation[0];

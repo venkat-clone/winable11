@@ -7,6 +7,7 @@ import '../../../models/MatchModel.dart';
 import '../../../models/MatchWinner.dart';
 import '../../../models/Team.dart';
 import '../../../models/winner.dart';
+import '../../../utils/utils.dart';
 
 class MatchWinnersPage extends StatefulWidget {
 
@@ -61,45 +62,147 @@ class _MatchWinnersPageState extends StateMVC<MatchWinnersPage> {
               clickable: false,
               ),
             ),
-            Row(
-              children: List.generate(_con.winnerContest.value?.length??0, (index)
-              {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                selectedIndex = index;
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: selectedIndex==index?Colors.black:Theme.of(context).disabledColor,
-                                  borderRadius: BorderRadius.circular(50)),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 14),
-                              child: Text("₹${_con.winnerContest.value![index].prizePool} Contest",style:Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  color: selectedIndex!=index?Colors.black:Colors.white
-                              )),
-                            ),
-                          ),
-                        );
-                      }),
-            ),
-            if((_con.winnerContest.value?.length??0) >=1)
-            Expanded(
-                child: ListView.builder(
-                  itemCount: _con.winnerContest.value![selectedIndex].winners.length,
-                  itemBuilder: (c,i)=>WinnerCard(winner: _con.winnerContest.value![selectedIndex].winners[i],),
-                )),
+            // Row(
+            //   children: List.generate(_con.winnerContest.value?.length??0, (index)
+            //   {
+            //             return Padding(
+            //               padding: const EdgeInsets.all(8.0),
+            //               child: InkWell(
+            //                 onTap: () {
+            //                   setState(() {
+            //                     selectedIndex = index;
+            //                   });
+            //                 },
+            //                 child: Container(
+            //                   decoration: BoxDecoration(
+            //                       color: selectedIndex==index?Colors.black:Theme.of(context).disabledColor,
+            //                       borderRadius: BorderRadius.circular(50)),
+            //                   padding: EdgeInsets.symmetric(
+            //                       vertical: 8, horizontal: 14),
+            //                   child: Text("₹${_con.winnerContest.value![index].prizePool} Contest",style:Theme.of(context).textTheme.titleMedium!.copyWith(
+            //                       color: selectedIndex!=index?Colors.black:Colors.white
+            //                   )),
+            //                 ),
+            //               ),
+            //             );
+            //           }),
+            // ),
+
+
+
+            // if((_con.winnerContest.value?.length??0) >=1)
+            // Expanded(
+            //     child: ListView.builder(
+            //       itemCount: _con.winnerContest.value![selectedIndex].winners.length,
+            //       itemBuilder: (c,i)=>WinnerCard(winner: _con.winnerContest.value![selectedIndex].winners[i],),
+            //     )),
 
             //   ...?_con.winnerContest.value?[selectedIndex].winners.map((e) => WinnerCard(winner: e,)),
             if(_con.winnerContest.loading)
               Expanded(child: Center(child: CircularProgressIndicator(),)),
-            if(!_con.winnerContest.loading && (_con.winnerContest.value?.length??0) <1)
+            if(!_con.winnerContest.loading && (_con.winnerContest.value?.length??0) <1 && false)
               Expanded(child: Center(child: Text("no contest for this match"),)),
-            if((_con.winnerContest.value?.length??0) >=1 && _con.winnerContest.value![selectedIndex].winners.length==0)
-              Expanded(child: Center(child: Text("no winners for this contest"),))
+            if((_con.winnerContest.value?.length??0) >=1 && _con.winnerContest.value![selectedIndex].winners.length==0 && false )
+              Expanded(child: Center(child: Text("no winners for this contest"),)),
+            if((_con.winnerContest.value?.length??0) >=1)
+            Expanded(child: ListView.builder(
+              itemCount: _con.winnerContest.value!.length,
+                itemBuilder: (c,i){
+                final contest = _con.winnerContest.value![i];
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Card(
+                    child: Container(
+                      padding: EdgeInsets.all(12),
+                      child: Column(
+                        children: [
+                          Align(
+                              alignment: Alignment.topLeft,
+                              child: Text(contest.contest.contestName,
+                                style: Theme.of(context).textTheme.caption!.copyWith(
+                                  color: Theme.of(context).textTheme.headline6!.color,
+                                  letterSpacing: 0.6,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),)),
+                          SizedBox(height: 10,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                            Text("${contest.contest.winners} Winners",style: Theme.of(context).textTheme.caption!.copyWith(
+                              // color: Colors.white,
+                              letterSpacing: 0.6,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),),
+                              Text(
+                                '₹${Utils.convertToIndianCurrency(double.parse(contest.contest.prizePool))}',
+                                style: Theme.of(context).textTheme.caption!.copyWith(
+                                  // color: Theme.of(context).textTheme.headline6!.color,
+                                  letterSpacing: 0.6,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                          ],),
+                          Divider(),
+                          Align(
+                              alignment: Alignment.topLeft,
+                              child: Text("Top Winners",
+                                style: Theme.of(context).textTheme.caption!.copyWith(
+                                  // color: Theme.of(context).textTheme.headline6!.color,
+                                  letterSpacing: 0.6,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),)),
+                          SizedBox(
+                            height: 150,
+                            child: ListView.builder(
+                              itemCount: contest.winners.length,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (BuildContext context, int index) {
+                                final winner = contest.winners[index];
+                              return Card(
+                                child: Column(
+                                  children: [
+                                    Text('${winner.rank} Rank',style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                                      fontWeight: FontWeight.bold,
+
+                                    ),),
+                                    Container(
+                                      margin: EdgeInsets.all(10),
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey,
+                                        borderRadius: BorderRadius.circular(40)
+                                      ),
+                                      child: Image.network(winner.image),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(2.0),
+                                      child: Text(winner.name,style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                      ),),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      child: Text("won ₹${winner.winingAmount}",style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      ),),
+                                    )
+                                  ],
+                                ),
+                              );
+                            },),
+                          ),
+
+                        ],
+                      ),
+                    ),
+                ),
+              );
+            })),
+
           ],
         ),
       ),
@@ -108,6 +211,7 @@ class _MatchWinnersPageState extends StateMVC<MatchWinnersPage> {
 
 
 }
+
 
 class WinnerCard extends StatelessWidget {
   Winner winner;

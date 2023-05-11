@@ -70,7 +70,11 @@ class _MyBalancePageState extends StateMVC<MyBalancePage> {
         enablePullDown: true,
         onRefresh: ()async{
           final repo = WalletRepository();
-          currentWallet.value = await repo.getWallet();
+          final newWallet = await repo.getWallet();
+          setState(() {
+            currentWallet.value = newWallet;
+            _walletController.totalBalance = currentWallet.value.totalBalance;
+          });
           _refreshController.refreshCompleted();
         },
         child: ListView(
@@ -356,17 +360,6 @@ class _MyBalancePageState extends StateMVC<MyBalancePage> {
                       ),
                     );
                   }),
-                  container(
-                    AppLocalizations.of('Manage Payments'),
-                        () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AccountInfoPage(),
-                        ),
-                      );
-                    },
-                  ),
                   container(
                     AppLocalizations.of('Refer and Earn'),
                         () {},

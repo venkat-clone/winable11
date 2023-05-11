@@ -284,7 +284,7 @@ class _UPIInterfaceState extends StateMVC<UPIInterface> {
                   children: _con.apps.map<Widget>((UpiApp app) {
                     return GestureDetector(
                       onTap: () {
-                        _con.initiateUPITransaction(app, _amount);
+                        _con.initiateUPITransaction(context,app, _amount);
                         setState(() {});
                       },
                       child: Container(

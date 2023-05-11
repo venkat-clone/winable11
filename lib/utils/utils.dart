@@ -34,7 +34,7 @@ class Utils{
 
 
 
-  static String convertToIndianCurrency(int amount) {
+  static String convertToIndianCurrency(double amount) {
     if (amount >= 10000000) {
       return '${(amount / 10000000).toStringAsFixed(1)} Crore';
     } else if (amount >= 100000) {
@@ -43,6 +43,21 @@ class Utils{
       return amount.toString();
     }
   }
+
+  static String removeCountryCode(String number){
+    if(number.startsWith('+') || number.startsWith('0')){
+      return number.substring(3);
+    }
+    return number;
+  }
+
+  static String getCountryCode(String number){
+    if(number.startsWith('+') || number.startsWith('0')){
+      return number.substring(0,3);
+    }
+    return '+91';
+  }
+
 
 
 

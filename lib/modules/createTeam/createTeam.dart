@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:async';
+
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/models/Team.dart';
@@ -13,6 +15,7 @@ import '../../controllers/TeamController.dart';
 import '../../models/Contest.dart';
 import '../../models/MatchModel.dart';
 import '../../models/player.dart';
+import '../../models/team_players.dart';
 import '../../models/userTeamPlayer.dart';
 import '../../utils/designations.dart';
 import '../../utils/utils.dart';
@@ -20,8 +23,8 @@ import '../../widget/timeLeft.dart';
 
 class CreateTeamPage extends StatefulWidget {
   MatchModel match;
-
-  CreateTeamPage({ required this.match});
+  TeamPlayers? teamPlayers;
+  CreateTeamPage({ required this.match,this.teamPlayers});
 
   @override
   _CreateTeamPageState createState() => _CreateTeamPageState();
@@ -45,9 +48,34 @@ class _CreateTeamPageState extends StateMVC<CreateTeamPage> {
   @override
   Future<bool> initAsync() async{
     await _con.getSport();
-    _con.getMatchPlayers(context,widget.match);
-    _con.cricketTeam.matchId = widget.match.matchId;
+    initilize();
     return super.initAsync();
+  }
+
+  initilize() async{
+    await _con.getMatchPlayers(context,widget.match);
+    if(widget.teamPlayers!=null){
+      addPLayersExistingPLayers(widget.teamPlayers!);
+    }
+    _con.cricketTeam.matchId = widget.match.matchId;
+  }
+
+  addPLayersExistingPLayers(TeamPlayers teamPlayers) async {
+    while(_con.userTeamPlayer.isEmpty) await Future.delayed(Duration(seconds: 1));
+    _con.cricketTeam.newTeam = false;
+    _con.oldTeam = teamPlayers;
+    print("oldTeamId:${_con.oldTeam!.teamId}");
+    teamPlayers.players.forEach((element) {
+      final p = _con.userTeamPlayer.indexWhere((e) => e.pid==element.pid);
+
+      if(p!=-1){
+        _con.appPlayer(
+            _con.userTeamPlayer[p],
+            context,
+            widget.match.team1.teamShortName ==
+                _con.userTeamPlayer[p].teamShortName);
+      }
+    });
   }
 
   bool isWk = true;
@@ -126,14 +154,20 @@ class _CreateTeamPageState extends StateMVC<CreateTeamPage> {
                             creditsSort = false;
                           });
                         },
-                        child: Text(
-                          AppLocalizations.of('POINTS'),
-                          style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                                color: creditsSort?Colors.black54:Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 0.6,
-                                fontSize: 10,
-                              ),
+                        child: Row(
+                          children: [
+                            Text(
+                              AppLocalizations.of('POINTS'),
+                              style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                                    color: creditsSort?Colors.black54:Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 0.6,
+                                    fontSize: 10,
+                                  ),
+                            ),
+                            if(!creditsSort)
+                              Icon(Icons.arrow_drop_down,color: Theme.of(context).primaryColor,)
+                          ],
                         ),
                       ),
                       Expanded(child: SizedBox()),
@@ -143,15 +177,21 @@ class _CreateTeamPageState extends StateMVC<CreateTeamPage> {
                             creditsSort = true;
                           });
                         },
-                        child: Text(
-                          AppLocalizations.of('CREDITS'),
-                          style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                                color: creditsSort?Theme.of(context).primaryColor:Colors.black54,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 0.6,
-                                fontSize: 10,
-                              ),
+                        child: Row(
+                          children: [
+                            Text(
+                              AppLocalizations.of('CREDITS'),
+                              style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                                    color: creditsSort?Theme.of(context).primaryColor:Colors.black54,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 0.6,
+                                    fontSize: 10,
+                                  ),
+                            ),
+                            if(creditsSort)Icon(Icons.arrow_drop_down,color: Theme.of(context).primaryColor,)
+                          ],
                         ),
+
                       ),
                     ],
                   ),
@@ -247,7 +287,7 @@ class _CreateTeamPageState extends StateMVC<CreateTeamPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ChooseCaptainPage(team: _con.cricketTeam,matchDateTime:widget.match.matchDateTime),
+                      builder: (context) => ChooseCaptainPage(team: _con.cricketTeam,matchDateTime:widget.match.matchDateTime,teamPlayers: widget.teamPlayers,),
                     ),
                   );
                 },
@@ -306,22 +346,26 @@ class _CreateTeamPageState extends StateMVC<CreateTeamPage> {
         return double.parse(b.points).compareTo(double.parse(a.points));
 
     });
+
+    final announced = playersList.where((element) => element.announced && !element.substitute );
+    final substitute = playersList.where((element) => element.announced && element.substitute);
+    final unannounced = playersList.where((element) => !element.announced );
+
     return Expanded(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            Container(
-                padding: EdgeInsets.all(10),
-                alignment: Alignment.topLeft,
-                child: Text("Selected Players",)
+            if(selectedPlayersList.isNotEmpty)Container(
+              color: Colors.black,
+              padding: EdgeInsets.all(6),
+              child: Text("Selected Players",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600
+              ),),
             ),
-            if(selectedPlayersList.isEmpty)
-              Container(
-                padding: EdgeInsets.all(10),
-                alignment: Alignment.center,
-                child: Text("no player's Selected",style: TextStyle(color: Colors.grey),)
-            ),
-
             ...selectedPlayersList.map<Widget>((player){
               ImageProvider? image ;
               if(player.image.isNotEmpty){
@@ -334,7 +378,7 @@ class _CreateTeamPageState extends StateMVC<CreateTeamPage> {
                 child: PlayerCardView(
                   txt1: player.teamShortName,
                   txt2: player.name,
-                  txt3: AppLocalizations.of('Sel by 67.15%'),
+                  txt3: AppLocalizations.of(''),
                   txt4: AppLocalizations.of('Played last match'),
                   txt5: player.points,
                   txt6: player.creditPoints,
@@ -343,37 +387,12 @@ class _CreateTeamPageState extends StateMVC<CreateTeamPage> {
                 ),
               );
             }),
-            // Divider(),
-            Container(
-                padding: EdgeInsets.all(10),
-                alignment: Alignment.topLeft,
-                child: Text("Players",)
-            ),
-            ...playersList.map<Widget>((player){
-              ImageProvider? image ;
-
-              if(player.selected){
-                return SizedBox();
-              }
-
-              if(player.image.isNotEmpty){
-                image = NetworkImage(player.image);
-              }
-              return InkWell(
-                onTap: (){
-                  _con.appPlayer(player,context,widget.match.team1.teamShortName ==player.teamShortName);
-                },
-                child: PlayerCardView(
-                  txt1: player.teamShortName,
-                  txt2: player.name,
-                  txt3: AppLocalizations.of('Sel by 67.15%'),
-                  txt4: AppLocalizations.of('Played last match'),
-                  txt5: player.points,
-                  txt6: player.creditPoints,
-                  image1: image ?? AssetImage(ConstanceData.villiers),
-                ),
-              );
-            }),
+            if(announced.isNotEmpty) playersSection("Announced Players"),
+            ...announced.map<Widget>(playerCard),
+            if(substitute.isNotEmpty) playersSection("Substitute Players"),
+            ...substitute.map<Widget>(playerCard),
+            if(unannounced.isNotEmpty) playersSection("${(announced.isNotEmpty && substitute.isNotEmpty)?'Unannounced':''} Players"),
+            ...unannounced.map<Widget>(playerCard),
             SizedBox(
               height: MediaQuery.of(context).padding.bottom + 70,
             )
@@ -381,7 +400,50 @@ class _CreateTeamPageState extends StateMVC<CreateTeamPage> {
         )
     );
   }
+  //"${(announced.isNotEmpty && substitute.isNotEmpty)?'Unannounced':''} Players"
 
+  Widget playersSection(String text){
+    return Padding(
+      padding: const EdgeInsets.only(top:8.0,bottom: 4),
+      child: Container(
+        color: Colors.black,
+        padding: EdgeInsets.all(6),
+        child: Text(text,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.w600
+          ),),
+      ),
+    );
+  }
+
+  Widget playerCard(UserTeamPlayer player){
+    ImageProvider? image ;
+
+    if(player.selected){
+      return SizedBox();
+    }
+
+    if(player.image.isNotEmpty){
+      image = NetworkImage(player.image,);
+    }
+    return InkWell(
+      onTap: (){
+        _con.appPlayer(player,context,widget.match.team1.teamShortName ==player.teamShortName);
+      },
+      child: PlayerCardView(
+        txt1: player.teamShortName,
+        txt2: player.name,
+        txt3: AppLocalizations.of(Designation.getDesignation(Designation.cricket, int.parse(player.designationId)).fullName),
+        txt4: AppLocalizations.of(player.playingStatus=='1'?'Played last match':'Not played last match'),
+        txt5: player.points,
+        txt6: player.creditPoints,
+        image1: image ?? AssetImage(ConstanceData.villiers),
+      ),
+    );
+  }
 
 
   Widget tabBar() {
@@ -529,7 +591,7 @@ class _CreateTeamPageState extends StateMVC<CreateTeamPage> {
                     height: 25,
                   ),
                   Text(
-                    AppLocalizations.of('Max 7 palyers from a team'),
+                    AppLocalizations.of(widget.match.matchStatusNote.isNotEmpty?widget.match.matchStatusNote:'Max 7 palyers from a team'),
                     style: Theme.of(context).textTheme.caption!.copyWith(
                           color: Theme.of(context).textTheme.headline6!.color,
                           letterSpacing: 0.6,

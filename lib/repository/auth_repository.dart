@@ -35,24 +35,20 @@ class AuthRepository{
 
 
     try{
-      final client = new http.Client();
+
       print(json.encode({
         "phone":user.mobile.isNotEmpty?user.mobile:null,
         "email":user.email.isNotEmpty?user.email:null,
         "password":user.password
       }));
-      final response = await client.post(
-        Uri.parse(url),
-        headers: {HttpHeaders.contentTypeHeader: 'application/json'},
-        body: json.encode({
-          "phone":user.mobile.isNotEmpty?user.mobile:null,
-          "email":user.email.isNotEmpty?user.email:null,
-          "password":user.password
-        }),
-      );
-    final result = _apiService.returnResponse(response);
 
-    return AppUser.formJson(_apiService.getData(result));
+      final response = await _apiService.getPostApiResponse(url, {
+        "mobile":user.mobile.isNotEmpty?user.mobile:null,
+        "email":user.email.isNotEmpty?user.email:null,
+        "password":user.password
+      });
+
+    return AppUser.formJson(_apiService.getData(response));
     }catch(e,s){
       print("$e,$s");
       rethrow;
@@ -74,7 +70,21 @@ class AuthRepository{
   }
 
   Future resetPassword(String? email,String name,String password) async{
+    try{
 
+    }catch(e){
+      rethrow;
+    }
   }
+
+  Future updateProfile(AppUser appUser) async {
+    try{
+      await _apiService.getPostApiResponse("https://admin.winable11.com/User/register/kyc", appUser.toJson());
+    }catch(e,s){
+      rethrow;
+    }
+  }
+
+
 
 }

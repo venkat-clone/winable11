@@ -24,12 +24,7 @@ class CricketPage extends StatefulWidget {
 }
 
 class _CricketPageState extends StateMVC<CricketPage> {
-  final List<String> imgList = [
-    ConstanceData.slider1,
-    ConstanceData.slider2,
-    ConstanceData.slider3,
-    ConstanceData.slider4,
-  ];
+
 
   late MatchController _con;
   final scrollController = ScrollController();
@@ -72,16 +67,15 @@ class _CricketPageState extends StateMVC<CricketPage> {
       );
     }
     if(_con.upcomingCricketMatchList.error != null){
-      return SmartRefresher(
-        controller: _refreshController,
-        enablePullDown: true,
-        enablePullUp: false,
-        onLoading: _onLoading,
-        onRefresh: _onLoading,
-        child: Expanded(
+      return Flexible(
+        child: SmartRefresher(
+          controller: _refreshController,
+          enablePullDown: true,
+          enablePullUp: false,
+          onLoading: _onLoading,
+          onRefresh: _onLoading,
           child: Center(
-            child: Text(_con.upcomingCricketMatchList.error!),
-          ),
+              child: Text(_con.upcomingCricketMatchList.error!)),
         ),
       );
     }
@@ -119,7 +113,8 @@ class _CricketPageState extends StateMVC<CricketPage> {
                   Stack(
                   children: [
                     Container(
-                      height: 150,
+
+                      height: 200,
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
                         image: DecorationImage(
@@ -134,7 +129,7 @@ class _CricketPageState extends StateMVC<CricketPage> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(
-                                left: 20, right: 20, top: 15),
+                                left: 20, right: 20, top: 25),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -205,7 +200,7 @@ class _CricketPageState extends StateMVC<CricketPage> {
                           autoPlayCurve: Curves.fastOutSlowIn,
                           enlargeCenterPage: true,
                           scrollDirection: Axis.horizontal,
-                          height: 200,
+                          height: 230,
                         ),
                       ),
                     ),
@@ -265,12 +260,9 @@ class _CricketPageState extends StateMVC<CricketPage> {
                               final dateTime = DateTime.parse(match.matchDateTime);
                               final _timeLeft = dateTime.difference(DateTime.now());
                               // if(_timeLeft.isNegative) return SizedBox();
-                              return CardView(
-                                match: match,
-                              );
+                              return CardView(match: match);
                             },
-                            separatorBuilder:
-                                (BuildContext context, int index) => SizedBox(
+                            separatorBuilder: (BuildContext context, int index) => SizedBox(
                               height: 15,
                             ),
                           )

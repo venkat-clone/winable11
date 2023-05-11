@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
 import '../../../controllers/TeamController.dart';
+import '../../../models/MatchModel.dart';
 import '../../../models/team_players.dart';
 import '../myTeam.dart';
 
@@ -9,9 +10,12 @@ class SelectTeam extends StatefulWidget {
 
   Function(TeamPlayers) saveTeam;
   String matchId;
+  final MatchModel match;
+
   SelectTeam({Key? key,
     required this.saveTeam,
     required this.matchId,
+    required this.match,
   }) : super(key: key);
 
   @override
@@ -36,7 +40,7 @@ class _SelectTeamState extends StateMVC<SelectTeam> {
   @override
   Future<bool> initAsync()  async{
     await _con.getSport();
-    await _con.getMyTeam(widget.matchId);
+    await _con.getMyTeam(widget.match);
     return super.initAsync();
   }
 
@@ -96,7 +100,7 @@ class _SelectTeamState extends StateMVC<SelectTeam> {
 
 
                 }),
-                MyTeamCard(team: e,sport: _con.sport,),
+                MyTeamCard(team: e,sport: _con.sport,match:widget.match),
               ],
             );
           }),

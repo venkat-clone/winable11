@@ -1,6 +1,7 @@
 import 'package:newsports/base_classes/baseApiService.dart';
 import 'package:newsports/base_classes/networkAPIService.dart';
 import 'package:newsports/utils/constants.dart';
+import 'package:newsports/utils/value_notifiers.dart';
 
 import '../models/MatchModel.dart';
 import '../models/Team.dart';
@@ -34,6 +35,33 @@ class MatchesRepository {
       throw e;
     }
   }
+  Future<List<MatchModel>> getMyCricketMatches() async {
+    try {
+      dynamic response =
+          await _apiServices.getGetApiResponse(_getUrl("user/matches/${currentUser.value.user_id}"));
+      List<MatchModel> list = [];
+      _apiServices.typeCast<List<dynamic>>(response['data']).forEach(
+          (e) {
+            final match = MatchModel.fromJson(e['match_details'] as Map<String, dynamic>,e['competition_name'],e['default']);
+            match.team1 = Team.fromJson(e['team_a'] as Map<String, dynamic>);
+            match.team2 = Team.fromJson(e['team_b'] as Map<String, dynamic>);
+            list.add(
+                match
+            );
+          });
+      list.sort((a,b){
+        final dateA = DateTime.parse(a.matchDateTime);
+        final dateB = DateTime.parse(b.matchDateTime);
+        return dateA.compareTo(dateB);
+      });
+      return list;
+    } catch (e,s) {
+      print(s);
+      throw e;
+    }
+  }
+
+
   Future<List<MatchModel>> getFootballMatches(String type) async {
     try {
       dynamic response =

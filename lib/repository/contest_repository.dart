@@ -5,6 +5,7 @@ import 'package:newsports/models/Contest.dart';
 import 'package:newsports/repository/wallet_repoditory.dart';
 import 'package:newsports/utils/value_notifiers.dart';
 
+import '../models/ContestParticipants.dart';
 import '../models/Winnings.dart';
 import '../utils/app_execptions.dart';
 
@@ -14,13 +15,11 @@ class ContestRepository{
 
   Future<List<Contest>> getContests(String matchId) async{
 
-
     try{
       final result = await _apiServices.getGetApiResponse(_getUrl("default_contest/get_contest_list/$matchId"));
       List<Contest> contestList = [];
-
       _apiServices.typeCast<List<dynamic>>(result['response']).forEach((element) {
-        contestList.add(Contest.fromJson(element));
+        contestList.add(Contest.fromJsonWith(element,matchId));
       });
       return contestList;
     }
@@ -31,13 +30,36 @@ class ContestRepository{
     }
   }
 
-  Future joinCricketContest(String contestId,String teamId,String type) async{
+  Future<List<Contest>> getMyContests(String matchId) async{
+
+
+    try{
+      final result = await _apiServices.getGetApiResponse(_getUrl("user/contests/${currentUser.value.user_id}/$matchId"));
+      // final result = await _apiServices.getGetApiResponse(_getUrl("user/contests/79/1170"));
+      List<Contest> contestList = [];
+
+      _apiServices.typeCast<List<dynamic>>(result['data']).forEach((element) {
+        contestList.add(Contest.fromJsonWith(element,matchId));
+      });
+      return contestList;
+    }
+    catch(e,s){
+      print(e);
+      print(s);
+      rethrow;
+    }
+  }
+
+  Future joinCricketContest(Contest contest,String teamId) async{
     try{
       await _apiServices.getPostApiResponse(_getUrl("default_contest/user_join/join"),{
-        "contest_id":contestId,
+        "contest_id":contest.contestId,
         "user_id":currentUser.value.user_id,
         "team_id":teamId,
-        "type":type
+        "contest_type":contest.type,
+        "match_id":contest.matchId,
+        "payment_type":"wallet",
+        "payment_status" : "1",
       });
       final walletRepository = WalletRepository();
       currentWallet.value = await walletRepository.getWallet();
@@ -59,5 +81,23 @@ class ContestRepository{
       rethrow;
     }
   }
+
+  Future<List<ContestParticipants>> getContestParticipants(String matchId,String contestId,String contestType) async{
+    try{
+      final result = await _apiServices.getGetApiResponse(_getUrl("user/get_participants/$matchId/$contestId/$contestType"));
+      List<ContestParticipants> contestParticipant = [];
+      ((result['data']??[]) as List<dynamic>).forEach((e){
+        contestParticipant.add(ContestParticipants.fromJson(e));
+      });
+
+      return contestParticipant;
+    }catch(e,s){
+      print("$e\n$s");
+      rethrow;
+    }
+  }
+
+
+
 
 }

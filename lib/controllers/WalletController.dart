@@ -17,6 +17,7 @@ import 'package:upi_india/upi_india.dart';
 import 'package:upi_india/upi_response.dart';
 import '../models/CashFreeTransactionResponse.dart';
 import '../models/payment.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import '../models/payment_types.dart';
 import '../repository/wallet_repoditory.dart';
 
@@ -32,6 +33,7 @@ class WalletController extends BaseController {
   WalletRepository _walletRepository = WalletRepository();
   var cfPaymentGatewayService = CFPaymentGatewayService();
   UpiIndia _upiIndia = UpiIndia();
+  Razorpay _razorpay = Razorpay();
 
   UpiIndia get upiIndia => _upiIndia;
 
@@ -52,9 +54,11 @@ class WalletController extends BaseController {
     return super.initAsync();
   }
 
+
+
   /// UPI Methods
   /// Hello World
-  Future initiateUPITransaction(UpiApp app, String amount) async {
+  Future initiateUPITransaction(BuildContext context,UpiApp app, String amount) async {
     lodeWhile(() async{
       try {
         final salt = DateTime.now().millisecond;
@@ -65,13 +69,11 @@ class WalletController extends BaseController {
           // transactionRefId = userId
           transactionRefId: "$salt"+ (currentUser.value.user_id ?? "") ,
           transactionNote: 'payment',
+          merchantId:'BCR2DN4T5KI7F4YI',
           amount: double.parse(amount.trim()),
         );
-        print("status ${upiResponse.status}");
-        if(
-        upiResponse.status == UpiPaymentStatus.SUCCESS &&
-        upiResponse.approvalRefNo !=null
-        ){
+
+        if(upiResponse.status == UpiPaymentStatus.SUCCESS ){
           final payment = Payment(amount: amount, transactionID: "");
           await addCash(amount);
         }
@@ -81,7 +83,20 @@ class WalletController extends BaseController {
         setState(() {
           _upiResponse = upiResponse;
         });
-      }catch (e,s){
+      }on UpiIndiaAppNotInstalledException {
+        errorSnackBar( 'Requested app not installed on device',context);
+      }
+      on UpiIndiaUserCancelledException{
+      errorSnackBar( 'You cancelled the transaction',context);
+      }
+      on UpiIndiaNullResponseException{
+      errorSnackBar( 'Requested app didn\'t return any response',context);
+      }
+      on UpiIndiaInvalidParametersException{
+      errorSnackBar( 'Requested app cannot handle the transaction',context);
+      }
+      catch (e,s){
+        errorSnackBar( 'Transaction not completed please try again later',context);
         print("Upi Transaction Error: $e\n$s");
       }
     });
@@ -104,6 +119,20 @@ class WalletController extends BaseController {
   }
 
 
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+
+  }
+
+  @override
+  void dispose() {
+    _razorpay.clear(); // Removes all listeners
+    super.dispose();
+  }
 
 // Callback methods
   void verifyPayment(String orderId) {
@@ -207,13 +236,7 @@ class WalletController extends BaseController {
   }
 
 
-  // withdraw amount
 
-  // pay contest fee
-  payContestFee(double fee,String contestId){
-    /// PAY FEE
-    /// JOIN CONTEST
-  }
 
   payWithWallet() async {
     // call payment api for transaction
@@ -225,17 +248,43 @@ class WalletController extends BaseController {
     try{
       final res = await EasyUpiPaymentPlatform.instance.startPayment(
         EasyUpiPaymentModel(
-          payeeVpa: '7388477549@ybl',
+          payeeVpa: '7388477549@okbizaxis',
           payeeName: 'Winable Platforms Private Limited',
           amount: amount,
           description: 'Winable Platforms Private Limited',
+          payeeMerchantCode: 'BCR2DN4T5KI7F4YI',
+          transactionId: currentUser.value.user_id+DateTime.now().microsecondsSinceEpoch.toString(),
+          transactionRefId: 'Ref'+currentUser.value.user_id+DateTime.now().microsecondsSinceEpoch.toString()
         )
       );
       addCash(amount.toString());
-      print(res);
-    } on EasyUpiPaymentException {
-      // TODO: add your exception logic here
+
+    } on EasyUpiPaymentException catch(e,s){
+
+      print('message:${e.message}\n details:${e.details} \n stacktrace:$s');
     }
+  }
+
+
+  makePaymentWithRazorpay(double amount) async{
+    var options = {
+      'key': 'rzp_test_191RXLi8OghRpg',
+      'amount': amount*100,
+      'name': 'Winable Platforms Private Limited',
+      'description': 'add funds to your kyc account',
+      'currency':'INR',
+      'prefill': {
+        'contact': currentUser.value.name,
+        'email': currentUser.value.email
+      }
+    };
+
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, (s){
+      addCash(amount.toString());
+    });
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    _razorpay.open(options);
   }
 
 

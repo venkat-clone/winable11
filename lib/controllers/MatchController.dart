@@ -235,18 +235,21 @@ class MatchController extends BaseController {
 
 
   getMyPastCricketMatches(BuildContext context) async{
-    if(myPastCricketMatchList.value!=null) return;
     try{
-      final list  = await _matchRepository.getCricketMatches("completed");
-
+      final list  = await _matchRepository.getMyCricketMatches();
       setState(() {
         myPastCricketMatchList = ValueState(value: list.reversed.toList());
       });
+    } on InvalidResponseException {
+      setState(() {
+        myPastCricketMatchList = ValueState(value: []);
+      });
+      successSnackBar("you haven't joined any match", context);
     } catch(error, stackTrace) {
       setState(() {
         myPastCricketMatchList = ValueState(error: "unexpected error please try again") ;
       });
-
+      print(error.runtimeType.runtimeType);
       errorSnackBar(error.toString(), context);
       if (kDebugMode) {
         print("getMatches Error ${error.toString()}");

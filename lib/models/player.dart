@@ -8,13 +8,14 @@ import '../utils/designations.dart';
 class Player{
 
   String pid = "";
+  String id = "";
   String name = "";
   /// Check out this [Designation] or ../utils/designations.dart
   String designationId = "";
   String teamId = "";
   String playingStatus = "";
-  String creditPoints = "";
-  String points = "";
+  String creditPoints = "0";
+  String points = "0";
   String image = "";
   String dob = "";
   String nationality = "";
@@ -22,6 +23,12 @@ class Player{
   String bats = "";
   String createdDate = "";
   String modifiedDate = "";
+
+  /// is_substitute ==0 && player is not substitute
+  /// is_substitute ==1 && player is substitute
+  bool substitute = false;
+  /// same as substitute
+  bool announced = false;
 
 
   Designation getDesignation(String sport) =>Designation.getDesignation(sport, int.parse(designationId));
@@ -33,8 +40,8 @@ class Player{
     this.designationId="",
     this.teamId="",
     this.playingStatus="",
-    this.creditPoints="",
-    this.points="",
+    this.creditPoints="0",
+    this.points="0",
     this.image="",
     this.dob="",
     this.nationality="",
@@ -47,12 +54,13 @@ class Player{
   Player.fromJson(Map<String,dynamic> json){
 
     pid = json['pid']??"";
+    pid = json['id']??"";
     name = json['name']??"";
     designationId = json['designationid']??"";
     teamId = json['team_id']??"";
     playingStatus = json['playing_status']??"";
-    creditPoints = json['credit_points']??"";
-    points = json['points']??"";
+    creditPoints = json['credit_points']??"0";
+    points = json['points']??"0";
     image = json['image']??"";
     dob = json['dob']??"";
     nationality = json['nationality']??"";
@@ -60,6 +68,8 @@ class Player{
     bats = json['bats']??"";
     createdDate = json['created_date']??"";
     modifiedDate = json['modified_date']??"";
+    announced = (json['is_select']??'0')=='1';
+    substitute = (json['is_substitute']??'0')=='1';
   }
 
   Player.fromFootball(Map<String,dynamic> json){
@@ -68,8 +78,8 @@ class Player{
     designationId = getFootballDesignationId(json['designationid']??"");
     teamId = json['team_id']??"";
     playingStatus = json['playing_status']??"";
-    creditPoints = json['credit_points']??"";
-    points = json['points']??"";
+    creditPoints = json['credit_points']??"0";
+    points = json['points']??"0";
     image = json['image']??"";
     dob = json['dob']??"";
     nationality = json['nationality']??"";

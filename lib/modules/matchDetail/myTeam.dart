@@ -13,6 +13,7 @@ import '../../models/MatchModel.dart';
 import '../../models/my_team.dart';
 import '../../models/team_players.dart';
 import '../../utils/designations.dart';
+import '../createTeam/createTeam.dart';
 import '../createTeam/teamPreview.dart';
 
 class MyTeamPage extends StatefulWidget {
@@ -46,7 +47,7 @@ class _MyTeamPageState extends StateMVC<MyTeamPage> {
   }
 
   _refresh() async{
-    await _con.getMyTeam(widget.match.matchId);
+    await _con.getMyTeam(widget.match);
     _refreshController.refreshCompleted();
   }
 
@@ -54,7 +55,7 @@ class _MyTeamPageState extends StateMVC<MyTeamPage> {
   Future<bool> initAsync()  async{
     await _con.getSport();
     if(_con.myTeams.value==null){
-      _con.getMyTeam(widget.match.matchId);
+      _con.getMyTeam(widget.match);
     }
     return super.initAsync();
   }
@@ -85,7 +86,7 @@ class _MyTeamPageState extends StateMVC<MyTeamPage> {
       child: ListView(
         children: [
           ..._con.myTeams.value!.map((e) {
-            return MyTeamCard(team: e,sport: _con.sport??"",);
+            return MyTeamCard(team: e,sport: _con.sport??"",match: widget.match,);
           }),
         ],
       ),
@@ -99,7 +100,8 @@ class _MyTeamPageState extends StateMVC<MyTeamPage> {
 class MyTeamCard extends StatefulWidget {
   TeamPlayers team;
   String sport;
-  MyTeamCard({Key? key,required this.team,required this.sport}) : super(key: key);
+  final MatchModel match;
+  MyTeamCard({Key? key,required this.team,required this.sport,required this.match}) : super(key: key);
 
   @override
   State<MyTeamCard> createState() => _MyTeamCardState();
@@ -246,10 +248,18 @@ class _MyTeamCardState extends State<MyTeamCard> {
                                     ),
                                   ),
                                   Expanded(child: SizedBox()),
-                                  Icon(
-                                    Icons.edit,
-                                    color: Colors.white,
-                                    size: 18,
+                                  InkWell(
+                                    onTap: (){
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (c)=>CreateTeamPage(
+                                          match:widget.match,
+                                          teamPlayers:team
+                                      )));
+                                    },
+                                    child: Icon(
+                                      Icons.edit,
+                                      color: Colors.white,
+                                      size: 18,
+                                    ),
                                   ),
                                   SizedBox(
                                     width: 20,

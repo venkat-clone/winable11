@@ -29,13 +29,14 @@ class UserTeamPlayer extends Player{
 
 
   UserTeamPlayer.fromJson(Map<String,dynamic> json){
-    pid = json['pid']??"";
+    pid = json['pid']??json['playerid']??"";
+    id = json['id'].toString()??"";
     name = json['name']??"";
     designationId = json['designationid']??"";
-    teamId = json['team_id']??"";
+    teamId = json['teamid']??"";
     playingStatus = json['playing_status'].toString()??"";
-    creditPoints = json['credit_points']??"";
-    points = json['points']??"";
+    creditPoints = json['credit_points']??"0";
+    points = json['points']??"0";
     image = json['image']??"";
     dob = json['dob']??"";
     nationality = json['nationality']??"";
@@ -43,11 +44,13 @@ class UserTeamPlayer extends Player{
     bats = json['bats']??"";
     createdDate = json['created_date']??"";
     modifiedDate = json['modified_date']??"";
+    substitute = (json['is_substitute']??'0')=='1';
   }
 
   UserTeamPlayer.fromFootball(Map<String,dynamic> json){
 
     pid = json['pid']??"";
+    id = json['id']??"";
     name = json['name']??"";
     designationId = getFootballDesignationId(json['designationid']??"");
     teamId = json['team_id']??"";
@@ -80,6 +83,19 @@ class UserTeamPlayer extends Player{
     designationId = json["designation_id"]??"";
     image = "https://admin.winable11.com/"+(json['image']??"");
   }
+
+  getJsonUploadWithCaptain(
+      bool isCaptain,
+      bool isWiseCaptain,
+      String teamId
+      )=>{
+    "player":name,
+    "player_id":pid,
+    "designation_id":designationId,
+    "is_captian":isCaptain,
+    "is_vicecaptain":isWiseCaptain,
+    "team_id":teamId
+  };
 
 
 

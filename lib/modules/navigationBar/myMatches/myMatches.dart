@@ -15,9 +15,9 @@ class MyMatchesPage extends StatefulWidget {
 }
 
 class _MyMatchesPageState extends StateMVC<MyMatchesPage> {
-  bool isUpcoming = true;
+  bool isUpcoming = false;
   bool isLive = false;
-  bool isCompleted = false;
+  bool isCompleted = true;
   late MatchController _con ;
 
   _MyMatchesPageState() :super(MatchController()){
@@ -82,7 +82,28 @@ class _MyMatchesPageState extends StateMVC<MyMatchesPage> {
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          InkWell(
+            onTap: () {
+              setState(() {
+                isUpcoming = false;
+                isLive = false;
+                isCompleted = true;
+              });
+            },
+            child: Text(
+              AppLocalizations.of('My Matches'),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.caption!.copyWith(
+                color: isCompleted == true ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
+                letterSpacing: 0.6,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          // Expanded(child: SizedBox()),
           InkWell(
             onTap: () {
               setState(() {
@@ -93,6 +114,7 @@ class _MyMatchesPageState extends StateMVC<MyMatchesPage> {
             },
             child: Text(
               AppLocalizations.of('Upcoming'),
+              textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.caption!.copyWith(
                     color: isUpcoming == true ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
                     letterSpacing: 0.6,
@@ -101,7 +123,7 @@ class _MyMatchesPageState extends StateMVC<MyMatchesPage> {
                   ),
             ),
           ),
-          Expanded(child: SizedBox()),
+          // Expanded(child: SizedBox()),
           InkWell(
             onTap: () {
               setState(() {
@@ -112,6 +134,7 @@ class _MyMatchesPageState extends StateMVC<MyMatchesPage> {
             },
             child: Text(
               AppLocalizations.of('Live'),
+              textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.caption!.copyWith(
                     color: isLive == true ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
                     letterSpacing: 0.6,
@@ -120,25 +143,8 @@ class _MyMatchesPageState extends StateMVC<MyMatchesPage> {
                   ),
             ),
           ),
-          Expanded(child: SizedBox()),
-          InkWell(
-            onTap: () {
-              setState(() {
-                isUpcoming = false;
-                isLive = false;
-                isCompleted = true;
-              });
-            },
-            child: Text(
-              AppLocalizations.of('Completed'),
-              style: Theme.of(context).textTheme.caption!.copyWith(
-                    color: isCompleted == true ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
-                    letterSpacing: 0.6,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-          ),
+
+
         ],
       ),
     );

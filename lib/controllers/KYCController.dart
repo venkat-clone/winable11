@@ -7,19 +7,28 @@ import 'package:flutter/foundation.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:mime/mime.dart';
 import 'package:newsports/base_classes/base_controller.dart';
+import 'package:newsports/base_classes/value_state.dart';
 import 'package:newsports/models/KYC.dart';
+import 'package:newsports/models/kycStatus.dart';
 import 'package:newsports/utils/shared_preference_services.dart';
 
 import '../repository/kyc_repository.dart';
 import '../utils/app_execptions.dart';
 
 class KYCController extends BaseController {
+
+
+  KYCRepository _repository = KYCRepository();
+
+  ValueState<KYCStatus> kycStatus = ValueState.loading();
+
+
   Future requestForKYC(BuildContext context,KYCDetails details,File aadhaar,File panCard) async {
     bool ans = false;
     await lodeWhile(() async{
       try{
         // SharedPreferenceService.setKYC(true);
-        final result =  await KYCRepository.requestKYC(details,aadhaar,panCard);
+        final result =  await _repository.requestKYC(details,aadhaar,panCard);
         ans = true;
         successSnackBar("Uploaded your kyc details", context);
         SharedPreferenceService.setKYC(true);
@@ -74,15 +83,15 @@ class KYCController extends BaseController {
     }
   }
 
-  getKYCStatus(authID) async {
+  getKYCStatus(BuildContext context) async {
     try {
-      await FirebaseFirestore.instance
-          .collection("user")
-          .doc(authID)
-          .get()
-          .then((value) =>
-          SharedPreferenceService.setKYC(value.data()!['kycStatus']));
-    } catch (e) {}
+      final result = await _repository.kycStatus();
+      setState(() {
+        kycStatus = ValueState(value: result);
+      });
+    } catch (e) {
+      errorSnackBar("unExpected Error occurred", context);
+    }
   }
 
   upDateKYCStatus(authID, status) async {

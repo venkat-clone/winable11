@@ -37,6 +37,7 @@ class TeamController extends BaseController {
   double credits = 0;
   double creditsLimit = 100;
   TeamPlayers cricketTeam = TeamPlayers();
+  TeamPlayers? oldTeam = TeamPlayers();
 
   double get creditsLeft {
     return creditsLimit - credits;
@@ -57,10 +58,14 @@ class TeamController extends BaseController {
     try{
       team.userId = currentUser.value.user_id;
       print(team.userId);
-      await _repository.sendTeamPlayers(sport,team);
+      if(team.newTeam) await _repository.sendTeamPlayers(sport,team);
+      else {
+        print("Con:oldTeamId:${oldTeam!.teamId}");
+        await _repository.editCricketTeam(team,oldTeam!);
+      }
       Navigator.of(context).pop();
       Navigator.of(context).pop();
-      successSnackBar("Team Created successfully", context);
+      successSnackBar("Team ${team.newTeam?'Created':'Edited'} successfully", context);
     }catch(exception){
       errorSnackBar("something went wrong", context);
     }
@@ -127,15 +132,33 @@ class TeamController extends BaseController {
   getMatchPlayers(BuildContext context, MatchModel match) {
     lodeWhile(() async {
       try {
-        final teamA = match.team1;
-        final teamB = match.team2;
-        // final list = await _teamRepo.getTeamPlayers(teamA);
-        // list.addAll(await _teamRepo.getTeamPlayers(teamB));
-        final list = await _repository.getTeamPlayers(sport, teamA);
-        list.addAll(await _repository.getTeamPlayers(sport, teamB));
-        setState(() {
-          userTeamPlayer = list;
-        });
+        // final teamA = match.team1;
+        // final teamB = match.team2;
+        // // final list = await _repository.getTeamPlayers(sport,teamA);
+        // // list.addAll(await _repository.getTeamPlayers(sport,teamB));
+        // final date = DateTime.parse(match.matchDateTime);
+        // if(date.difference(DateTime.now().add(Duration(minutes: 30))).isNegative){
+        //   var list = await _repository.getMatchPlayers(sport, match);
+        //   if(list.isEmpty){
+        //     // list = await _repository.getMatchPlayers(sport, match);
+        //     list = await _repository.getTeamPlayers(sport,teamA);
+        //     list.addAll(await _repository.getTeamPlayers(sport,teamB));
+        //   }
+        //   setState(() {
+        //     userTeamPlayer = list;
+        //   });
+        // }else{
+        //   // final list = await _repository.getMatchPlayers(sport, match);
+        //   final list = await _repository.getTeamPlayers(sport,teamA);
+        //   list.addAll(await _repository.getTeamPlayers(sport,teamB));
+        //   setState(() {
+        //     userTeamPlayer = list;
+        //   });
+        // }
+        final list = await _repository.getMatchPlayers(sport, match);
+          setState(() {
+            userTeamPlayer = list;
+          });
         deviceCricketPlayers();
       } on FetchDataException {
         errorSnackBar("Please check you internet connection", context);
@@ -287,30 +310,30 @@ class TeamController extends BaseController {
   }
 
   /// Match iD,User ID
-  getMyTeam(String matchId) async {
+  getMyTeam(MatchModel match) async {
     try{
       if (sport == "Cricket") {
-        await getMyCricketTeams(matchId);
+        await getMyCricketTeams(match);
       } else {
-        await getMyFootballTeams(matchId);
+        await getMyFootballTeams(match);
       }
     }catch(e){
       print(e);
     }
   }
   
-  Future getMyCricketTeams(String matchId) async{
+  Future getMyCricketTeams(MatchModel match) async{
 
-    final result = await _repository.getMyCricketTeams(matchId);
+    final result = await _repository.getMyCricketTeams(match);
     setState(() {
       myCricketPlayers = ValueState(value: result);
     });
     print(result);
   }
   
-  Future getMyFootballTeams(String matchId) async{
+  Future getMyFootballTeams(MatchModel match) async{
     if(myFootballPlayers.value!=null) return;
-    final result = await _repository.getMyFootballTeams(matchId);
+    final result = await _repository.getMyFootballTeams(match.matchId);
 
   }
   
