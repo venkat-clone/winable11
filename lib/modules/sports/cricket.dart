@@ -29,8 +29,7 @@ class _CricketPageState extends StateMVC<CricketPage> {
   late MatchController _con;
   final scrollController = ScrollController();
 
-  RefreshController _refreshController =
-  RefreshController(initialRefresh: false);
+  RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   _CricketPageState(MatchController cont) : super(cont) {
     _con = controller as MatchController;

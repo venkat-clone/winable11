@@ -34,7 +34,7 @@ class _MyMatchDetailPageState extends State<MyMatchDetailPage> with SingleTicker
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
     contestController = ContestController();
     feedController = FeedController();
     teamController = TeamController();
@@ -192,7 +192,7 @@ class _MyMatchDetailPageState extends State<MyMatchDetailPage> with SingleTicker
                       Tab(text: "My Teams"),
                       Tab(text: "Commentary"),
                       Tab(text: "Scoreboard"),
-                      // Tab(text: "Stats"),
+                      Tab(text: "Stats"),
                     ],
                   ),
                 ),

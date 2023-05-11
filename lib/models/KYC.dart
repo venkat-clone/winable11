@@ -50,14 +50,11 @@ class KYCDetails {
         "ifsc_code": ifscCode,
         "aadhar_number": accountNumber,
         "aadhar_card_name": NameInAadher,
-        "aadhar_card_status": AadharStatus,
         "aadhar_card_dob": DOBInAadher,
-        "aadhar_card_image": AadharImage,
-        "pan_number": PanNumber,
-        "pan_card_name": NameInPanCard,
+        "pancard_number": PanNumber,
+        "pancard_name": NameInPanCard,
         "pancard_status": PanCardStatus,
         "pancard_dob": PanCardDOB,
-        "pancard_image": PanCardIMAGE,
       };
   KYCDetails.fromJson(Map<String, dynamic> json) {
     city = json["city"] ?? "";
