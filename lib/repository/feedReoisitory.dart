@@ -3,6 +3,7 @@
 import 'package:newsports/base_classes/baseApiService.dart';
 import 'package:newsports/base_classes/networkAPIService.dart';
 
+import '../models/PlayerStats.dart';
 import '../models/commentary/Commentaries.dart';
 import '../models/commentary/MatchComentry.dart';
 
@@ -30,9 +31,21 @@ class FeedRepository{
     return list;
   }
 
+  Future<List<PlayerStats>> getPlayerStats(String matchId) async {
+    ///https://admin.winable11.com/match/points/1586
+    try{
+      final response = await _apiServices.getGetApiResponse(_url('match/points/$matchId'));
+      List<PlayerStats> list = [];
+      (response['data'] as List<dynamic>).forEach((e){
+        list.add(PlayerStats.fromJson(e));
+      });
+      return list;
+    }
+    catch(e,s){
+      print("$e\n$s");
+      rethrow;
+    }
 
-
-
-
+  }
 
 }

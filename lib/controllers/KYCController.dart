@@ -90,20 +90,12 @@ class KYCController extends BaseController {
         kycStatus = ValueState(value: result);
       });
     } catch (e) {
+      print(e);
+      kycStatus = ValueState(error: 'Unexpected error occurred');
       errorSnackBar("unExpected Error occurred", context);
     }
   }
 
-  upDateKYCStatus(authID, status) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection("user")
-          .doc(authID)
-          .update({"kycStatus": status})
-          .onError((error, stackTrace) => print(error))
-          .whenComplete(() => getKYCStatus(authID));
-    } catch (e) {}
-  }
 
 
 }

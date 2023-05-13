@@ -42,17 +42,19 @@ class KYCStatus{
   get verified => aadharStatus==approvedState && panStatus==approvedState;
 
 
-  static getString(String s,String name){
+  static String getString(String s,String name){
+    print('status');
     switch(s) {
-      case '-1':
+      case notAppliedState:
         return "You are not requested for $name verification";
-      case '1':
+      case approvedState:
         return "your $name has been verified";
-      case '0':
+      case pendingState:
         return "your $name is in progress";
-      case '2':
+      case rejectedState:
         return "your $name has been rejected";
       default:
+        return '';
     }
       
   }
