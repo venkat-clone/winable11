@@ -218,10 +218,10 @@ class _MyMatchDetailPageState extends State<MyMatchDetailPage> with SingleTicker
             matchId: widget.match.matchId,
           ),
 
-          // Stats(
-          //   feedController: feedController,
-          //   matchId: widget.match.matchId,
-          // ),
+          Stats(
+            feedController: feedController,
+            matchId: widget.match.matchId,
+          ),
         ],
       ),
     );

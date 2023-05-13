@@ -64,20 +64,24 @@ class _SelectTeamState extends StateMVC<SelectTeam> {
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      floatingActionButton: Container(
-
-        alignment: Alignment.bottomCenter,
-        child: InkWell(
-          onTap: (){
-            if(slected==null) return;
-            widget.saveTeam(slected!);
-          },
-          child: Container(
-            width: MediaQuery.of(context).size.width*0.9,
-            height: 40,
+  
+      floatingActionButton: InkWell(
+        onTap: (){
+          if(slected==null) return;
+          widget.saveTeam(slected!);
+        },
+        child: Container(
+          width: MediaQuery.of(context).size.width*0.9,
+          height: 40,
+          padding: EdgeInsets.all(2),
+          decoration: BoxDecoration(
             color: slected!=null?Colors.green:Theme.of(context).disabledColor,
-            child: Center(child: Text("Select Team",style: Theme.of(context).textTheme.button,)),
+            borderRadius: BorderRadius.circular(8)
           ),
+          child: Center(child: Text("Select Team",style: Theme.of(context).textTheme.button!.copyWith(
+            color: slected!=null?Colors.white:Colors.black45,
+            fontWeight: FontWeight.bold,
+          ),)),
         ),
       ),
       body: _con.myTeams.loading? Center(
@@ -86,25 +90,27 @@ class _SelectTeamState extends StateMVC<SelectTeam> {
         child: Text("No Contest for this Match",style: TextStyle(
             color: Colors.grey
         ),),
-      ): ListView(
-        children: [
-          ..._con.myTeams.value!.map((e) {
-            return Wrap(
-              children: [
-                Radio(
-                    activeColor: Colors.black,
-                    value: e, groupValue: slected, onChanged: (c){
-                  setState(() {
-                    slected = e;
-                  });
+      ): Container(
+        child: ListView(
+          children: [
+            ..._con.myTeams.value!.map((e) {
+              return Wrap(
+                children: [
+                  Radio(
+                      activeColor: Colors.black,
+                      value: e, groupValue: slected, onChanged: (c){
+                    setState(() {
+                      slected = e;
+                    });
 
 
-                }),
-                MyTeamCard(team: e,sport: _con.sport,match:widget.match),
-              ],
-            );
-          }),
-        ],
+                  }),
+                  MyTeamCard(team: e,sport: _con.sport,match:widget.match),
+                ],
+              );
+            }),
+          ],
+        ),
       ),
     );
   }

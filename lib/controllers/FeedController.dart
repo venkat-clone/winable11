@@ -5,6 +5,7 @@ import 'package:newsports/base_classes/base_controller.dart';
 import 'package:newsports/base_classes/value_state.dart';
 import 'package:newsports/utils/app_execptions.dart';
 
+import '../models/PlayerStats.dart';
 import '../models/commentary/MatchComentry.dart';
 import '../repository/feedReoisitory.dart';
 
@@ -12,6 +13,9 @@ class FeedController extends BaseController{
 
   ValueState<MatchCommentary> inning1Commentary = ValueState.loading();
   ValueState<MatchCommentary> inning2Commentary = ValueState.loading();
+  ValueState<List<PlayerStats>> stats = ValueState.loading();
+
+  
 
   FeedRepository _feedRepository = FeedRepository();
 
@@ -57,5 +61,14 @@ class FeedController extends BaseController{
     }
   }
 
+  getPlayerStats(BuildContext context,String matchId) async{
+    try{
+      final list  = await _feedRepository.getPlayerStats(matchId);
+      setState(() { stats = ValueState(value: list);});
+    }catch(e,s){
+      errorSnackBar("something went wrong", context);
+      setState(() { stats = ValueState(error: 'something went wrong');});
+    }
+  }
 
 }

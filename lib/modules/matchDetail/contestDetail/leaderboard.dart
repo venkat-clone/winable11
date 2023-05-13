@@ -68,13 +68,42 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 14),
-                child: Text(
-                  AppLocalizations.of('All Teams (${widget.contestTeam.value!.length})'),
-                  style: Theme.of(context).textTheme.caption!.copyWith(
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: Text(
+                        AppLocalizations.of('All Teams (${widget.contestTeam.value!.length})'),
+                        style: Theme.of(context).textTheme.caption!.copyWith(
+                              color: Colors.black87,
+                              letterSpacing: 0.6,
+                              fontSize: 12,
+                            ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                      AppLocalizations.of('Points'),
+                        textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.caption!.copyWith(
                         color: Colors.black87,
                         letterSpacing: 0.6,
                         fontSize: 12,
                       ),
+                    ),),
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                      AppLocalizations.of('Rank'),
+                        textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.caption!.copyWith(
+                        color: Colors.black87,
+                        letterSpacing: 0.6,
+                        fontSize: 12,
+                      ),
+                    ),)
+                  ],
                 ),
               ),
               SizedBox(
@@ -102,40 +131,65 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   Widget row(String txt1,String txt2, ImageProvider image) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 5),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 25,
-              backgroundImage: image,
-            ),
-            SizedBox(
-              width: 15,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  txt1,
-                  style: Theme.of(context).textTheme.caption!.copyWith(
-                        color: Colors.black87,
-                        letterSpacing: 0.6,
-                        fontSize: 14,
-                      ),
-                ),
-                Text(
-                  'joined with team '+txt2,
-                  style: Theme.of(context).textTheme.caption!.copyWith(
-                    // color: Colors.black87,
-                    letterSpacing: 0.6,
-                    fontSize: 12,
+      child: Row(
+        children: [
+          Expanded(
+            flex: 5,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 25,
+                    backgroundImage: image,
                   ),
-                ),
-              ],
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        txt1,
+                        style: Theme.of(context).textTheme.caption!.copyWith(
+                              color: Colors.black87,
+                              letterSpacing: 0.6,
+                              fontSize: 14,
+                            ),
+                      ),
+                      Text(
+                        'joined with team '+txt2,
+                        style: Theme.of(context).textTheme.caption!.copyWith(
+                          // color: Colors.black87,
+                          letterSpacing: 0.6,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+          Expanded( flex:1,child: Text('120',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.caption!.copyWith(
+              color: Colors.black87,
+              letterSpacing: 0.6,
+              fontSize: 14,
+            ),
+          )),
+          Expanded( flex:1,
+              child: Text('#1',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.caption!.copyWith(
+              color: Colors.black87,
+              letterSpacing: 0.6,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          )),
+        ],
       ),
     );
   }
