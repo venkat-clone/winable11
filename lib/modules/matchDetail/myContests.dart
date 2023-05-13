@@ -7,7 +7,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../controllers/ContestController.dart';
 import '../../models/MatchModel.dart';
-import '../../widget/matchDetailCardView.dart';
+import '../../widget/matchDetailCardView2.dart';
 
 class MyContestsPage extends StatefulWidget {
   final MatchModel match;
@@ -84,41 +84,7 @@ class _MyContestsPageState extends StateMVC<MyContestsPage> {
               SizedBox(
                 height: 50,
               ),
-              Text(
-                AppLocalizations.of('What are you waiting for?'),
-                style: Theme.of(context).textTheme.caption!.copyWith(
-                      color: Colors.black54,
-                      letterSpacing: 0.6,
-                      fontSize: 14,
-                    ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Container(
-                  height: 40,
-                  width: 140,
-                  decoration: BoxDecoration(
-                    color: Color(0xff317E2F),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Center(
-                    child: Text(
-                      AppLocalizations.of('Join A Contest'),
-                      style: Theme.of(context).textTheme.caption!.copyWith(
-                            color: Colors.white,
-                            letterSpacing: 0.6,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                    ),
-                  ),
-                ),
-              ),
+             
             ],
           ),
         ),
@@ -165,9 +131,7 @@ class _MyContestsPageState extends StateMVC<MyContestsPage> {
                   MatchDetailCardView(
                     contest: contest,
                     match: widget.match,
-                    joinContest: (){
-
-                    },
+                    //joinContest: (){},
                   ),
                   SizedBox(
                     height: 25,
