@@ -342,9 +342,17 @@ class TeamRepository {
       newPlayers.forEach((element) {print("name added:${element.name}");});
       oldPlayers.forEach((element) {print("name removed:${element.name}");});
 
-
-
-
+      final s = await apiServices.getPostApiResponse("https://admin.winable11.com/jkjkjkj",{
+        "captainId":newTeam.captainId,
+        "viceCaptainId":newTeam.viceCaptainId,
+        "insert":newPlayers.map((e) => e.getJsonUploadWithCaptain(
+            newTeam.captainId==e.pid, newTeam.viceCaptainId==e.pid,oldTeam.teamId
+        )).toList(),
+        "delete":oldPlayers.map((e) => {
+          "team_id" : oldTeam.teamId,
+          "player_id" : e.pid,
+        }).toList()
+      });
 
       // final newPlayers = newTeam.players;
       // newTeam.players.forEach((newPlayer) {
@@ -361,27 +369,27 @@ class TeamRepository {
       //   }
       // });
 
-      newPlayers.forEach((element) async{
-        try{
-          final s = await apiServices.getPostApiResponse("https://admin.winable11.com/user_team/edit/insert",
-              element.getJsonUploadWithCaptain(
-            newTeam.captainId==element.pid, newTeam.viceCaptainId==element.pid,oldTeam.teamId
-          ));
-        }catch(e,s){
-          print('$e\n$s');
-        }
-      });
-
-      oldPlayers.forEach((element) async {
-        try{
-          final s = await apiServices.getPostApiResponse("https://admin.winable11.com/user_team/edit/delete", {
-            "team_id" : oldTeam.teamId,
-            "player_id" : element.pid,
-          });
-        }catch(e,s){
-          print('$e\n$s');
-        }
-      });
+      // newPlayers.forEach((element) async{
+      //   try{
+      //     final s = await apiServices.getPostApiResponse("https://admin.winable11.com/user_team/edit/insert",
+      //         element.getJsonUploadWithCaptain(
+      //       newTeam.captainId==element.pid, newTeam.viceCaptainId==element.pid,oldTeam.teamId
+      //     ));
+      //   }catch(e,s){
+      //     print('$e\n$s');
+      //   }
+      // });
+      //
+      // oldPlayers.forEach((element) async {
+      //   try{
+      //     final s = await apiServices.getPostApiResponse("https://admin.winable11.com/user_team/edit/delete", {
+      //       "team_id" : oldTeam.teamId,
+      //       "player_id" : element.pid,
+      //     });
+      //   }catch(e,s){
+      //     print('$e\n$s');
+      //   }
+      // });
 
     }catch(e,s){
       print('$e\n$s');

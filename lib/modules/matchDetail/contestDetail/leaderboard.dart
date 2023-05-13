@@ -6,9 +6,10 @@ import 'package:newsports/constance/constance.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/ContestParticipants.dart';
+import '../../../models/UserRank.dart';
 
 class LeaderboardPage extends StatefulWidget {
-  ValueState<List<ContestParticipants>> contestTeam;
+  ValueState<List<UserRank>> contestTeam;
 
   @override
   _LeaderboardPageState createState() => _LeaderboardPageState();
@@ -118,7 +119,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
               ...widget.contestTeam.value!.map((e) {
                 ImageProvider img = AssetImage(ConstanceData.palyerProfilePic);
                 if(e.image!=""){ img = NetworkImage(e.image);}
-                 return row(e.name,e.userTeamId, img);
+                 return row(e, img);
                   }),
               Divider(),
             ],
@@ -128,7 +129,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     );
   }
 
-  Widget row(String txt1,String txt2, ImageProvider image) {
+  Widget row(UserRank user, ImageProvider image) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 5),
       child: Row(
@@ -150,19 +151,24 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        txt1,
+                        user.name,
                         style: Theme.of(context).textTheme.caption!.copyWith(
                               color: Colors.black87,
                               letterSpacing: 0.6,
                               fontSize: 14,
                             ),
                       ),
-                      Text(
-                        'joined with team '+txt2,
-                        style: Theme.of(context).textTheme.caption!.copyWith(
-                          // color: Colors.black87,
-                          letterSpacing: 0.6,
-                          fontSize: 12,
+                      Container(
+                        padding: EdgeInsets.all(2),
+                        child: Text(
+                          'joined with team \n'+user.teamName,
+                          softWrap: true,
+                          maxLines: 2,
+                          style: Theme.of(context).textTheme.caption!.copyWith(
+                            // color: Colors.black87,
+                            letterSpacing: 0.6,
+                            fontSize: 11,
+                          ),
                         ),
                       ),
                     ],
@@ -171,7 +177,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
               ),
             ),
           ),
-          Expanded( flex:1,child: Text('120',
+          Expanded( flex:1,child: Text(user.points,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.caption!.copyWith(
               color: Colors.black87,
@@ -180,7 +186,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
             ),
           )),
           Expanded( flex:1,
-              child: Text('#1',
+              child: Text('#'+user.rank,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.caption!.copyWith(
               color: Colors.black87,

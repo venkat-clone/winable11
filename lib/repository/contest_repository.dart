@@ -6,6 +6,7 @@ import 'package:newsports/repository/wallet_repoditory.dart';
 import 'package:newsports/utils/value_notifiers.dart';
 
 import '../models/ContestParticipants.dart';
+import '../models/UserRank.dart';
 import '../models/Winnings.dart';
 import '../utils/app_execptions.dart';
 
@@ -97,7 +98,20 @@ class ContestRepository{
     }
   }
 
+  Future<List<UserRank>> getUserRanks(String matchId,String contestId,String contestType) async{
+    try{
+      final result = await _apiServices.getGetApiResponse(_getUrl("user/get_participants/$matchId/$contestId/$contestType"));
 
+      List<UserRank> list = [];
+      ((result['data']??[]) as List<dynamic>).forEach((e){
+        list.add(UserRank.fromJson(e));
+      });
+
+      return list;
+    }catch(e,s){
+      rethrow;
+    }
+  }
 
 
 }

@@ -56,7 +56,7 @@ class _ContestDetailPageState extends StateMVC<ContestDetailPage> {
   @override
   Future<bool> initAsync() async{
     _con.getMatchWinnings(context,widget.contest.contestId);
-    _con.getContestParticipants(context,widget.contest);
+    _con.getContestRankings(context,widget.contest);
     return super.initAsync();
   }
 
@@ -281,7 +281,7 @@ class _ContestDetailPageState extends StateMVC<ContestDetailPage> {
             winnings: _con.winnings,
           )
               : isleaderboard == true
-                  ? LeaderboardPage(contestTeam: _con.contestParticipants,)
+                  ? LeaderboardPage(contestTeam: _con.userRankings,)
                   : SizedBox(),
         ],
       ),

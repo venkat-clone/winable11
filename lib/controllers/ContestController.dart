@@ -9,6 +9,7 @@ import 'package:newsports/base_classes/base_controller.dart';
 import '../base_classes/value_state.dart';
 import '../models/Contest.dart';
 import '../models/ContestParticipants.dart';
+import '../models/UserRank.dart';
 import '../models/Winnings.dart';
 import '../repository/contest_repository.dart';
 import '../utils/app_execptions.dart';
@@ -28,6 +29,7 @@ class ContestController extends BaseController{
 
   ValueState<List<Winning>> winnings = ValueState.loading();
   ValueState<List<ContestParticipants>> contestParticipants = ValueState.loading();
+  ValueState<List<UserRank>> userRankings = ValueState.loading();
 
   final _repository = ContestRepository();
 
@@ -213,6 +215,29 @@ class ContestController extends BaseController{
     } on FetchDataException {
       setState(() {
         contestParticipants = ValueState(error: "please check your internet connection") ;
+      });
+      errorSnackBar("please check your internet connection", context);
+
+    }catch(e,s){
+      setState(() {
+        contestParticipants = ValueState(error: "unexpected error please try again") ;
+      });
+
+      errorSnackBar('Unexpected error occurred', context);
+      if (kDebugMode) {
+        print("getMatches Error $e");
+        print("getMatches Error stackTrace $s");
+      }
+    }
+  }
+
+  void getContestRankings(BuildContext context,Contest contest) async{
+    try{
+      final list = await _repository.getUserRanks(contest.matchId, contest.contestId, contest.type);
+      userRankings = ValueState(value: list);
+    } on FetchDataException {
+      setState(() {
+        userRankings = ValueState(error: "please check your internet connection") ;
       });
       errorSnackBar("please check your internet connection", context);
 
