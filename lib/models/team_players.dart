@@ -46,6 +46,7 @@ class TeamPlayers{
     "match_id": matchId,
     "captain": captainId,
     "vice_captain": viceCaptainId,
+    
     "players": players.map((e) => e.getJsonUpload()).toList(),
   };
 
