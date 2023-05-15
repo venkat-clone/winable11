@@ -342,7 +342,7 @@ class TeamRepository {
       newPlayers.forEach((element) {print("name added:${element.name}");});
       oldPlayers.forEach((element) {print("name removed:${element.name}");});
 
-      final s = await apiServices.getPostApiResponse("https://admin.winable11.com/jkjkjkj",{
+      final s = await apiServices.getPostApiResponse("https://admin.winable11.com/user_team/edit",{
         "captainId":newTeam.captainId,
         "viceCaptainId":newTeam.viceCaptainId,
         "insert":newPlayers.map((e) => e.getJsonUploadWithCaptain(

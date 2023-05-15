@@ -100,7 +100,7 @@ class ContestRepository{
 
   Future<List<UserRank>> getUserRanks(String matchId,String contestId,String contestType) async{
     try{
-      final result = await _apiServices.getGetApiResponse(_getUrl("user/get_participants/$matchId/$contestId/$contestType"));
+      final result = await _apiServices.getGetApiResponse(_getUrl("contest_winners/get_leaderboard/$matchId/$contestId/$contestType"));
 
       List<UserRank> list = [];
       ((result['data']??[]) as List<dynamic>).forEach((e){
