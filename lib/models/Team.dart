@@ -15,6 +15,7 @@ class Team {
     teamImage = json['team_image']??"";
     modifiedDate = json['modified_date']??"";
   }
+
   String teamId = "";
   String uniqueId = "";
   String teamName = "";

@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/models/MatchModel.dart';
@@ -62,6 +63,8 @@ class _CardViewState extends State<CardView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      if(kDebugMode) CopyText(text:widget.match.matchId),
+
                       SizedBox(height: 2,),
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
@@ -342,6 +345,7 @@ class _CompleteCardViewState extends State<CompleteCardView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      if(kDebugMode) CopyText(text:widget.match.matchId),
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
                         child: Row(
@@ -651,6 +655,8 @@ class _LiveSliderCardViewState extends State<LiveSliderCardView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      if(kDebugMode) CopyText(text:widget.match.matchId),
+
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
                         child: Row(
@@ -979,6 +985,7 @@ class _FeedCardViewState extends State<FeedCardView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      if(kDebugMode) CopyText(text:widget.match.matchId),
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
                         child: Row(
@@ -1260,3 +1267,27 @@ class _FeedCardViewState extends State<FeedCardView> {
     );
   }
 }
+
+
+class CopyText extends StatelessWidget {
+  String text;
+  CopyText({Key? key,required this.text}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+        onTap: (){
+          Clipboard.setData(ClipboardData(text: text));
+
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  backgroundColor: Colors.blue,
+                  content: Text('Id copied'))
+          );
+
+        },
+        child: Text(text));
+  }
+}
+
+

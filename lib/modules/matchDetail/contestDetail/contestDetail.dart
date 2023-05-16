@@ -26,7 +26,7 @@ import '../../../widget/timeLeft.dart';
 class ContestDetailPage extends StatefulWidget {
   final Contest contest;
   final MatchModel match;
-  void Function() joinContest;
+  void Function()? joinContest;
   ContestDetailPage({
     required this.contest,
     required this.match,
@@ -155,7 +155,7 @@ class _ContestDetailPageState extends StateMVC<ContestDetailPage> {
                 ),
               ),
 
-              Container(
+              if(widget.joinContest!=null)Container(
                 alignment: Alignment.center,
                 padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
                 child: InkWell(
@@ -164,7 +164,7 @@ class _ContestDetailPageState extends StateMVC<ContestDetailPage> {
                       return;
                     }
                     showDialog(context: context, builder: (context)=>
-                        JoinContestCard(fee: double.parse(contest.entry),contestId: contest.contestId,accept: widget.joinContest,),
+                        JoinContestCard(fee: double.parse(contest.entry),contestId: contest.contestId,accept: widget.joinContest!,),
                       barrierDismissible: false,
 
                     );

@@ -26,13 +26,16 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   Widget build(BuildContext context) {
 
 
-    if(widget.contestTeam.loading)return Expanded(child: Center(
+    if(widget.contestTeam.loading)
+      return Expanded(child: Center(
       child: CircularProgressIndicator(),
     ));
-    if(widget.contestTeam.error!=null)return Expanded(child: Center(
+    if(widget.contestTeam.error!=null)
+      return Expanded(child: Center(
       child: Text(widget.contestTeam.error??''),
     ));
-    if(widget.contestTeam.value==null)return Expanded(child: Center(
+    if(widget.contestTeam.value==null)
+      return Expanded(child: Center(
       child: Text('no one joined this contest be first to join the contest'),
     ));
 

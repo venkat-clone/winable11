@@ -34,12 +34,12 @@ class MatchDetailCardView extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => ContestDetailPage(contest: contest,match: match, joinContest: joinContest,),
-        //   ),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ContestDetailPage(contest: contest,match: match, joinContest: null,),
+          ),
+        );
       },
       child: Card(
         elevation: 5,

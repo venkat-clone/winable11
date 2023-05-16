@@ -234,7 +234,9 @@ class ContestController extends BaseController{
   void getContestRankings(BuildContext context,Contest contest) async{
     try{
       final list = await _repository.getUserRanks(contest.matchId, contest.contestId, contest.type);
-      userRankings = ValueState(value: list);
+      setState(() {
+        userRankings = ValueState(value: list);
+      });
     } on FetchDataException {
       setState(() {
         userRankings = ValueState(error: "please check your internet connection") ;

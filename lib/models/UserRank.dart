@@ -15,7 +15,7 @@ class UserRank{
     teamId = json['team_id']??'';
     image = json['image']??'';
     rank = (json['rank']??'').toString();
-    points = json['points']??'';
+    points = json['total_points']??'';
     teamName = json['user_team_name']??'';
   }
 
