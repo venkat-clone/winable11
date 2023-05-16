@@ -154,42 +154,7 @@ class _ContestDetailPageState extends StateMVC<ContestDetailPage> {
                   ],
                 ),
               ),
-
-              Container(
-                alignment: Alignment.center,
-                padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                child: InkWell(
-                  onTap: (){
-                    if(widget.match.isStarted){
-                      return;
-                    }
-                    showDialog(context: context, builder: (context)=>
-                        JoinContestCard(fee: double.parse(contest.entry),contestId: contest.contestId,accept: widget.joinContest,),
-                      barrierDismissible: false,
-
-                    );
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(8),
-                    // width: MediaQuery.of(context).size.width*0.9,
-                    decoration: BoxDecoration(
-                        color: !widget.match.isStarted? Theme.of(context).primaryColor:
-                        Theme.of(context).disabledColor,
-                        borderRadius: BorderRadius.circular(4)),
-                    child: Center(
-                      child: Text(
-                        "₹${contest.entry}",
-                        style: Theme.of(context).textTheme.caption!.copyWith(
-                          color: Colors.white,
-                          letterSpacing: 0.6,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              
 
               SizedBox(height: 8,),
               Container(
