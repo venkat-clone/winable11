@@ -8,6 +8,7 @@ import 'package:newsports/modules/matchDetail/myMatchDetail/stats.dart';
 import 'package:newsports/modules/matchDetail/myTeam.dart';
 
 import '../../../models/MatchModel.dart';
+import '../../../utils/utils.dart';
 import 'commentary.dart';
 
 
@@ -126,7 +127,10 @@ class _MyMatchDetailPageState extends State<MyMatchDetailPage> with SingleTicker
                       ),
                       Expanded(
                           flex: 1,
-                          child: Center(child: Text("Live"))),
+                          child: Center(child: Text(Utils.getDaySpecificDate(DateTime.parse(widget.match.matchDateTime)),style: TextStyle(
+                            fontSize: 8.5,
+                            fontWeight: FontWeight.bold
+                          ),))),
                       Expanded(
                         flex:2,
                         child: Column(
