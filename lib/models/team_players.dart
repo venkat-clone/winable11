@@ -56,6 +56,9 @@ class TeamPlayers{
     captainId = json["captain"]??"";
     viceCaptainId = json["vice_captain"]??"";
     players = [];
+    if(teamName.isEmpty){
+      teamName = teamId;
+    }
     (json["players"] as List<dynamic>).forEach((element) {
       players.add(UserTeamPlayer.getFromJson(element));
     });
@@ -65,6 +68,19 @@ class TeamPlayers{
     players4 = players.where((element) => element.designationId=='4').toList();
 
 
+  }
+
+  segrigate(){
+    players1 = players.where((element) => element.designationId=='1').toList();
+    players2 = players.where((element) => element.designationId=='2').toList();
+    players3 = players.where((element) => element.designationId=='3').toList();
+    players4 = players.where((element) => element.designationId=='4').toList();
+    print(''
+        'players1:${players1.length}\n'
+        'players2:${players2.length}\n'
+        'players3:${players3.length}\n'
+        'players4:${players4.length}\n'
+        '');
   }
 
 
@@ -95,10 +111,14 @@ class TeamPlayers{
     return _viseCaptain!;
   }
 
-  fromTeamPlayers(Team){
 
+  int? totalPoints;
+  get points{
+    if(totalPoints==null){
+      totalPoints = players.fold(0, (previousValue, element) => (previousValue??0)+int.parse(element.points));
+    }
+
+    return totalPoints;
   }
-
-
 
 }

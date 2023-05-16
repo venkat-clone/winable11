@@ -10,20 +10,21 @@ import 'package:newsports/utils/app_execptions.dart';
 import 'package:newsports/utils/value_notifiers.dart';
 
 import '../models/MatchModel.dart';
+import '../models/PlayerStats.dart';
 import '../models/player.dart';
 import '../models/team_players.dart';
 
 class TeamRepository {
-  BaseApiServices apiServices = NetworkAPIService();
+  BaseApiServices _apiServices = NetworkAPIService();
   BaseApiServices mockApiServices = MockRepository();
 
   String _getUrl(String path)=>"https://admin.winable11.com/$path";
 
   Future<List<Team>> getAllTeams() async {
     try{
-      final jsonResponse = await apiServices.getGetApiResponse(_getUrl("Team/getTeam"));
+      final jsonResponse = await _apiServices.getGetApiResponse(_getUrl("Team/getTeam"));
       List<Team> list = [];
-      apiServices.typeCast<List<dynamic>>(jsonResponse['response']).forEach((element) {
+      _apiServices.typeCast<List<dynamic>>(jsonResponse['response']).forEach((element) {
         list.add(Team.fromJson(element));
       });
       return list;
@@ -48,10 +49,10 @@ class TeamRepository {
 
     try{
       /// Players/getPlayers/by_id/teamID
-      final jsonResponse = await apiServices.getGetApiResponse(_getUrl("Match_players/get_players/${match.matchId}"));
+      final jsonResponse = await _apiServices.getGetApiResponse(_getUrl("Match_players/get_players/${match.matchId}"));
       // final jsonResponse = await mockApiServices.getGetApiResponse("assets/mock_jsons/players_${team.teamId}");
       List<UserTeamPlayer> list = [];
-      apiServices.typeCast<List<dynamic>>(jsonResponse).forEach((element) {
+      _apiServices.typeCast<List<dynamic>>(jsonResponse).forEach((element) {
         final player = UserTeamPlayer.fromJson(element);
         if(match.team1.teamId==player.teamId){
           player.teamShortName = match.team1.teamShortName;
@@ -71,10 +72,10 @@ class TeamRepository {
   Future<List<UserTeamPlayer>> getFootball11Players(MatchModel team) async{
 
     try{
-      final jsonResponse = await apiServices.getGetApiResponse(_getUrl("Football_players"));
+      final jsonResponse = await _apiServices.getGetApiResponse(_getUrl("Football_players"));
       // final jsonResponse = await mockApiServices.getGetApiResponse("assets/mock_jsons/players_${team.teamId}");
       List<UserTeamPlayer> list = [];
-      apiServices.typeCast<List<dynamic>>(jsonResponse['data']).forEach((element) {
+      _apiServices.typeCast<List<dynamic>>(jsonResponse['data']).forEach((element) {
         final player = UserTeamPlayer.fromFootball(element);
         // player.teamShortName = team.teamShortName;
         list.add(player);
@@ -102,7 +103,7 @@ class TeamRepository {
   Future sendCricketTeamPlayers(TeamPlayers players) async{
     try{
 
-      final jsonResponse = await apiServices.getPostApiResponse(_getUrl("user_team/test_create"),players.toJson());
+      final jsonResponse = await _apiServices.getPostApiResponse(_getUrl("user_team/test_create"),players.toJson());
     }catch(e){
       throw e;
     }
@@ -121,10 +122,10 @@ class TeamRepository {
   Future<List<UserTeamPlayer>> getAllCricketPlayers(Team team) async{
 
     try{
-      final jsonResponse = await apiServices.getGetApiResponse(_getUrl("Players/getPlayers/${team.teamId}"));
+      final jsonResponse = await _apiServices.getGetApiResponse(_getUrl("Players/getPlayers/${team.teamId}"));
       // final jsonResponse = await mockApiServices.getGetApiResponse("assets/mock_jsons/players_${team.teamId}");
       List<UserTeamPlayer> list = [];
-      apiServices.typeCast<List<dynamic>>(jsonResponse['response']).forEach((element) {
+      _apiServices.typeCast<List<dynamic>>(jsonResponse['response']).forEach((element) {
         final player = UserTeamPlayer.fromJson(element);
         player.teamShortName = team.teamShortName;
         list.add(player);
@@ -137,10 +138,10 @@ class TeamRepository {
   Future<List<UserTeamPlayer>> getAllFootballPlayers(MatchModel team) async{
 
     try{
-      final jsonResponse = await apiServices.getGetApiResponse(_getUrl("Football_players"));
+      final jsonResponse = await _apiServices.getGetApiResponse(_getUrl("Football_players"));
       // final jsonResponse = await mockApiServices.getGetApiResponse("assets/mock_jsons/players_${team.teamId}");
       List<UserTeamPlayer> list = [];
-      apiServices.typeCast<List<dynamic>>(jsonResponse['data']).forEach((element) {
+      _apiServices.typeCast<List<dynamic>>(jsonResponse['data']).forEach((element) {
         final player = UserTeamPlayer.fromFootball(element);
         // player.teamShortName = team.teamShortName;
         list.add(player);
@@ -161,28 +162,74 @@ class TeamRepository {
   //   }
   // }
 
+
+
+  Future<List<PlayerStats>> getPlayerStats(String matchId) async {
+    ///https://admin.winable11.com/match/points/1586
+    try{
+      final response = await _apiServices.getGetApiResponse(_getUrl('match/points/$matchId'));
+      List<PlayerStats> list = [];
+      (response['data'] as List<dynamic>).forEach((e){
+        list.add(PlayerStats.fromJson(e));
+      });
+      return list;
+    }
+    catch(e,s){
+      print("$e\n$s");
+      rethrow;
+    }
+
+  }
+  
   Future<List<TeamPlayers>> getMyCricketTeams(MatchModel match) async{
     try{
-      final response = await apiServices.getGetApiResponse(_getUrl("User_team/get_my_teams/${currentUser.value.user_id}/${match.matchId}"));
+
+      // List<UserTeamPlayer> team1players = await getCricketTeamPlayers(match.team1);
+      // List<UserTeamPlayer> team2players = await getCricketTeamPlayers(match.team2);
+
+      List<UserTeamPlayer> players = (await getPlayerStats(match.matchId)).map((e) => e.toUserTeamPlayer()).toList();
+      // List<UserTeamPlayer> players = [];
+      // players.addAll(team1players);
+      // players.addAll(team2players);
+
+
+
+      final response = await _apiServices.getGetApiResponse(_getUrl("User_team/get_my_teams/${currentUser.value.user_id}/${match.matchId}"));
+
+
       // final response = await apiServices.getGetApiResponse('https://admin.winable11.com/User_team/get_my_teams/116/1550');
       List<TeamPlayers> list =[];
       (response['data'] as List<dynamic>).forEach((element) {
-        list.add(TeamPlayers.fromJson(element));
-      });
-      list.forEach((element) {
-        print('teamId:${element.teamId}');
-      });
+        final team = TeamPlayers.fromJson(element);
+        List<UserTeamPlayer> teamPlayers =[];
 
+        team.players.forEach((teamPlayer) {
+          final ind = players.indexWhere((player) => player.pid==teamPlayer.pid);
+          if(ind!=-1){
+            final newPlayer = teamPlayer;
+            newPlayer.points = players[ind].points;
+            teamPlayers.add(newPlayer);
+          }else{
+            teamPlayers.add(teamPlayer);
+          }
+        });
+
+
+
+        team.players = teamPlayers;
+        team.segrigate();
+        list.add(team);
+      });
       return list;
     }catch(e,s){
-      print(s);
+      print('$e\n$s');
       rethrow;
     }
   }
 
   Future<List<TeamPlayers>> getMyFootballTeams(String matchId) async{
     try{
-      final response = await apiServices.getGetApiResponse(_getUrl("$matchId/${currentUser.value}"));
+      final response = await _apiServices.getGetApiResponse(_getUrl("$matchId/${currentUser.value}"));
       List<TeamPlayers> list =[];
       (response['response'] as List<dynamic>).forEach((element) {
         TeamPlayers.fromJson(element);
@@ -210,12 +257,13 @@ class TeamRepository {
 
     try{
       /// Players/getPlayers/by_id/teamID
-      final jsonResponse = await apiServices.getGetApiResponse(_getUrl("Players/getPlayers/by_id/${team.teamId}"));
+      final jsonResponse = await _apiServices.getGetApiResponse(_getUrl("Players/getPlayers/by_id/${team.teamId}"));
       // final jsonResponse = await mockApiServices.getGetApiResponse("assets/mock_jsons/players_${team.teamId}");
       List<UserTeamPlayer> list = [];
-      apiServices.typeCast<List<dynamic>>(jsonResponse['response']).forEach((element) {
+      _apiServices.typeCast<List<dynamic>>(jsonResponse['response']).forEach((element) {
         final player = UserTeamPlayer.fromJson(element);
         player.teamShortName = team.teamShortName;
+        player.teamId = team.teamId;
         list.add(player);
       });
       return list;
@@ -227,10 +275,10 @@ class TeamRepository {
   Future<List<UserTeamPlayer>> getFootballTeamPlayers(Team team) async{
 
     try{
-      final jsonResponse = await apiServices.getGetApiResponse(_getUrl("Football_players"));
+      final jsonResponse = await _apiServices.getGetApiResponse(_getUrl("Football_players"));
       // final jsonResponse = await mockApiServices.getGetApiResponse("assets/mock_jsons/players_${team.teamId}");
       List<UserTeamPlayer> list = [];
-      apiServices.typeCast<List<dynamic>>(jsonResponse['data']).forEach((element) {
+      _apiServices.typeCast<List<dynamic>>(jsonResponse['data']).forEach((element) {
         final player = UserTeamPlayer.fromFootball(element);
         // player.teamShortName = team.teamShortName;
         list.add(player);
@@ -300,10 +348,10 @@ class TeamRepository {
   Future<List<UserTeamPlayer>> getFootballPlayers(MatchModel team) async{
 
     try{
-      final jsonResponse = await apiServices.getGetApiResponse(_getUrl("Football_players"));
+      final jsonResponse = await _apiServices.getGetApiResponse(_getUrl("Football_players"));
       // final jsonResponse = await mockApiServices.getGetApiResponse("assets/mock_jsons/players_${team.teamId}");
       List<UserTeamPlayer> list = [];
-      apiServices.typeCast<List<dynamic>>(jsonResponse['data']).forEach((element) {
+      _apiServices.typeCast<List<dynamic>>(jsonResponse['data']).forEach((element) {
         final player = UserTeamPlayer.fromFootball(element);
         // player.teamShortName = team.teamShortName;
         list.add(player);
@@ -342,7 +390,7 @@ class TeamRepository {
       newPlayers.forEach((element) {print("name added:${element.name}");});
       oldPlayers.forEach((element) {print("name removed:${element.name}");});
 
-      final s = await apiServices.getPostApiResponse("https://admin.winable11.com/user_team/edit",{
+      final s = await _apiServices.getPostApiResponse("https://admin.winable11.com/user_team/edit",{
         "captainId":newTeam.captainId,
         "viceCaptainId":newTeam.viceCaptainId,
         "team_id":oldTeam.teamId,
@@ -399,7 +447,17 @@ class TeamRepository {
 
   }
 
+  Future editTeamName(TeamPlayers team,String teamName) async{
+    try{
+      final response = await _apiServices.getPostApiResponse(_getUrl('user_team/edit/name'), {
+        "team_name":teamName,
+        "team_id":team.teamId
+      });
 
+    }catch(e,s){
+      rethrow;
+    }
+  }
 
 
 

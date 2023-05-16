@@ -22,7 +22,7 @@ class ContestRepository{
       _apiServices.typeCast<List<dynamic>>(result['response']).forEach((element) {
         contestList.add(Contest.fromJsonWith(element,matchId));
       });
-      return contestList;
+      return contestList.where((element) => element.type=='1').toList();
     }
     catch(e,s){
       print(e);
@@ -42,7 +42,7 @@ class ContestRepository{
       _apiServices.typeCast<List<dynamic>>(result['data']).forEach((element) {
         contestList.add(Contest.fromJsonWith(element,matchId));
       });
-      return contestList;
+      return contestList.where((element) => element.type=='1').toList();
     }
     catch(e,s){
       print(e);

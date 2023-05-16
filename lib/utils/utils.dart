@@ -59,7 +59,26 @@ class Utils{
   }
 
 
+  static bool isImageURL(String url) {
+    final imagePattern = r'([^?/\\]+\.(?:png|jpe?g|gif|webp|bmp))$';
+    final regex = RegExp(imagePattern, caseSensitive: false);
+    return regex.hasMatch(url);
+  }
 
+
+  static List<T> removeDuplicatesAndMakeUnique<T>(List<T> players,String Function(T) fun ) {
+
+    Set<String> uniqueIds = Set<String>();
+    List<T> uniquePlayers = [];
+    for (T player in players) {
+      if (!uniqueIds.contains(fun(player))) {
+        uniqueIds.add(fun(player));
+        uniquePlayers.add(player);
+      }
+    }
+
+    return uniquePlayers;
+  }
 
 
 

@@ -81,6 +81,7 @@ class _FeedPageState extends StateMVC<FeedPage> {
             final match = _con.myLiveMatchList.value![index];
             return LiveSliderCardView(
               match: match,
+              showMyData :false,
             );
           },
           separatorBuilder: (BuildContext context, int index) => SizedBox(

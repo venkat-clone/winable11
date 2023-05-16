@@ -66,7 +66,8 @@ class _MyTeamPageState extends StateMVC<MyTeamPage> {
     if(_con.myTeams.loading) return Center(
       child: CircularProgressIndicator(),
     );
-    if(_con.myTeams.value!.isEmpty){
+
+    if( _con.myTeams.value==null){
       return SmartRefresher(
         controller: _refreshController,
         onRefresh: _refresh,
@@ -191,7 +192,7 @@ class _MyTeamCardState extends State<MyTeamCard> {
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: GestureDetector(
         onTap: (){
-          Navigator.of(context).push(MaterialPageRoute(builder: (c)=>TeamPreViewPage(players: team.players,)));
+          Navigator.of(context).push(MaterialPageRoute(builder: (c)=>TeamPreViewPage(team: team,team1: widget.match.team1,team2: widget.match.team2,)));
         },
         child: Card(
           elevation: 5,
@@ -235,16 +236,27 @@ class _MyTeamCardState extends State<MyTeamCard> {
                                   left: 20, right: 20),
                               child: Row(
                                 children: [
-                                  Text(
-                                    AppLocalizations.of(team.teamName),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption!
-                                        .copyWith(
-                                      color: Colors.white,
-                                      letterSpacing: 0.6,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
+                                  InkWell(
+                                    onTap:(){
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return TeamNameDialog(team: team);
+                                        },
+                                      );
+
+                                    },
+                                    child: Text(
+                                      AppLocalizations.of(team.teamName),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .caption!
+                                          .copyWith(
+                                        color: Colors.white,
+                                        letterSpacing: 0.6,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                      ),
                                     ),
                                   ),
                                   Expanded(child: SizedBox()),
@@ -500,7 +512,7 @@ class _MyTeamCardState extends State<MyTeamCard> {
                               width: 5,
                             ),
                             Text(
-                              team.players.where((element) => element.designationId=="4").length.toString(),
+                              team.players.where((element) => element.designationId=="2").length.toString(),
                               style: Theme.of(context)
                                   .textTheme
                                   .caption!
@@ -528,4 +540,95 @@ class _MyTeamCardState extends State<MyTeamCard> {
     );
   }
 }
+
+
+
+class TeamNameDialog extends StatefulWidget {
+
+  TeamPlayers team;
+  TeamNameDialog({
+  required this.team});
+
+  @override
+  _TeamNameDialogState createState() => _TeamNameDialogState();
+}
+
+class _TeamNameDialogState extends StateMVC<TeamNameDialog> {
+  TextEditingController _textEditingController = TextEditingController();
+
+  bool _isLoading = false;
+
+  late TeamController _con ;
+
+  _TeamNameDialogState():super(TeamController()){
+    _con = controller as TeamController;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _textEditingController.text = widget.team.teamName;
+  }
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
+
+  void _updateTeamName() async{
+
+    if(widget.team.teamName==_textEditingController.text){
+      /// show dialog and POP
+    }
+    try{
+      _con.successSnackBar("successfully updated the team name", context);
+      await _con.changeTeamName(widget.team,_textEditingController.text);
+      setState(() {
+        _isLoading = false;
+      });
+      Navigator.pop(context, _textEditingController.text);
+    }catch(e,s){
+      _con.errorSnackBar("please try again, failed to change the team name", context);
+      setState(() {
+        _isLoading = false;
+      });
+      Navigator.pop(context, _textEditingController.text);
+      print('$e\n$s');
+    }
+
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: _textEditingController,
+              decoration: InputDecoration(
+                labelText: 'New Team Name',
+              ),
+            ),
+            SizedBox(height: 16.0),
+            _isLoading
+                ? CircularProgressIndicator()
+                : ElevatedButton(
+              onPressed: _updateTeamName,
+              child: Text('Save'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
 

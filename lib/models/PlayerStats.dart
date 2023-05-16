@@ -1,4 +1,8 @@
 
+import 'dart:math';
+
+import 'package:newsports/models/userTeamPlayer.dart';
+
 class PlayerStats{
   String pid='';
   String name='';
@@ -20,5 +24,14 @@ class PlayerStats{
     designationId = json['designationid']??'';
     totalPoints = json['total_points']??'0';
   }
+
+  UserTeamPlayer toUserTeamPlayer()=>UserTeamPlayer(
+    pid: pid,
+    name: name,
+    teamId: teamId,
+    teamShortName: teamShortName,
+    designationId :designationId,
+    points: totalPoints,
+  );
 
 }

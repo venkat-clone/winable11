@@ -230,7 +230,7 @@ class _CreateTeamPageState extends StateMVC<CreateTeamPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => TeamPreViewPage(players:_con.cricketTeam.players),
+                      builder: (context) => TeamPreViewPage(team:_con.cricketTeam,team1: widget.match.team1,team2: widget.match.team2,),
                     ),
                   );
                 },

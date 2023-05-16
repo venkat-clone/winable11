@@ -41,7 +41,7 @@ class WinnerController extends BaseController{
   getCricketWinners() async {
     if(winnerMatches.value!=null)
       return ;
-    final result = await matchRepository.getCricketMatches("completed");
+    final result = await matchRepository.getMyCricketMatches();
 
     setState((){
       winnerMatches = ValueState(value: result.reversed.toList());

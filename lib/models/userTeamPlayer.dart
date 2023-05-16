@@ -7,8 +7,20 @@ class UserTeamPlayer extends Player{
     this.teamShortName ="",
     name ="",
     designationId ="",
+    super.pid="",
+    super.teamId="",
+    super.playingStatus="",
+    super.creditPoints="0",
+    super.points="0",
+    super.image="",
+    super.dob="",
+    super.nationality="",
+    super.bowls="",
+    super.bats="",
+    super.createdDate="",
+    super.modifiedDate=""
   });
-  String teamImage="";
+
   String teamShortName = "";
   /// player selected to team
   bool selected = false;

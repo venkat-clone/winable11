@@ -317,8 +317,9 @@ class TeamController extends BaseController {
       } else {
         await getMyFootballTeams(match);
       }
-    }catch(e){
-      print(e);
+    }catch(e,s){
+      myCricketPlayers = ValueState(error: 'unexpected error');
+      print('$e\n$s');
     }
   }
   
@@ -336,6 +337,12 @@ class TeamController extends BaseController {
     final result = await _repository.getMyFootballTeams(match.matchId);
 
   }
+
+
+  Future changeTeamName(TeamPlayers team,String teamName) async{
+    await _repository.editTeamName(team,teamName);
+  }
+
   
   
   

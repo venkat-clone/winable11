@@ -5,6 +5,7 @@ import 'package:newsports/utils/value_notifiers.dart';
 
 import '../models/MatchModel.dart';
 import '../models/Team.dart';
+import '../utils/utils.dart';
 
 class MatchesRepository {
   BaseApiServices _apiServices = NetworkAPIService();
@@ -54,7 +55,9 @@ class MatchesRepository {
         final dateB = DateTime.parse(b.matchDateTime);
         return dateA.compareTo(dateB);
       });
-      return list;
+      /// removes the unique matches
+      final uniqueMatch = Utils.removeDuplicatesAndMakeUnique<MatchModel>(list,(m)=>m.matchId);
+      return uniqueMatch;
     } catch (e,s) {
       print(s);
       throw e;

@@ -4,22 +4,39 @@ import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/constance/constance.dart';
 import 'package:flutter/material.dart';
 
+import '../../models/Team.dart';
 import '../../models/team_players.dart';
 import '../../models/player.dart';
 import '../../utils/designations.dart';
+import '../../utils/utils.dart';
 
 class TeamPreViewPage extends StatefulWidget {
-  List<Player> players;
+  TeamPlayers team;
+  Team team1;
+  Team team2;
+  bool show = true;
   String sport;
-  TeamPreViewPage({ required this.players,this.sport ="Cricket"});
+  TeamPreViewPage({ required this.team,required this.team1,required this.team2,this.show = true,this.sport ="Cricket"});
 
   @override
   _TeamPreViewPageState createState() => _TeamPreViewPageState();
 }
 
 class _TeamPreViewPageState extends State<TeamPreViewPage> {
+
+
+
+  @override
+  void initState() {
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+
+
+
     return Scaffold(
       body: Column(
         children: [
@@ -37,209 +54,187 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
               ),
             ),
             child: Container(
-              color: Colors.black26,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+              color: Colors.black38,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if(widget.show)
                     Padding(
-                      padding: const EdgeInsets.only(right: 10, top: 20),
+                    padding: const EdgeInsets.only(right: 10, top: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(widget.team.teamName,style:Theme.of(context).textTheme.titleMedium!.copyWith(
+                                color: Colors.white,
+                              )),
+                              Text('Total Points: ${widget.team.points}',style:Theme.of(context).textTheme.titleLarge!.copyWith(
+                                color: Colors.white,
+                              )),
+                            ],
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Icon(
+                            Icons.close,
+                            color: Theme.of(context).appBarTheme.color,
+                            size: 24,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Center(
+                    child: Text(
+                      Designation.getDesignation(widget.sport, 1).fullName,
+                      style: Theme.of(context).textTheme.caption!.copyWith(
+                            color: Theme.of(context).appBarTheme.color!.withOpacity(0.5),
+                            letterSpacing: 0.6,
+                            fontSize: 14,
+                          ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: widget.team.players.where((element) => element.designationId=="1").map<Widget>((Player player) =>playerDetail(player)).toList(),
+                    // children: [
+                    //   playerDetail(
+                    //     AppLocalizations.of('J.Buttler'),
+                    //     AppLocalizations.of('9.5 Cr'),
+                    //     Image.asset(
+                    //       ConstanceData.buttler,
+                    //       fit: BoxFit.cover,
+                    //     ),
+                    //     (Theme.of(context).appBarTheme.color)!,
+                    //     (Theme.of(context).textTheme.headline6!.color)!,
+                    //   ),
+                    //   playerDetail(
+                    //     AppLocalizations.of('S.Samson'),
+                    //     AppLocalizations.of('9.5 Cr'),
+                    //     Image.asset(
+                    //       ConstanceData.samson,
+                    //       fit: BoxFit.cover,
+                    //     ),
+                    //     (Theme.of(context).appBarTheme.color)!,
+                    //     (Theme.of(context).textTheme.headline6!.color)!,
+                    //   ),
+                    //   playerDetail(
+                    //     AppLocalizations.of('A. Rawats'),
+                    //     AppLocalizations.of('8 Cr'),
+                    //     Image.asset(
+                    //       ConstanceData.rawat,
+                    //       fit: BoxFit.cover,
+                    //     ),
+                    //     (Theme.of(context).appBarTheme.color)!,
+                    //     (Theme.of(context).textTheme.headline6!.color)!,
+                    //   ),
+                    // ],
+                  ),
+                  Expanded(child: SizedBox()),
+                  Center(
+                    child: Text(
+                      Designation.getDesignation(widget.sport, 3).fullName,
+                      style: Theme.of(context).textTheme.caption!.copyWith(
+                            color: Theme.of(context).appBarTheme.color!.withOpacity(0.5),
+                            letterSpacing: 0.6,
+                            fontSize: 14,
+                          ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: widget.team.players.where((element) => element.designationId=="3").map<Widget>((Player player) =>playerDetail(player)).toList(),
+                  ),
+                  Expanded(child: SizedBox()),
+                  Center(
+                    child: Text(
+                      Designation.getDesignation(widget.sport, 4).fullName,
+                      style: Theme.of(context).textTheme.caption!.copyWith(
+                            color: Theme.of(context).appBarTheme.color!.withOpacity(0.5),
+                            letterSpacing: 0.6,
+                            fontSize: 14,
+                          ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: widget.team.players.where((element) => element.designationId=="4").map<Widget>((Player player) =>playerDetail(player)).toList(),
+                  ),
+                  Expanded(child: SizedBox()),
+                  Center(
+                    child: Text(
+                      Designation.getDesignation(widget.sport, 2).fullName,
+                      style: Theme.of(context).textTheme.caption!.copyWith(
+                            color: Theme.of(context).appBarTheme.color!.withOpacity(0.5),
+                            letterSpacing: 0.6,
+                            fontSize: 14,
+                          ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: widget.team.players.where((element) => element.designationId=="2").map<Widget>((Player player) {
+                      return playerDetail(player);
+                    }).toList(),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  false ? Expanded(
+                    child: Container(
+                      color: Colors.black38,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Icon(
-                              Icons.close,
-                              color: Theme.of(context).appBarTheme.color,
-                              size: 24,
-                            ),
-                          )
+                          TeamColors(widget.team1),
+                          TeamColors(widget.team2),
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Center(
-                      child: Text(
-                        Designation.getDesignation(widget.sport, 1).fullName,
-                        style: Theme.of(context).textTheme.caption!.copyWith(
-                              color: Theme.of(context).appBarTheme.color!.withOpacity(0.5),
-                              letterSpacing: 0.6,
-                              fontSize: 14,
-                            ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: widget.players.where((element) => element.designationId=="1").map<Widget>((Player player) {
-                        Image? image;
-                        if(player.image.isNotEmpty){
-                          image = Image.network(player.image);
-                        }
-                          return playerDetail(
-                            AppLocalizations.of(player.name),
-                            AppLocalizations.of(player.points),
-                            image??Image.asset(
-                              ConstanceData.buttler,
-                              fit: BoxFit.cover,
-                            ),
-                            (Theme.of(context).appBarTheme.color)!,
-                            (Theme.of(context).textTheme.headline6!.color)!,
-                          );
-                      }).toList(),
-                      // children: [
-                      //   playerDetail(
-                      //     AppLocalizations.of('J.Buttler'),
-                      //     AppLocalizations.of('9.5 Cr'),
-                      //     Image.asset(
-                      //       ConstanceData.buttler,
-                      //       fit: BoxFit.cover,
-                      //     ),
-                      //     (Theme.of(context).appBarTheme.color)!,
-                      //     (Theme.of(context).textTheme.headline6!.color)!,
-                      //   ),
-                      //   playerDetail(
-                      //     AppLocalizations.of('S.Samson'),
-                      //     AppLocalizations.of('9.5 Cr'),
-                      //     Image.asset(
-                      //       ConstanceData.samson,
-                      //       fit: BoxFit.cover,
-                      //     ),
-                      //     (Theme.of(context).appBarTheme.color)!,
-                      //     (Theme.of(context).textTheme.headline6!.color)!,
-                      //   ),
-                      //   playerDetail(
-                      //     AppLocalizations.of('A. Rawats'),
-                      //     AppLocalizations.of('8 Cr'),
-                      //     Image.asset(
-                      //       ConstanceData.rawat,
-                      //       fit: BoxFit.cover,
-                      //     ),
-                      //     (Theme.of(context).appBarTheme.color)!,
-                      //     (Theme.of(context).textTheme.headline6!.color)!,
-                      //   ),
-                      // ],
-                    ),
-                    Expanded(child: SizedBox()),
-                    Center(
-                      child: Text(
-                        Designation.getDesignation(widget.sport, 3).fullName,
-                        style: Theme.of(context).textTheme.caption!.copyWith(
-                              color: Theme.of(context).appBarTheme.color!.withOpacity(0.5),
-                              letterSpacing: 0.6,
-                              fontSize: 14,
-                            ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: widget.players.where((element) => element.designationId=="3").map<Widget>((Player player) {
-
-                        Image? image;
-                        if(player.image.isNotEmpty){
-                          image = Image.network(player.image);
-                        }
-
-                        return playerDetail(
-                          AppLocalizations.of(player.name),
-                          AppLocalizations.of(player.points),
-                          image??Image.asset(
-                            ConstanceData.buttler,
-                            fit: BoxFit.cover,
-                          ),
-                          (Theme.of(context).appBarTheme.color)!,
-                          (Theme.of(context).textTheme.headline6!.color)!,
-                        );
-                      }).toList(),
-                    ),
-                    Expanded(child: SizedBox()),
-                    Center(
-                      child: Text(
-                        Designation.getDesignation(widget.sport, 4).fullName,
-                        style: Theme.of(context).textTheme.caption!.copyWith(
-                              color: Theme.of(context).appBarTheme.color!.withOpacity(0.5),
-                              letterSpacing: 0.6,
-                              fontSize: 14,
-                            ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: widget.players.where((element) => element.designationId=="4").map<Widget>((Player player) {
-                        Image? image;
-                        if(player.image.isNotEmpty){
-                          image = Image.network(player.image);
-                        }
-                        return playerDetail(
-                          AppLocalizations.of(player.name),
-                          AppLocalizations.of(player.points),
-                          image??Image.asset(
-                            ConstanceData.buttler,
-                            fit: BoxFit.cover,
-                          ),
-                          (Theme.of(context).appBarTheme.color)!,
-                          (Theme.of(context).textTheme.headline6!.color)!,
-                        );
-                      }).toList(),
-                    ),
-                    Expanded(child: SizedBox()),
-                    Center(
-                      child: Text(
-                        Designation.getDesignation(widget.sport, 2).fullName,
-                        style: Theme.of(context).textTheme.caption!.copyWith(
-                              color: Theme.of(context).appBarTheme.color!.withOpacity(0.5),
-                              letterSpacing: 0.6,
-                              fontSize: 14,
-                            ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: widget.players.where((element) => element.designationId=="2").map<Widget>((Player player) {
-                        Image? image;
-                        if(player.image.isNotEmpty){
-                          image = Image.network(player.image);
-                        }
-                        return playerDetail(
-                          AppLocalizations.of(player.name),
-                          AppLocalizations.of(player.points),
-                          image??Image.asset(
-                            ConstanceData.buttler,
-                            fit: BoxFit.cover,
-                          ),
-                          (Theme.of(context).appBarTheme.color)!,
-                          (Theme.of(context).textTheme.headline6!.color)!,
-                        );
-                      }).toList(),
-                    )
-                  ],
-                ),
+                  ):SizedBox(height: 30,)
+                ],
               ),
             ),
-          )
+          ),
+
+
         ],
       ),
     );
   }
 
-  Widget playerDetail(String txt1, String txt2, Image image1, Color color, Color txtColor) {
+  Widget playerDetail(Player player) {
+    Image? image;
+    if(Utils.isImageURL(player.image)){
+      image = Image.network(player.image,errorBuilder: (c,e,s){
+        return Image.asset(
+          ConstanceData.buttler,
+          fit: BoxFit.cover,
+          color: Colors.grey.withOpacity(0.7),
+        );
+      },);
+    }
     return Expanded(
       child: Container(
         alignment: Alignment.center,
@@ -247,7 +242,13 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 4),
-              child: Container(height: 55, width: 55, child: image1),
+              child: Container(
+                alignment: Alignment.center,
+                height: 55, width: 55, child: image??Image.asset(
+                ConstanceData.buttler,
+                fit: BoxFit.cover,
+                color: Colors.grey.withOpacity(0.7),
+              ),),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 40),
@@ -255,14 +256,14 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Card(
-                    color: color,
+                    color: player.teamId==widget.team1.teamId?Colors.white:player.teamId==widget.team2.teamId? Colors.black: Colors.white,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 6, right: 6, top: 2, bottom: 2),
                       child: Text(
-                        txt1,
+                        player.name,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.caption!.copyWith(
-                              color: txtColor,
+                          color: player.teamId==widget.team1.teamId?Colors.black:player.teamId==widget.team2.teamId? Colors.white: Colors.black,
                               letterSpacing: 0.6,
                               fontWeight: FontWeight.bold,
                               fontSize: 10,
@@ -271,12 +272,12 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
                     ),
                   ),
                   Text(
-                    txt2,
+                    'Pts '+player.points,
                     softWrap: true,
                     style: Theme.of(context).textTheme.caption!.copyWith(
                           color: Theme.of(context).appBarTheme.color,
                           letterSpacing: 0.6,
-                          fontSize: 10,
+                          fontSize: 12,
                         ),
                   ),
                 ],
@@ -287,4 +288,28 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
       ),
     );
   }
+
+
+  Widget TeamColors(Team team){
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Container(
+            margin : const EdgeInsets.all(4.0),
+            width: 10,
+            height: 10,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: team.teamId==widget.team1.teamId?Colors.white:team.teamId==widget.team2.teamId? Colors.black: Colors.white,
+            ),
+          ),
+          Text(team.teamShortName,style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+            color: Colors.white
+          ),),
+        ],
+      ),
+    );
+  }
+
 }

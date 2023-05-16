@@ -14,8 +14,11 @@ import 'commentary.dart';
 
 class MyMatchDetailPage extends StatefulWidget {
   final MatchModel match;
+  final bool showMyData;
+
   MyMatchDetailPage({
     required this.match,
+    this.showMyData = true,
   });
   @override
   State<MyMatchDetailPage> createState() => _MyMatchDetailPageState();
@@ -34,7 +37,7 @@ class _MyMatchDetailPageState extends State<MyMatchDetailPage> with SingleTicker
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: widget.showMyData?5:3, vsync: this);
     contestController = ContestController();
     feedController = FeedController();
     teamController = TeamController();
@@ -188,8 +191,8 @@ class _MyMatchDetailPageState extends State<MyMatchDetailPage> with SingleTicker
                     controller: _tabController,
                     isScrollable: true,
                     tabs: [
-                      Tab(text: "My Contest"),
-                      Tab(text: "My Teams"),
+                      if(widget.showMyData)Tab(text: "My Contest"),
+                      if(widget.showMyData)Tab(text: "My Teams"),
                       Tab(text: "Commentary"),
                       Tab(text: "Scoreboard"),
                       Tab(text: "Stats"),
@@ -205,11 +208,11 @@ class _MyMatchDetailPageState extends State<MyMatchDetailPage> with SingleTicker
       body: TabBarView(
         controller: _tabController,
         children: [
-          MyContestsPage(match: widget.match,
+          if(widget.showMyData)MyContestsPage(match: widget.match,
           con: contestController,
           ),
 
-          MyTeamPage(match: widget.match,con: teamController,),
+          if(widget.showMyData)MyTeamPage(match: widget.match,con: teamController,),
 
           Commentary(feedController: feedController, match: widget.match,),
 

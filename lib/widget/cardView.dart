@@ -585,10 +585,11 @@ class _CompleteCardViewState extends State<CompleteCardView> {
 
 class LiveSliderCardView extends StatefulWidget {
   final MatchModel match;
-
+  final bool showMyData;
   LiveSliderCardView({
     Key? key,
     required this.match,
+    this.showMyData = true,
   }) : super(key: key);
 
   @override
@@ -621,6 +622,7 @@ class _LiveSliderCardViewState extends State<LiveSliderCardView> {
             MaterialPageRoute(
               builder: (context) => MyMatchDetailPage(
                 match: widget.match,
+                  showMyData:widget.showMyData
               ),
             ),
           );
