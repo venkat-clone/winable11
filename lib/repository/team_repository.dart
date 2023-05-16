@@ -345,6 +345,7 @@ class TeamRepository {
       final s = await apiServices.getPostApiResponse("https://admin.winable11.com/user_team/edit",{
         "captainId":newTeam.captainId,
         "viceCaptainId":newTeam.viceCaptainId,
+        "team_id":oldTeam.teamId,
         "insert":newPlayers.map((e) => e.getJsonUploadWithCaptain(
             newTeam.captainId==e.pid, newTeam.viceCaptainId==e.pid,oldTeam.teamId
         )).toList(),

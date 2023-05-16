@@ -9,7 +9,7 @@ import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/controllers/ContestController.dart';
 import 'package:newsports/controllers/WalletController.dart';
 import 'package:newsports/models/Contest.dart';
-import 'package:newsports/modules/matchDetail/contestDetail/contestDetail.dart';
+import 'package:newsports/modules/matchDetail/contestDetail/contestDetail2.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
