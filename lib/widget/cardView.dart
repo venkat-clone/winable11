@@ -41,6 +41,8 @@ class _CardViewState extends State<CardView> {
           MaterialPageRoute(
             builder: (context) => MatchDetailPage(
               match: widget.match,
+              //my_contests: false,
+              //my_teams: false,
             ),
           ),
         );
@@ -606,6 +608,8 @@ class _LiveSliderCardViewState extends State<LiveSliderCardView> {
           MaterialPageRoute(
             builder: (context) => MatchDetailPage(
               match: widget.match,
+              my_contests: true,
+              my_teams: true,
             ),
           ),
         );
@@ -631,7 +635,9 @@ class _LiveSliderCardViewState extends State<LiveSliderCardView> {
             context,
             MaterialPageRoute(
               builder: (context) => MatchDetailPage(
+               // my_contests: true,
                 match: widget.match,
+                //my_teams: true,
               ),
             ),
           );
@@ -771,8 +777,7 @@ class _LiveSliderCardViewState extends State<LiveSliderCardView> {
                                   ),
                                   Expanded(child: SizedBox()),
                                   Text(
-                                    "Live",
-                                    // DateFormat('d MMM y').format(DateTime.parse(widget.match.matchDateTime)),
+                                    DateFormat('d MMM y').format(DateTime.parse(widget.match.matchDateTime)),
                                     style: Theme.of(context).textTheme.caption!.copyWith(
                                       // color: Theme.of(context).textTheme.caption!.color,
                                       color: Colors.green,

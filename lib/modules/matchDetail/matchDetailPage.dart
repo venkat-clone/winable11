@@ -2,6 +2,7 @@
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/controllers/ContestController.dart';
+import 'package:newsports/models/my_team.dart';
 import 'package:newsports/modules/createTeam/createTeam.dart';
 import 'package:newsports/modules/filter/filter.dart';
 import 'package:newsports/modules/matchDetail/contestDetail/addCash.dart';
@@ -20,8 +21,13 @@ import '../../widget/timeLeft.dart';
 
 class MatchDetailPage extends StatefulWidget {
   final MatchModel match;
+  bool my_contests;
+  bool  my_teams;
   MatchDetailPage({
     required this.match,
+    this.my_contests= false,
+    this.my_teams=false,
+    
   });
 
   @override
@@ -672,7 +678,7 @@ class _MatchDetailPageState extends StateMVC<MatchDetailPage> {
   }
 
   Widget tabBar() {
-    return Row(
+    return (widget.my_teams&&widget.my_contests)?Row(
       children: [
         SizedBox(
           height: 6,
@@ -758,6 +764,37 @@ class _MatchDetailPageState extends StateMVC<MatchDetailPage> {
             ),
           ),
         ),
+      ],
+    ):Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(
+          height: 6,
+        ),
+        InkWell(
+          onTap: () {
+            setState(() {
+              isContests = true;
+              isMyTeams = false;
+              isMyContests = false;
+            });
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(top: 5, left: 0),
+            child: Text(
+              AppLocalizations.of('Contests'),
+              style: Theme.of(context).textTheme.caption!.copyWith(
+                    color: isContests == true
+                        ? Theme.of(context).textTheme.headline6!.color
+                        : Colors.black38,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.6,
+                    fontSize: 16,
+                  ),
+            ),
+          ),
+        ),     
       ],
     );
   }
