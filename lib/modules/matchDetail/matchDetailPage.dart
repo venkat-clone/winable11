@@ -25,8 +25,8 @@ class MatchDetailPage extends StatefulWidget {
   bool  my_teams;
   MatchDetailPage({
     required this.match,
-    this.my_contests= false,
-    this.my_teams=false,
+    this.my_contests= true,
+    this.my_teams=true,
     
   });
 

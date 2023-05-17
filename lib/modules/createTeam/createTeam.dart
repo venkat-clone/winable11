@@ -378,8 +378,8 @@ class _CreateTeamPageState extends StateMVC<CreateTeamPage> {
                 child: PlayerCardView(
                   txt1: player.teamShortName,
                   txt2: player.name,
-                  txt3: AppLocalizations.of(''),
-                  txt4: AppLocalizations.of('Played last match'),
+                  txt3: AppLocalizations.of(Designation.getDesignation(Designation.cricket, int.parse(player.designationId)).fullName),
+                  txt4: AppLocalizations.of(player.playingStatus=='1'?'Played last match':'Not played last match'),
                   txt5: player.points,
                   txt6: player.creditPoints,
                   image1: image ?? AssetImage(ConstanceData.villiers),
