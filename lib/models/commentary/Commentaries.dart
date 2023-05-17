@@ -63,6 +63,7 @@ class Commentaries {
       });
     }
   }
+
   String eventId = "";
   String event = "";
   String batsmanId = "";
@@ -118,5 +119,17 @@ class Commentaries {
     }
     return map;
   }
+
+  String get getHighlight{
+
+    if(wideball) return 'WD';
+    if(noball) return 'NB';
+    if(legbyeRun!='0') return 'LB';
+    if(event=='wicket') return 'W';
+
+    return run.toString();
+  }
+
+
 
 }

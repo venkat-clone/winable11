@@ -92,9 +92,20 @@ class UserTeamPlayer extends Player{
   UserTeamPlayer.getFromJson(Map<String,dynamic> json){
     name = json["player"]??"";
     pid = json["player_id"]??"";
+    teamId = json["team_id"]??"";
+    points = json['total_points']??'0';
     designationId = json["designation_id"]??"";
     image = "https://admin.winable11.com/"+(json['image']??"");
   }
+  UserTeamPlayer.fromJsonForLeaderboard(Map<String,dynamic> json){
+    name = json["player_name"]??"";
+    pid = json["player_id"]??"";
+    points = json['points']??'0';
+    teamId = json['team_id']??"";
+    designationId = json["designation_id"]??"";
+    image = json['image']??"";
+  }
+
 
   getJsonUploadWithCaptain(
       bool isCaptain,

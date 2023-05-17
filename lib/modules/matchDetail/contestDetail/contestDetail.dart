@@ -281,7 +281,7 @@ class _ContestDetailPageState extends StateMVC<ContestDetailPage> {
             winnings: _con.winnings,
           )
               : isleaderboard == true
-                  ? LeaderboardPage(contestTeam: _con.userRankings,)
+                  ? LeaderboardPage(contestTeam: _con.userRankings,match: widget.match,)
                   : SizedBox(),
         ],
       ),
@@ -401,7 +401,7 @@ class _ContestDetailPageState extends StateMVC<ContestDetailPage> {
           child: Padding(
             padding: const EdgeInsets.only(top: 5, right: 50),
             child: Text(
-              AppLocalizations.of('Teams'),
+              AppLocalizations.of('Leaderboard'),
               style: Theme.of(context).textTheme.caption!.copyWith(
                     color: isleaderboard == true ? Theme.of(context).textTheme.headline6!.color : Colors.black38,
                     fontWeight: FontWeight.bold,

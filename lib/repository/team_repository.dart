@@ -187,7 +187,7 @@ class TeamRepository {
       // List<UserTeamPlayer> team1players = await getCricketTeamPlayers(match.team1);
       // List<UserTeamPlayer> team2players = await getCricketTeamPlayers(match.team2);
 
-      List<UserTeamPlayer> players = (await getPlayerStats(match.matchId)).map((e) => e.toUserTeamPlayer()).toList();
+      // List<UserTeamPlayer> players = (await getPlayerStats(match.matchId)).map((e) => e.toUserTeamPlayer()).toList();
       // List<UserTeamPlayer> players = [];
       // players.addAll(team1players);
       // players.addAll(team2players);
@@ -204,17 +204,16 @@ class TeamRepository {
         List<UserTeamPlayer> teamPlayers =[];
 
         team.players.forEach((teamPlayer) {
-          final ind = players.indexWhere((player) => player.pid==teamPlayer.pid);
-          if(ind!=-1){
-            final newPlayer = teamPlayer;
-            newPlayer.points = players[ind].points;
-            teamPlayers.add(newPlayer);
-          }else{
-            teamPlayers.add(teamPlayer);
-          }
+          // final ind = players.indexWhere((player) => player.pid==teamPlayer.pid);
+          // if(ind!=-1){
+          //   final newPlayer = teamPlayer;
+          //   newPlayer.points = players[ind].points;
+          //   teamPlayers.add(newPlayer);
+          // }else{
+          //   teamPlayers.add(teamPlayer);
+          // }
+          teamPlayers.add(teamPlayer);
         });
-
-
 
         team.players = teamPlayers;
         team.segrigate();

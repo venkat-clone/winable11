@@ -212,11 +212,11 @@ class _MyMatchDetailPageState extends State<MyMatchDetailPage> with SingleTicker
       body: TabBarView(
         controller: _tabController,
         children: [
-          if(widget.showMyData)MyContestsPage(match: widget.match,
+          if(widget.showMyData) MyContestsPage(match: widget.match,
           con: contestController,
           ),
 
-          if(widget.showMyData)MyTeamPage(match: widget.match,con: teamController,),
+          if(widget.showMyData)MyTeamPage(match: widget.match,con: teamController,allowEdit: false,),
 
           Commentary(feedController: feedController, match: widget.match,),
 

@@ -130,59 +130,67 @@ class _StatsState extends StateMVC<Stats> {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Row(
         children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: Colors.green,
-              borderRadius: BorderRadius.circular(20)
-            ),
-            child: Stack(
+          Expanded(
+            flex:12,
+            child: Row(
               children: [
-              if(captainString.isNotEmpty) Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: 15,
-                    height: 15,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20)
-                    ),
-                    child: Text(captainString.toUpperCase(),style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      fontSize: 10
-                      // color: Theme.of(context).textTheme.caption!.color,
-                    )),
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(20)
+                  ),
+                  child: Stack(
+                    children: [
+                    if(captainString.isNotEmpty) Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: 15,
+                          height: 15,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20)
+                          ),
+                          child: Text(captainString.toUpperCase(),style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            fontSize: 10
+                            // color: Theme.of(context).textTheme.caption!.color,
+                          )),
+                        ),
+                      ),
+                    )
+                    ],
+
                   ),
                 ),
-              )
+                SizedBox(width: 10,),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(name,style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      // color: Theme.of(context).textTheme.caption!.color,
+                    ),),
+                    Text("$team${team.isNotEmpty&&designation.isNotEmpty?'-':''}$designation",style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      color: Theme.of(context).textTheme.caption!.color,
+                    )),
+                  ],
+                ),
               ],
-
             ),
           ),
-          SizedBox(width: 10,),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(name,style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                // color: Theme.of(context).textTheme.caption!.color,
-              ),),
-              Text("$team${team.isNotEmpty&&designation.isNotEmpty?'-':''}$designation",style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                color: Theme.of(context).textTheme.caption!.color,
-              )),
-            ],
-          ),
-          Expanded(
-              flex: 10,
-              child: SizedBox()),
+
           Expanded(
             flex: 4,
-            child: Text(points,style: Theme.of(context).textTheme.titleSmall!.copyWith(
-              // color: Theme.of(context).textTheme.caption!.color,
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(points,style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                // color: Theme.of(context).textTheme.caption!.color,
+              ),
+              textAlign: TextAlign.center,),
             ),
-            textAlign: TextAlign.center,),
           ),
         ],
 

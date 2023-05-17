@@ -202,8 +202,11 @@ class _CommentaryState extends StateMVC<Commentary> {
             decoration: BoxDecoration(
               border: Border.all(color: Colors.black,),
               borderRadius: BorderRadius.circular(20),
+
             ),
-            child: Text(commentary.run.toString()),
+            child: Text(commentary.getHighlight,style: TextStyle(
+
+            ),),
           ),
           SizedBox(width: 10,),
           Expanded(

@@ -105,7 +105,7 @@ class _SelectTeamState extends StateMVC<SelectTeam> {
 
 
                   }),
-                  MyTeamCard(team: e,sport: _con.sport,match:widget.match),
+                  MyTeamCard(team: e,sport: _con.sport,match:widget.match,allowEdit: false,),
                 ],
               );
             }),

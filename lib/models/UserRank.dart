@@ -1,5 +1,7 @@
 
 
+import 'package:newsports/models/team_players.dart';
+
 class UserRank{
   String id = '';
   String name = '';
@@ -8,6 +10,7 @@ class UserRank{
   String rank = '';
   String points = '';
   String teamName = '';
+  TeamPlayers? teamPlayers;
 
   UserRank.fromJson(Map<String,dynamic> json){
     id = json['user_id']??'';
@@ -17,6 +20,7 @@ class UserRank{
     rank = (json['rank']??'').toString();
     points = json['total_points']??'';
     teamName = json['user_team_name']??'';
+    teamPlayers = TeamPlayers.fromJsonForLeaderboard(json['teamPlayers']??{}, teamId: teamId, teamName: teamName);
   }
 
 

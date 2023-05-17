@@ -19,10 +19,11 @@ import '../createTeam/teamPreview.dart';
 class MyTeamPage extends StatefulWidget {
   final MatchModel match;
   TeamController con ;
-
+  final bool allowEdit;
   MyTeamPage({
     required this.match,
     required this.con,
+     this.allowEdit = true,
   });
   @override
   _MyTeamPageState createState() => _MyTeamPageState(con);
@@ -80,6 +81,19 @@ class _MyTeamPageState extends StateMVC<MyTeamPage> {
       );
     }
 
+    if( _con.myTeams.value!.isEmpty){
+      return SmartRefresher(
+        controller: _refreshController,
+        onRefresh: _refresh,
+        enablePullUp: true,
+        child: Center(
+          child: Text("there are no teams for this match please create team",style: TextStyle(
+              color: Colors.grey
+          ),textAlign: TextAlign.center,),
+        ),
+      );
+    }
+
     return SmartRefresher(
       controller: _refreshController,
       onRefresh: _refresh,
@@ -87,7 +101,7 @@ class _MyTeamPageState extends StateMVC<MyTeamPage> {
       child: ListView(
         children: [
           ..._con.myTeams.value!.map((e) {
-            return MyTeamCard(team: e,sport: _con.sport??"",match: widget.match,);
+            return MyTeamCard(team: e,sport: _con.sport??"",match: widget.match,allowEdit: widget.allowEdit,);
           }),
         ],
       ),
@@ -102,7 +116,8 @@ class MyTeamCard extends StatefulWidget {
   TeamPlayers team;
   String sport;
   final MatchModel match;
-  MyTeamCard({Key? key,required this.team,required this.sport,required this.match}) : super(key: key);
+  final bool allowEdit;
+  MyTeamCard({Key? key,required this.team,required this.sport,required this.match,this.allowEdit = true }) : super(key: key);
 
   @override
   State<MyTeamCard> createState() => _MyTeamCardState();
@@ -260,7 +275,7 @@ class _MyTeamCardState extends State<MyTeamCard> {
                                     ),
                                   ),
                                   Expanded(child: SizedBox()),
-                                  InkWell(
+                                  if(widget.allowEdit)InkWell(
                                     onTap: (){
                                       Navigator.of(context).push(MaterialPageRoute(builder: (c)=>CreateTeamPage(
                                           match:widget.match,

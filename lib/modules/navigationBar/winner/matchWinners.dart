@@ -187,7 +187,7 @@ class _MatchWinnersPageState extends StateMVC<MatchWinnersPage> {
                                     ),
                                     Container(
                                       alignment: Alignment.center,
-                                      child: Text("won ₹${winner.winingAmount}",style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      child: Text("won ₹${double.parse(winner.winingAmount).toStringAsPrecision(3)}",style: Theme.of(context).textTheme.bodySmall!.copyWith(
                                       ),),
                                     )
                                   ],
@@ -275,7 +275,7 @@ class WinnerCard extends StatelessWidget {
                       Text("Amount Won",style: Theme.of(context).textTheme.caption!.copyWith(
                           color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.8)
                       ),),
-                      Text("₹${winner.winingAmount}",style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      Text("₹${double.parse(winner.winingAmount).toStringAsPrecision(3)}",style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           color: Theme.of(context).colorScheme.onPrimary
                       )),
                     ],

@@ -43,12 +43,14 @@ class MatchesRepository {
       List<MatchModel> list = [];
       _apiServices.typeCast<List<dynamic>>(response['data']).forEach(
           (e) {
-            final match = MatchModel.fromJson(e['match_details'] as Map<String, dynamic>,e['competition_name'],e['default']);
-            match.team1 = Team.fromJson(e['team_a'] as Map<String, dynamic>);
-            match.team2 = Team.fromJson(e['team_b'] as Map<String, dynamic>);
-            list.add(
-                match
-            );
+            if(e['match_details']!=null){
+              final match = MatchModel.fromJson(e['match_details'] as Map<String, dynamic>,e['competition_name'],e['default']);
+              match.team1 = Team.fromJson(e['team_a'] as Map<String, dynamic>);
+              match.team2 = Team.fromJson(e['team_b'] as Map<String, dynamic>);
+              list.add(
+                  match
+              );
+            }
           });
       list.sort((a,b){
         final dateA = DateTime.parse(a.matchDateTime);

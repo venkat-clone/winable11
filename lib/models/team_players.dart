@@ -70,6 +70,32 @@ class TeamPlayers{
 
   }
 
+  TeamPlayers.fromJsonForLeaderboard(Map<String,dynamic> json,{
+    required this.teamId,
+    required this.teamName,
+
+  }){
+    captainId = json["captain"]??"";
+    viceCaptainId = json["vicecaptain"]??"";
+    teamId = json['team_id']??'';
+    teamName = json['user_name']??json['team_id']??'';
+    if(teamName.isNotEmpty){
+      teamName = teamId;
+    }
+    players = [];
+
+    (json["players"] as List<dynamic>).forEach((element) {
+      players.add(UserTeamPlayer.fromJsonForLeaderboard(element));
+    });
+    players1 = players.where((element) => element.designationId=='1').toList();
+    players2 = players.where((element) => element.designationId=='2').toList();
+    players3 = players.where((element) => element.designationId=='3').toList();
+    players4 = players.where((element) => element.designationId=='4').toList();
+
+
+  }
+
+
   segrigate(){
     players1 = players.where((element) => element.designationId=='1').toList();
     players2 = players.where((element) => element.designationId=='2').toList();
@@ -112,10 +138,18 @@ class TeamPlayers{
   }
 
 
-  int? totalPoints;
+  double? totalPoints;
   get points{
     if(totalPoints==null){
-      totalPoints = players.fold(0, (previousValue, element) => (previousValue??0)+int.parse(element.points));
+      totalPoints = players.fold(0, (previousValue, element) {
+        if(element.pid==captainId){
+          return (previousValue ?? 0) + int.parse(element.points)*2;
+        }
+        if(element.pid==viceCaptainId){
+          return (previousValue ?? 0) + int.parse(element.points)*1.5;
+        }
+        return (previousValue ?? 0) + int.parse(element.points);
+      });
     }
 
     return totalPoints;

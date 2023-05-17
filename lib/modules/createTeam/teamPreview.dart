@@ -202,7 +202,7 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
                   SizedBox(
                     height: 30,
                   ),
-                  false ? Expanded(
+                   Expanded(
                     child: Container(
                       color: Colors.black38,
                       child: Row(
@@ -212,7 +212,7 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
                         ],
                       ),
                     ),
-                  ):SizedBox(height: 30,)
+                  )
                 ],
               ),
             ),

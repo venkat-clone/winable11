@@ -6,15 +6,17 @@ import 'package:newsports/constance/constance.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/ContestParticipants.dart';
+import '../../../models/MatchModel.dart';
 import '../../../models/UserRank.dart';
+import '../../createTeam/teamPreview.dart';
 
 class LeaderboardPage extends StatefulWidget {
   ValueState<List<UserRank>> contestTeam;
-
+  MatchModel match;
   @override
   _LeaderboardPageState createState() => _LeaderboardPageState();
 
-  LeaderboardPage({required this.contestTeam});
+  LeaderboardPage({required this.contestTeam,required this.match,});
 }
 
 class _LeaderboardPageState extends State<LeaderboardPage> {
@@ -133,72 +135,81 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   }
 
   Widget row(UserRank user, ImageProvider image) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 5),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 5,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 25,
-                    backgroundImage: image,
-                  ),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user.name,
-                        style: Theme.of(context).textTheme.caption!.copyWith(
-                              color: Colors.black87,
-                              letterSpacing: 0.6,
-                              fontSize: 14,
-                            ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(2),
-                        child: Text(
-                          'joined with team \n'+user.teamName,
-                          softWrap: true,
-                          maxLines: 2,
+    return InkWell(
+      onTap: (){
+        Navigator.of(context).push(MaterialPageRoute(builder: (c)=>TeamPreViewPage(
+          team1: widget.match.team1,
+          team2: widget.match.team2,
+          team: user.teamPlayers!,
+        )));
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 5),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 5,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 25,
+                      backgroundImage: image,
+                    ),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          user.name,
                           style: Theme.of(context).textTheme.caption!.copyWith(
-                            // color: Colors.black87,
-                            letterSpacing: 0.6,
-                            fontSize: 11,
+                                color: Colors.black87,
+                                letterSpacing: 0.6,
+                                fontSize: 14,
+                              ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(2),
+                          child: Text(
+                            'joined with team \n'+user.teamName,
+                            softWrap: true,
+                            maxLines: 2,
+                            style: Theme.of(context).textTheme.caption!.copyWith(
+                              // color: Colors.black87,
+                              letterSpacing: 0.6,
+                              fontSize: 11,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          Expanded( flex:1,child: Text(user.points,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.caption!.copyWith(
-              color: Colors.black87,
-              letterSpacing: 0.6,
-              fontSize: 14,
-            ),
-          )),
-          Expanded( flex:1,
-              child: Text('#'+user.rank,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.caption!.copyWith(
-              color: Colors.black87,
-              letterSpacing: 0.6,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
-          )),
-        ],
+            Expanded( flex:1,child: Text(user.points,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.caption!.copyWith(
+                color: Colors.black87,
+                letterSpacing: 0.6,
+                fontSize: 14,
+              ),
+            )),
+            Expanded( flex:1,
+                child: Text('#'+user.rank,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.caption!.copyWith(
+                color: Colors.black87,
+                letterSpacing: 0.6,
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            )),
+          ],
+        ),
       ),
     );
   }
