@@ -213,7 +213,7 @@ class _CommentaryState extends StateMVC<Commentary> {
             height: 36,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: commentary.getHighlight=="W"?Colors.red:(commentary.getHighlight==("WD")||commentary.getHighlight==("NB"))?Colors.green:Color.fromARGB(255, 108, 200, 243),
+              color: commentary.getHighlight=="W"?Colors.red:Color.fromARGB(255, 108, 200, 243),
               border: Border.all(color: Colors.black,),
               borderRadius: BorderRadius.circular(20),
             ),
