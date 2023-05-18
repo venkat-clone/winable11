@@ -608,8 +608,6 @@ class _LiveSliderCardViewState extends State<LiveSliderCardView> {
           MaterialPageRoute(
             builder: (context) => MatchDetailPage(
               match: widget.match,
-              my_contests: true,
-              my_teams: true,
             ),
           ),
         );

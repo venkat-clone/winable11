@@ -241,10 +241,10 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
         child: Stack(
         
           children: [
-            (widget.team.captainName==player.name)?CircleAvatar(radius: 9,
+            (widget.team.captainId==player.pid)?CircleAvatar(radius: 9,
             backgroundColor: Colors.black,
               child: Text("C",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 11),)):
-            (widget.team.viceCaptainName==player.name)?CircleAvatar
+            (widget.team.viceCaptainId==player.pid)?CircleAvatar
             (radius: 9, backgroundColor: Colors.black,
               child: Text("VC",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 9),)):Text(""),
             Padding(
