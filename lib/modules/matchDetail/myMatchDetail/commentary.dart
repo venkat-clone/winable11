@@ -167,27 +167,40 @@ class _CommentaryState extends StateMVC<Commentary> {
 
   commentaryCard(Commentaries commentary){
     if(commentary.event=="overend"){
-      return Container(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                commentary.commentary,style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-                softWrap: true,
-              ),
+      return Column(
+        children: [
+            Padding(
+            padding: const EdgeInsets.only(left:10.0, right: 15),
+            child: Divider(thickness:1, color: Colors.black, height: 5,),
+          ),
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    commentary.commentary,style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                    softWrap: true,
+                  ),
+                ),
+                // Column(
+                //   children: [
+                //     Text("${commentary.over}.${commentary.ball}",style: Theme.of(context).textTheme.titleMedium,),
+                //     SizedBox(width: 2,),
+                //     Text(commentary.commentary,style: Theme.of(context).textTheme.bodyLarge),
+                //   ],
+                // ),
+              
+              ],
             ),
-            // Column(
-            //   children: [
-            //     Text("${commentary.over}.${commentary.ball}",style: Theme.of(context).textTheme.titleMedium,),
-            //     SizedBox(width: 2,),
-            //     Text(commentary.commentary,style: Theme.of(context).textTheme.bodyLarge),
-            //   ],
-            // ),
-          ],
-        ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left:10.0, right: 15),
+            child: Divider(thickness:4, color: Colors.black, height: 5,),
+          )
+        ],
       );
     }
     return Padding(
@@ -200,10 +213,11 @@ class _CommentaryState extends StateMVC<Commentary> {
             height: 36,
             alignment: Alignment.center,
             decoration: BoxDecoration(
+              color: commentary.getHighlight=="W"?Colors.red:(commentary.getHighlight==("WD")||commentary.getHighlight==("NB"))?Colors.green:Color.fromARGB(255, 108, 200, 243),
               border: Border.all(color: Colors.black,),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Text(commentary.run.toString()),
+            child: Text(commentary.getHighlight.toString(),style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.white)),
           ),
           SizedBox(width: 10,),
           Expanded(
@@ -213,6 +227,18 @@ class _CommentaryState extends StateMVC<Commentary> {
                 Text("${commentary.over}.${commentary.ball}",style: Theme.of(context).textTheme.titleMedium,),
                 SizedBox(width: 2,),
                 Text(commentary.commentary,style: Theme.of(context).textTheme.bodyLarge),
+                if(commentary.noball==true)Text("Batsman got ${commentary.noballRun} Extra run for No ball ",
+                style: Theme.of(context).textTheme.titleSmall,),
+                if(commentary.byeRun!="0")Text("Batsman got ${commentary.byeRun} bye run ",
+                style: Theme.of(context).textTheme.titleSmall,),
+                if(commentary.legbyeRun!="0")Text("Batsman got ${commentary.legbyeRun} legbye run ",
+                style: Theme.of(context).textTheme.titleSmall,),
+                if(commentary.wideball==true)Text("Batsman got ${commentary.wideRun} Extra run for Wide ball ",
+                style: Theme.of(context).textTheme.titleSmall,),
+                if(commentary.event=="wicket")Text("Wicket",
+                style:TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: Colors.redAccent)
+                ),
+                
               ],
             ),
           ),
