@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:newsports/models/user.dart';
 import '../base_classes/networkAPIService.dart';
@@ -85,6 +86,28 @@ class AuthRepository{
     }
   }
 
+  Future<Map> sendOtp(String mobile) async{
+    try{
+      final result = await _apiService.getGetApiResponse('https://admin.winable11.com/otp/send_otp/$mobile');
+      return result;
+    }catch(e,s){
+      if(kDebugMode){
+        print('$e\n$s');
+      }
+      rethrow;
+    }
+  }
+  Future<Map> verifyOtp(String mobile,String otp) async{
+    try{
+      final result = await _apiService.getGetApiResponse('https://admin.winable11.com/otp/verify_otp/$mobile/$otp');
+      return result;
+    }catch(e,s){
+      if(kDebugMode){
+        print('$e\n$s');
+      }
+      rethrow;
+    }
+  }
 
 
 }

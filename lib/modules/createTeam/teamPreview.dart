@@ -72,7 +72,7 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
                               Text(widget.team.teamName,style:Theme.of(context).textTheme.titleMedium!.copyWith(
                                 color: Colors.white,
                               )),
-                              Text('Total Points: ${widget.team.points}',style:Theme.of(context).textTheme.titleLarge!.copyWith(
+                              Text('Total Points: ${widget.team.points()}',style:Theme.of(context).textTheme.titleLarge!.copyWith(
                                 color: Colors.white,
                               )),
                             ],
@@ -239,14 +239,7 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
       child: Container(
         alignment: Alignment.center,
         child: Stack(
-        
           children: [
-            (widget.team.captainName==player.name)?CircleAvatar(radius: 9,
-            backgroundColor: Colors.black,
-              child: Text("C",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 11),)):
-            (widget.team.viceCaptainName==player.name)?CircleAvatar
-            (radius: 9, backgroundColor: Colors.black,
-              child: Text("VC",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 9),)):Text(""),
             Padding(
               padding: const EdgeInsets.only(left: 4),
               child: Container(
@@ -289,7 +282,12 @@ class _TeamPreViewPageState extends State<TeamPreViewPage> {
                   ),
                 ],
               ),
-            )
+            ),
+            if(widget.team.captainName==player.name)CircleAvatar(radius: 9,
+                backgroundColor: Colors.black,
+                child: Text("C",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 11),)),
+            if(widget.team.viceCaptainName==player.name)CircleAvatar(radius: 9, backgroundColor: Colors.black,
+                child: Text("VC",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 9),)),
           ],
         ),
       ),

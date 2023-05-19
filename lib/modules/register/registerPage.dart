@@ -28,10 +28,20 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _userNameController = TextEditingController();
   TextEditingController _dobController = TextEditingController();
+  TextEditingController _otpController = TextEditingController();
   String? _countryName ;
   String? _stateName;
   String? _cityName;
   String errorString = "";
+
+
+  /// not send =0
+  /// send = 1
+  /// sending = 2
+  /// verified = 3
+  /// verifying = 4
+  int otpStatus = 0;
+
 
 
 
@@ -118,7 +128,7 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return AbsorbPointer(
-      absorbing: _con.loading,
+      absorbing: _con.loading || otpStatus==2|| otpStatus==4,
       child: Stack(
         children: [
           Scaffold(
@@ -179,204 +189,290 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                     SizedBox(
                                       height: 15,
                                     ),
-                                    CustomTextField(
-                                      controller: _userNameController,
-                                      hintText: AppLocalizations.of('Username'),
+                                    Text(
+                                    (otpStatus==3)?'enter your details to continue':'verify mobile number to continue',
+                                      style: Theme.of(context).textTheme.subtitle2
                                     ),
                                     SizedBox(
                                       height: 15,
                                     ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Row(
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          flex:5,
+                                          child: Card(
+                                            elevation: 8,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(30),
+                                            ),
+                                            child: IntlPhoneField(
+                                              decoration: InputDecoration(
+                                                  contentPadding: EdgeInsets.only(left: 14, right: 14),
+                                                  hintText: "Mobile No",
+                                                  hintStyle: Theme.of(context).textTheme.headline6!.copyWith(
+                                                    color: Theme.of(context).textTheme.caption!.color,
+                                                    letterSpacing: 0.6,
+                                                    fontSize: 14,
+                                                  ),
+                                                  border: OutlineInputBorder(
+                                                    borderRadius: BorderRadius.circular(30),
+                                                  ),
+                                                  counterText: ""
+                                              ),
+                                              initialCountryCode: 'IN',
+                                              onChanged: (phone) {
+                                                print(phone.completeNumber);
+                                                _mobileController.text = phone.number;
+                                                otpStatus = 0;
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                            flex: 2,
+                                            child: InkWell(
+                                              onTap: () async {
+                                                ///TODO send OTP and set the OTP status
+                                                setError('');
+                                                if(!validateMobile()) return;
+                                                setState(() {
+                                                  otpStatus = 2;
+                                                });
+                                                final status = await _con.sendMobileOTP(context,_mobileController.text);
+                                                setState(() {
+                                                  otpStatus = (status)?1:0;
+                                                });
+                                              },
+                                              child: Card(
+                                                elevation: 8,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(30),
+                                                ),
+                                                color: Colors.black,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Center(
+                                                    child: Text('Get OTP',style: TextStyle(
+                                                        color: Colors.white
+                                                    ),
+                                                    ),
+                                              ),
+                                          ),
+                                        ),
+                                            )
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    if(otpStatus==1)
+                                      Column(
                                         children: [
-                                          Card(
-                                            shadowColor: Theme.of(context)
-                                                .textTheme
-                                                .headline6!
-                                                .color,
-                                            elevation: 5,
-                                            shape: CircleBorder(),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                  color: (Theme.of(context)
+                                          CustomTextField(
+                                            hintText: 'enter otp',
+                                            controller: _otpController,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 5, right: 5),
+                                            child: CustomButton(
+                                              text: AppLocalizations.of('Verify OTP'),
+                                              onTap: () async {
+                                                /// TODO verify otp and set the status of otp
+                                                setState(() {
+                                                  otpStatus = 4;
+                                                });
+                                                final response = await _con.validatePhoneOTP(context,_mobileController.text,_otpController.text);
+                                                setState(() {
+                                                  otpStatus = response?3:1;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 15,
+                                          ),
+                                        ],
+                                      ),
+
+                                    if(otpStatus==3) 
+                                      IntrinsicHeight(
+                                      child: Column(
+                                        children: [
+                                          CustomTextField(
+                                            controller: _userNameController,
+                                            hintText: AppLocalizations.of('Username'),
+                                          ),
+                                          SizedBox(
+                                            height: 15,
+                                          ),
+                                          Container(
+                                            width: MediaQuery.of(context).size.width,
+                                            child: Row(
+                                              children: [
+                                                Card(
+                                                  shadowColor: Theme.of(context)
                                                       .textTheme
                                                       .headline6!
-                                                      .color)!,
+                                                      .color,
+                                                  elevation: 5,
+                                                  shape: CircleBorder(),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      border: Border.all(
+                                                        color: (Theme.of(context)
+                                                            .textTheme
+                                                            .headline6!
+                                                            .color)!,
+                                                      ),
+                                                    ),
+                                                    child: IconButton(
+                                                        onPressed: () async {
+                                                          await pickDate();
+                                                        },
+                                                        icon: Icon(
+                                                            Icons.calendar_month)),
+                                                  ),
                                                 ),
+                                                Expanded(
+                                                  child: CustomTextField(
+                                                    controller: _dobController,
+                                                    readOnly: true,
+                                                    hintText: AppLocalizations.of(
+                                                        'Pick DOB'),
+                                                    onTap: pickDate,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 15,
+                                          ),
+                                          CSCPicker(
+                                            showStates: true,
+                                            showCities: true,
+                                            flagState: CountryFlag.ENABLE,
+                                            dropdownDecoration: BoxDecoration(
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    offset: Offset(2, 4),
+                                                    blurRadius: 8,
+                                                    color:
+                                                    Color.fromARGB(88, 0, 0, 0))
+                                              ],
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(30)),
+                                              color:
+                                              Theme.of(context).backgroundColor,
+                                              border: Border.all(
+                                                color: (Theme.of(context)
+                                                    .textTheme
+                                                    .caption!
+                                                    .color!),
                                               ),
-                                              child: IconButton(
-                                                  onPressed: () async {
-                                                    await pickDate();
-                                                  },
-                                                  icon: Icon(
-                                                      Icons.calendar_month)),
                                             ),
-                                          ),
-                                          Expanded(
-                                            child: CustomTextField(
-                                              controller: _dobController,
-                                              readOnly: true,
-                                              hintText: AppLocalizations.of(
-                                                  'Pick DOB'),
-                                              onTap: pickDate,
+                                            disabledDropdownDecoration: BoxDecoration(
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    offset: Offset(2, 4),
+                                                    blurRadius: 8,
+                                                    color:
+                                                    Color.fromARGB(88, 0, 0, 0))
+                                              ],
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(30)),
+                                              color: Colors.grey.shade300,
+                                              border: Border.all(
+                                                color: (Theme.of(context)
+                                                    .textTheme
+                                                    .caption!
+                                                    .color!),
+                                              ),
                                             ),
-                                          )
+                                            countrySearchPlaceholder:
+                                            AppLocalizations.of("Country"),
+                                            stateSearchPlaceholder:
+                                            AppLocalizations.of("State"),
+                                            citySearchPlaceholder:
+                                            AppLocalizations.of("City"),
+                                            countryDropdownLabel: AppLocalizations.of(
+                                                _countryName ?? "Country"),
+                                            stateDropdownLabel: AppLocalizations.of(
+                                                _stateName ?? "State"),
+                                            cityDropdownLabel: AppLocalizations.of(
+                                                _cityName ?? "City"),
+                                            defaultCountry: CscCountry.India,
+                                            selectedItemStyle: Theme.of(context)
+                                                .textTheme
+                                                .headline6!
+                                                .copyWith(
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium!
+                                                  .color,
+                                              letterSpacing: 0.6,
+                                              fontSize: 14,
+                                            ),
+                                            dropdownHeadingStyle: Theme.of(context)
+                                                .textTheme
+                                                .headline6!
+                                                .copyWith(
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .caption!
+                                                  .color,
+                                              letterSpacing: 0.6,
+                                              fontSize: 14,
+                                            ),
+                                            dropdownItemStyle: Theme.of(context)
+                                                .textTheme
+                                                .headline6!
+                                                .copyWith(
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .caption!
+                                                  .color,
+                                              letterSpacing: 0.6,
+                                              fontSize: 14,
+                                            ),
+                                            dropdownDialogRadius: 10.0,
+                                            searchBarRadius: 30.0,
+                                            onCountryChanged: (value) {
+                                              setState(() {
+                                                _countryName = value;
+                                              });
+                                            },
+                                            onStateChanged: (value) {
+                                              setState(() {
+                                                _stateName = value;
+                                              });
+                                            },
+                                            onCityChanged: (value) {
+                                              setState(() {
+                                                _cityName = value;
+                                              });
+                                            },
+                                          ),
+
+                                          SizedBox(
+                                            height: 15,
+                                          ),
+                                          CustomTextField(
+                                            controller: _emailController,
+                                            hintText: AppLocalizations.of('Email'),
+                                          ),
+                                          SizedBox(
+                                            height: 15,
+                                          ),
+                                          CustomTextField(
+                                            controller: _passwordController,
+                                            hintText: AppLocalizations.of('Password'),
+                                          ),
                                         ],
                                       ),
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    CSCPicker(
-                                      showStates: true,
-                                      showCities: true,
-                                      flagState: CountryFlag.ENABLE,
-                                      dropdownDecoration: BoxDecoration(
-                                        boxShadow: [
-                                          BoxShadow(
-                                              offset: Offset(2, 4),
-                                              blurRadius: 8,
-                                              color:
-                                                  Color.fromARGB(88, 0, 0, 0))
-                                        ],
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(30)),
-                                        color:
-                                            Theme.of(context).backgroundColor,
-                                        border: Border.all(
-                                          color: (Theme.of(context)
-                                              .textTheme
-                                              .caption!
-                                              .color!),
-                                        ),
-                                      ),
-                                      disabledDropdownDecoration: BoxDecoration(
-                                        boxShadow: [
-                                          BoxShadow(
-                                              offset: Offset(2, 4),
-                                              blurRadius: 8,
-                                              color:
-                                                  Color.fromARGB(88, 0, 0, 0))
-                                        ],
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(30)),
-                                        color: Colors.grey.shade300,
-                                        border: Border.all(
-                                          color: (Theme.of(context)
-                                              .textTheme
-                                              .caption!
-                                              .color!),
-                                        ),
-                                      ),
-                                      countrySearchPlaceholder:
-                                          AppLocalizations.of("Country"),
-                                      stateSearchPlaceholder:
-                                          AppLocalizations.of("State"),
-                                      citySearchPlaceholder:
-                                          AppLocalizations.of("City"),
-                                      countryDropdownLabel: AppLocalizations.of(
-                                          _countryName ?? "Country"),
-                                      stateDropdownLabel: AppLocalizations.of(
-                                          _stateName ?? "State"),
-                                      cityDropdownLabel: AppLocalizations.of(
-                                          _cityName ?? "City"),
-                                      defaultCountry: CscCountry.India,
-                                      selectedItemStyle: Theme.of(context)
-                                          .textTheme
-                                          .headline6!
-                                          .copyWith(
-                                            color: Theme.of(context)
-                                                .textTheme
-                                                .bodyMedium!
-                                                .color,
-                                            letterSpacing: 0.6,
-                                            fontSize: 14,
-                                          ),
-                                      dropdownHeadingStyle: Theme.of(context)
-                                          .textTheme
-                                          .headline6!
-                                          .copyWith(
-                                            color: Theme.of(context)
-                                                .textTheme
-                                                .caption!
-                                                .color,
-                                            letterSpacing: 0.6,
-                                            fontSize: 14,
-                                          ),
-                                      dropdownItemStyle: Theme.of(context)
-                                          .textTheme
-                                          .headline6!
-                                          .copyWith(
-                                            color: Theme.of(context)
-                                                .textTheme
-                                                .caption!
-                                                .color,
-                                            letterSpacing: 0.6,
-                                            fontSize: 14,
-                                          ),
-                                      dropdownDialogRadius: 10.0,
-                                      searchBarRadius: 30.0,
-                                      onCountryChanged: (value) {
-                                        setState(() {
-                                          _countryName = value;
-                                        });
-                                      },
-                                      onStateChanged: (value) {
-                                        setState(() {
-                                          _stateName = value;
-                                        });
-                                      },
-                                      onCityChanged: (value) {
-                                        setState(() {
-                                          _cityName = value;
-                                        });
-                                      },
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    Card(
-                                      elevation: 8,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                      child: IntlPhoneField(
-                                        decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.only(left: 14, right: 14),
-                                      hintText: "Mobile No",
-                                      hintStyle: Theme.of(context).textTheme.headline6!.copyWith(
-                                        color: Theme.of(context).textTheme.caption!.color,
-                                        letterSpacing: 0.6,
-                                        fontSize: 14,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                          counterText: ""
-                                      ),
-                                        initialCountryCode: 'IN',
-                                        onChanged: (phone) {
-                                          print(phone.completeNumber);
-                                          _mobileController.text = phone.completeNumber;
-                                        },
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    CustomTextField(
-                                      controller: _emailController,
-                                      hintText: AppLocalizations.of('Email'),
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    CustomTextField(
-                                      controller: _passwordController,
-                                      hintText: AppLocalizations.of('Password'),
                                     ),
                                     SizedBox(
                                       height: 6,
@@ -395,7 +491,7 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                     SizedBox(
                                       height: 16,
                                     ),
-                                    Padding(
+                                    if(otpStatus==3) Padding(
                                       padding: const EdgeInsets.only(
                                           left: 5, right: 5),
                                       child: CustomButton(
@@ -505,6 +601,23 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
               color: Colors.grey.shade50.withOpacity(0.4),
               child: Center(child: CircularProgressIndicator()),
             ),
+          if(otpStatus==4 || otpStatus==2)
+            Container(
+              color: Colors.grey.shade50.withOpacity(0.4),
+              child: Center(child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(width: 20,),
+                  Text(otpStatus==4 ?'verifying OTP':'sending OTP ',style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    decoration: TextDecoration.none
+                  ),),
+                ],
+              )),
+            ),
+
         ],
       ),
     );

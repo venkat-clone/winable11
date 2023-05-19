@@ -103,7 +103,7 @@ class UserTeamPlayer extends Player{
     points = json['points']??'0';
     teamId = json['team_id']??"";
     designationId = json["designation_id"]??"";
-    image = json['image']??"";
+    // image = json['image']??"";
   }
 
 

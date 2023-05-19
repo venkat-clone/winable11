@@ -17,6 +17,7 @@ void main() {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]).then((_) {
+
     Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );

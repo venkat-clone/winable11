@@ -15,6 +15,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../constance/constance.dart';
 import '../navigationBar/myMatches/myMatches.dart';
 import '../register/passwordReset.dart';
+import '../register/registerPage.dart';
 
 class CricketPage extends StatefulWidget {
   MatchController controller;
@@ -57,7 +58,6 @@ class _CricketPageState extends StateMVC<CricketPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("match length ${_con.upcomingCricketMatchList.error}");
     if(_con.upcomingCricketMatchList.loading){
       return Expanded(
         child: Center(
@@ -94,7 +94,7 @@ class _CricketPageState extends StateMVC<CricketPage> {
             if(kDebugMode)
               InkWell(
                 onTap: (){
-                  Navigator.of(context).push(MaterialPageRoute(builder: (c)=>PasswordReset()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (c)=>RegisterPage()));
                 },
                 child: Container(
                   width: 100,

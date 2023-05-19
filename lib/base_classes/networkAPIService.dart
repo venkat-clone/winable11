@@ -35,7 +35,9 @@ class NetworkAPIService extends BaseApiServices {
 
 
   @override
-  Future getPostApiResponse(String url , dynamic data, {Map<String,String>? headers,bool printJsonString = false}) async{
+  Future getPostApiResponse(String url , dynamic data, {Map<String,String>? headers = const {
+    'Accept':'application/json'
+  },bool printJsonString = false}) async{
 
     dynamic responseJson ;
     try {
@@ -46,12 +48,18 @@ class NetworkAPIService extends BaseApiServices {
           print("data Json String :${jsonEncode(data)}");
       }
       Response response = await post(
-          Uri.parse(url),
-          body: jsonEncode(data),
+        Uri.parse(url),
+        body: jsonEncode(data),
         headers: headers
       ).timeout(Duration(seconds: 10));
-      print(response.body);
-      if(kDebugMode) responseList.add([url.replaceAll("https://admin.winable11.com/", ""),response.body.trim(),jsonEncode(data)]);
+      if(kDebugMode) {
+        print(response.body);
+        responseList.add([
+          url.replaceAll("https://admin.winable11.com/", ""),
+          response.body.trim(),
+          jsonEncode(data)
+        ]);
+      }
       responseJson = returnResponse(response);
     }on SocketException {
       throw FetchDataException('No Internet Connection');

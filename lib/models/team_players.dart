@@ -139,20 +139,22 @@ class TeamPlayers{
 
 
   double? totalPoints;
-  get points{
+  double points({bool captain = false}){
     if(totalPoints==null){
       totalPoints = players.fold(0, (previousValue, element) {
-        if(element.pid==captainId){
-          return (previousValue ?? 0) + int.parse(element.points)*2;
-        }
-        if(element.pid==viceCaptainId){
-          return (previousValue ?? 0) + int.parse(element.points)*1.5;
+        if(captain){
+          if(element.pid==captainId){
+            return (previousValue ?? 0) + int.parse(element.points)*2;
+          }
+          if(element.pid==viceCaptainId){
+            return (previousValue ?? 0) + int.parse(element.points)*1.5;
+          }
         }
         return (previousValue ?? 0) + int.parse(element.points);
       });
     }
 
-    return totalPoints;
+    return totalPoints!;
   }
 
 }
