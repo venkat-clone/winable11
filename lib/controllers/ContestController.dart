@@ -18,6 +18,7 @@ import '../utils/shared_preference_services.dart';
 class ContestController extends BaseController{
   String sport = "Cricket";
 
+
   ValueState<List<Contest>> footballContests = ValueState.loading();
   ValueState<List<Contest>> myFootballContests = ValueState.loading();
   ValueState<List<Contest>> myFootballTeams = ValueState.loading();
@@ -29,6 +30,7 @@ class ContestController extends BaseController{
 
   ValueState<List<Winning>> winnings = ValueState.loading();
   ValueState<List<ContestParticipants>> contestParticipants = ValueState.loading();
+  List<String> topRanks = [];
   ValueState<List<UserRank>> userRankings = ValueState.loading();
 
   final _repository = ContestRepository();
@@ -203,7 +205,24 @@ class ContestController extends BaseController{
       setState(() {
         winnings = ValueState(value: result);
       });
+      if(result.isNotEmpty){
+        final list = result.first.rank.split('-');
+        if(list.length==2){
+          List<String> ranks = [];
+          for(var i =int.parse(list[0]);i<int.parse(list[1]);i++){
+            ranks.add(i.toString());
+          };
+          topRanks = ranks;
+        }else if(result.length==1){
+          topRanks = [list.first];
+        }else{
+          // topRanks = result.sublist(0,min(0,topRanks.length-1)).map((e) => e.r)
+        }
+      }
     }catch(e){
+      setState(() {
+        winnings = ValueState(error: "Something went wrong");
+      });
       errorSnackBar("Something went wrong", context);
     }
   }
@@ -245,7 +264,7 @@ class ContestController extends BaseController{
 
     }catch(e,s){
       setState(() {
-        contestParticipants = ValueState(error: "unexpected error please try again") ;
+        userRankings = ValueState(error: "unexpected error please try again") ;
       });
 
       errorSnackBar('Unexpected error occurred', context);

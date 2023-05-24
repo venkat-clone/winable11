@@ -237,8 +237,15 @@ class AuthController extends BaseController {
     return OTPSent;
   }
 
-  reSetPassword(BuildContext context,String id,String password) async{
+  reSetPassword(BuildContext context,String phone,String password) async{
+    try{
+      await _repository.resetPassword(phone, password);
+      successSnackBar('your password has been updated successfully', context);
+    } on AppException catch(e){
+      errorSnackBar(e.getMessage(), context);
+    } catch(e){
 
+    }
   }
 
   upDateProfile(BuildContext context,AppUser user) async{
@@ -248,6 +255,7 @@ class AuthController extends BaseController {
       setState(() {
         currentUser.value = user;
       });
+
     }catch(e,s){
       print("$e\n$s");
       errorSnackBar("something went wrong", context);

@@ -1,7 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:csc_picker/csc_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -358,6 +358,7 @@ class _SettingPageState extends StateMVC<SettingPage> {
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: IntlPhoneField(
+                          initialValue: Utils.removeCountryCode(currentUser.value.mobile),
                           decoration: InputDecoration(
                               contentPadding: EdgeInsets.only(left: 14, right: 14),
                               hintText: "Mobile No",
@@ -456,64 +457,7 @@ class _SettingPageState extends StateMVC<SettingPage> {
                 SizedBox(
                   height: 15,
                 ),
-                Container(
-                  height: 50,
-                  color: Theme.of(context).appBarTheme.color,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: Row(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              AppLocalizations.of('Make Me Discoverable'),
-                              style:
-                                  Theme.of(context).textTheme.caption!.copyWith(
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .headline6!
-                                            .color,
-                                        letterSpacing: 0.6,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            SizedBox(
-                              width: 200,
-                              child: Text(
-                                AppLocalizations.of(
-                                    'Friends can find and follow you when they sync their phone contacts'),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .caption!
-                                    .copyWith(
-                                      color: Colors.black26,
-                                      letterSpacing: 0.6,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                softWrap: true,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Expanded(child: SizedBox()),
-                        CupertinoSwitch(
-                          value: isSwitched2,
-                          onChanged: (value) {
-                            setState(() {
-                              isSwitched2 = value;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+
                 SizedBox(
                   height: 15,
                 ),
@@ -686,32 +630,7 @@ class _SettingPageState extends StateMVC<SettingPage> {
                       SizedBox(
                         height: 15,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Text(
-                          AppLocalizations.of('State'),
-                          style: Theme.of(context).textTheme.caption!.copyWith(
-                                letterSpacing: 0.6,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                      ),
 
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Text(
-                          AppLocalizations.of('Country'),
-                          style: Theme.of(context).textTheme.caption!.copyWith(
-                                letterSpacing: 0.6,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                      ),
 
                       SizedBox(
                         height: 25,
@@ -774,10 +693,9 @@ class _SettingPageState extends StateMVC<SettingPage> {
                           );
                           startLoading();
                           await _con.upDateProfile(context, user);
-                          /// Update from Auth Repo
+
                           stopLoading();
-                          SharedPreferenceService.setAllowSmsNotification(
-                              isSwitched1);
+                          SharedPreferenceService.setAllowSmsNotification(isSwitched1);
                           SharedPreferenceService.setDiscoverable(isSwitched1);
 
                         },
@@ -831,24 +749,6 @@ class _SettingPageState extends StateMVC<SettingPage> {
     } else {}
   }
 
-  updatePassword(password) async {
-    bool isUpdate = false;
-    if (password != null) {
-      await FirebaseAuth.instance.currentUser!
-          .updatePassword(password)
-          .whenComplete(() {
-        print("password upgrade successful");
-
-        isUpdate = true;
-      }).onError((error, stackTrace) {
-        isUpdate = false;
-        print(error.toString());
-      });
-    } else {
-      print("password null");
-    }
-    return isUpdate;
-  }
 
   logout() {
     showDialog(
@@ -864,7 +764,7 @@ class _SettingPageState extends StateMVC<SettingPage> {
             TextButton(
               child: Text('Logout', style: TextStyle(color: Colors.blue)),
               onPressed: () async {
-                await FirebaseAuth.instance.signOut();
+
                 SharedPreferenceService.initSharedPreferences(login: false);
                 Navigator.of(context).popUntil(
                   (route) => !route.isFirst,

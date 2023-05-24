@@ -22,16 +22,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController(initialPage: 0);
   final List<String> _imagePaths = List.generate(10, (index) => "assets/images/${index+1}.png");
 
-  void _startAutoSlide() {
-    Future.delayed(Duration(seconds: 1)).then((_) {
-      if (_currentIndex < _imagePaths.length - 1) {
-        _pageController.animateToPage(_currentIndex + 1, duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
-      } else {
-        _pageController.animateToPage(0, duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
-      }
-      _startAutoSlide();
-    });
-  }
+
 
   late BuildContext myContext;
 
@@ -48,19 +39,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   void initState() {
-
     myContext = context;
     _loadNextScreen();
+    _setOnBoarding();
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () async {
-      if(await SharedPreferenceService.getLoggedIn())
-        Navigator.of(context).pushReplacementNamed(Routes.HOME);
-      else
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (con)=>WelcomePage()));
-
-    });
-    _startAutoSlide();
   }
+
+  _setOnBoarding() async{
+    await SharedPreferenceService.setOnBoarding(true);
+  }
+
+
 
 
 
@@ -68,63 +57,46 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Stack(
           children: <Widget>[
-            SizedBox(height: 80,),
-            // SizedBox(height: 100,),
-            Image.asset(
-              "assets/images/logo.png",
-              height: 150.0,
-              width: 150.0,
+            PageView.builder(
+              controller: _pageController,
+              itemCount: _imagePaths.length,
+              onPageChanged: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              itemBuilder: (context, index) {
+                return Image.asset(
+                  _imagePaths[index],
+                  fit: BoxFit.fitWidth,
+                  height: double.infinity,
+                );
+              },
             ),
-            Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: _imagePaths.length,
-                onPageChanged: (index) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },
-                itemBuilder: (context, index) {
-                  return Stack(
-                    children: [
-                      Image.asset(
-                        _imagePaths[index],
-                        fit: BoxFit.contain,
-                      ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Text(""),
-                            Container(
-                              color: Colors.white,
-                                padding: EdgeInsets.symmetric(vertical: 20,horizontal: 80),
-                                child: Text("Winable 11",
-                                  style: GoogleFonts.lora(
-                                    textStyle: TextStyle(color: Colors.black, fontSize: 28,fontWeight: FontWeight.bold)
-                                  ),
-                                ),
-                            ),
-                          ],
-                        )
-                      )
-                    ],
-                  );
-                },
+            Container(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: _buildPageIndicator(),
+                ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: _buildPageIndicator(),
+            Container(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: InkWell(
+                    onTap: (){
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (con)=>WelcomePage()));
+                    },
+                    child: Text(_currentIndex == _imagePaths.length -1?'Next':'Skip')),
+              ),
             ),
-            SizedBox(height: 20,),
-            SizedBox(height: 30,),
-            SizedBox(height: 30,),
+
           ],
         ),
       ),

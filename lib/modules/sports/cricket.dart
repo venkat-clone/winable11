@@ -16,6 +16,7 @@ import '../../constance/constance.dart';
 import '../navigationBar/myMatches/myMatches.dart';
 import '../register/passwordReset.dart';
 import '../register/registerPage.dart';
+import '../welcome/feature_page.dart';
 
 class CricketPage extends StatefulWidget {
   MatchController controller;
@@ -94,7 +95,7 @@ class _CricketPageState extends StateMVC<CricketPage> {
             if(kDebugMode)
               InkWell(
                 onTap: (){
-                  Navigator.of(context).push(MaterialPageRoute(builder: (c)=>RegisterPage()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (c)=>PasswordReset()));
                 },
                 child: Container(
                   width: 100,

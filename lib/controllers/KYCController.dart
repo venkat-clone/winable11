@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
@@ -47,22 +47,7 @@ class KYCController extends BaseController {
   }
 
 
-  upLoadFile(File file,String path,String name) async{
-    UploadTask uploadTask;
-    Reference ref = await FirebaseStorage.instance.ref().child(path).child(name);
-    final metadata = SettableMetadata(
-      contentType: lookupMimeType(file.path),
-      customMetadata: {'picked-file-path': file.path},
-    );
 
-    if (kIsWeb) {
-      uploadTask = ref.putData(await file.readAsBytes(), metadata);
-    } else {
-      uploadTask = ref.putFile(File(file.path), metadata);
-    }
-
-    return Future.value(uploadTask);
-  }
 
   setKYCStatus(authID, status) async {
     try {

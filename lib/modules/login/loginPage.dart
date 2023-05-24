@@ -1,6 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/foundation.dart';
 
@@ -154,7 +154,7 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                                           else{
                                             final isEmail = RegExp(Constants.emailRegX).hasMatch(s);
                                             final isMobile = RegExp(Constants.mobileRegX).hasMatch(s);
-                                            if(isMobile){
+                                            if(isMobile && s.length==10){
                                               setState(() { fieldType = 2;});
                                             }
                                             if(isEmail){
@@ -194,6 +194,7 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                                             borderRadius: BorderRadius.circular(30),
                                           ),
                                         ),
+
                                       ),
                                     ),
                                     SizedBox(

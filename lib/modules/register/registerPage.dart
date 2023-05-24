@@ -512,13 +512,17 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
 
                                           final create = await _con.registerWithServer(context,user);
                                           if(!create) return;
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (c) => OTPScreen(
-                                                    phone: user.mobile,
-                                                    user: user,
-                                                  )));
+                                          if(create){
+                                            Navigator.of(context).pushNamed(Routes.LOGIN);
+                                            _con.successSnackBar('Registration successfully', context);
+                                          }
+                                          // Navigator.push(
+                                          //     context,
+                                          //     MaterialPageRoute(
+                                          //         builder: (c) => OTPScreen(
+                                          //           phone: user.mobile,
+                                          //           user: user,
+                                          //         )));
 
                                           // uncomment in next build
                                           // try{

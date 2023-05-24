@@ -240,23 +240,12 @@ class TeamRepository {
   }
 
 
-  Future<List<UserTeamPlayer>> getTeamPlayers(String sport, Team team) async{
 
-    try{
-      if(sport=="Cricket"){
-        return getCricketTeamPlayers(team);
-      }
-      return getFootballTeamPlayers(team);
-    }catch(e){
-      throw e;
-    }
-  }
-
-  Future<List<UserTeamPlayer>> getCricketTeamPlayers(Team team) async{
+  Future<List<UserTeamPlayer>> getCricketTeamPlayers(Team team,MatchModel match) async{
 
     try{
       /// Players/getPlayers/by_id/teamID
-      final jsonResponse = await _apiServices.getGetApiResponse(_getUrl("Players/getPlayers/by_id/${team.teamId}"));
+      final jsonResponse = await _apiServices.getGetApiResponse(_getUrl("Players/getPlayers/by_id/${team.teamId}/${match.matchId}"));
       // final jsonResponse = await mockApiServices.getGetApiResponse("assets/mock_jsons/players_${team.teamId}");
       List<UserTeamPlayer> list = [];
       _apiServices.typeCast<List<dynamic>>(jsonResponse['response']).forEach((element) {
@@ -304,8 +293,8 @@ class TeamRepository {
 
     try{
       /// Players/getPlayers/by_id/teamID
-      final unAnnounced = await getCricketTeamPlayers(match.team1);
-      unAnnounced.addAll(await getCricketTeamPlayers(match.team2));
+      final unAnnounced = await getCricketTeamPlayers(match.team1,match);
+      unAnnounced.addAll(await getCricketTeamPlayers(match.team2,match));
 
       final announced = await getCricket11Players(match);
 

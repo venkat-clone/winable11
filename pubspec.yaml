@@ -37,7 +37,6 @@ dependencies:
   carousel_slider: ^4.2.1
   shared_preferences: ^2.0.16
   firebase_core: ^2.4.1
-  firebase_auth: ^4.2.5
   google_sign_in: ^6.1.0
   mvc_pattern: ^8.11.0
   flutter_facebook_auth: ^5.0.0
@@ -53,7 +52,6 @@ dependencies:
   flutter_cashfree_pg_sdk: ^2.0.7+10
   intl_phone_field: ^3.1.0
   flutter_html: ^2.2.1
-  firebase_storage: ^11.0.15
   mime: ^1.0.4
   googleapis_auth: ^1.4.0
   flutter_gif: ^0.0.4

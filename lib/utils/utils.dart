@@ -46,7 +46,7 @@ class Utils{
 
   static String removeCountryCode(String number){
     if(number.startsWith('+') || number.startsWith('0')){
-      return number.substring(3);
+      return number.substring(3,number.length);
     }
     return number;
   }

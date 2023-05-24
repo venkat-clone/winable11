@@ -84,7 +84,7 @@ class TeamPlayers{
     }
     players = [];
 
-    (json["players"] as List<dynamic>).forEach((element) {
+    ((json["players"]??[]) as List<dynamic>).forEach((element) {
       players.add(UserTeamPlayer.fromJsonForLeaderboard(element));
     });
     players1 = players.where((element) => element.designationId=='1').toList();

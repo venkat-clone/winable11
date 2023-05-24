@@ -43,6 +43,14 @@ class _SplashScreenState extends State<SplashScreen> {
 
     super.initState();
     Future.delayed(const Duration(seconds: 3), () async {
+
+      final onboarding = await SharedPreferenceService.getOnBoarding();
+      if(!onboarding){
+        Navigator.of(context).pushReplacementNamed(Routes.OnBoarding);
+        return;
+      }
+
+
       final isLongedIn =await SharedPreferenceService.getLoggedIn();
 
       if(!isLongedIn) {

@@ -281,7 +281,10 @@ class _ContestDetailPageState extends StateMVC<ContestDetailPage> {
             winnings: _con.winnings,
           )
               : isleaderboard == true
-                  ? LeaderboardPage(contestTeam: _con.userRankings,match: widget.match,)
+                  ? LeaderboardPage(
+            contestTeam: _con.userRankings,match: widget.match,
+            winningRanks: _con.topRanks,
+          )
                   : SizedBox(),
         ],
       ),

@@ -1,6 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/main.dart';
 import 'package:newsports/modules/home/drawer/inviteFriend.dart/inviteFriend.dart';
@@ -522,7 +522,6 @@ class _DrawerScreenState extends State<DrawerScreen> {
             TextButton(
               child: Text('Logout', style: TextStyle(color: Colors.blue)),
               onPressed: () async {
-                await FirebaseAuth.instance.signOut();
                 SharedPreferenceService.initSharedPreferences(login: false);
                 Navigator.of(context).popUntil(
                   (route) => !route.isFirst,

@@ -1,6 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/modules/home/drawer/profile/tournamentLeaderboard.dart';
 import 'package:flutter/material.dart';

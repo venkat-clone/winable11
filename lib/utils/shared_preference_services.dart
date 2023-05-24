@@ -16,6 +16,7 @@ abstract class SharedPreferenceService {
   static const String WALLET = "WALLET";
   static const String BALANCE = "BALANCE";
   static const String SPORT = "SPORT";
+  static const String OnBoarding = "OnBoarding";
 
   static Future<String?> getPreferenceString(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -103,6 +104,13 @@ abstract class SharedPreferenceService {
   }
   static Future<String> getSport() async{
     return await getPreferenceString(SPORT) ?? "Cricket";
+  }
+
+  static Future setOnBoarding(bool isOnBoarded) async{
+    await setBool(OnBoarding, isOnBoarded);
+  }
+  static Future<bool> getOnBoarding() async{
+    return await getPreferenceBool(OnBoarding) ?? false;
   }
 
 

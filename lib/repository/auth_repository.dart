@@ -2,10 +2,11 @@
 
 import 'dart:convert';
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:newsports/models/user.dart';
+import 'package:newsports/utils/app_execptions.dart';
 import '../base_classes/networkAPIService.dart';
 import '../models/AuthUser.dart';
 import '../utils/constants.dart';
@@ -70,9 +71,15 @@ class AuthRepository{
     }
   }
 
-  Future resetPassword(String? email,String name,String password) async{
+  Future resetPassword(String phone,String password) async{
     try{
-
+      final response = await _apiService.getPostApiResponse('https://admin.winable11.com/User/forgot_password', {
+        "mobile":"+91"+phone,
+        "password": password
+      });
+      if(response['success']!=true){
+        throw AppException(response['message']??'something went wrong');
+      }
     }catch(e){
       rethrow;
     }
@@ -80,7 +87,10 @@ class AuthRepository{
 
   Future updateProfile(AppUser appUser) async {
     try{
-      await _apiService.getPostApiResponse("https://admin.winable11.com/User/register/kyc", appUser.toJson());
+      final response = await _apiService.getPostApiResponse("https://admin.winable11.com/User/register/kyc", appUser.toJson());
+      final user = AppUser.formJson(_apiService.getData(response));
+
+      return AppUser.formJson(_apiService.getData(response));
     }catch(e,s){
       rethrow;
     }
@@ -88,7 +98,9 @@ class AuthRepository{
 
   Future<Map> sendOtp(String mobile) async{
     try{
-      final result = await _apiService.getGetApiResponse('https://admin.winable11.com/otp/send_otp/$mobile');
+      final result = await _apiService.getPostApiResponse('https://admin.winable11.com/otp/send_otp',{
+        "mobile_no":mobile
+      });
       return result;
     }catch(e,s){
       if(kDebugMode){
@@ -97,9 +109,13 @@ class AuthRepository{
       rethrow;
     }
   }
+
   Future<Map> verifyOtp(String mobile,String otp) async{
     try{
-      final result = await _apiService.getGetApiResponse('https://admin.winable11.com/otp/verify_otp/$mobile/$otp');
+      final result = await _apiService.getPostApiResponse('https://admin.winable11.com/otp/verify_otp',{
+        "user_otp":otp,
+        "mobile":mobile
+      });
       return result;
     }catch(e,s){
       if(kDebugMode){

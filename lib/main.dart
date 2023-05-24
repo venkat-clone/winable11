@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:newsports/constance/constance.dart' as constance;
 
 import 'firebase_options.dart';
+import 'modules/welcome/feature_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -100,6 +101,7 @@ class _MyAppState extends State<MyApp> {
     Routes.LOGIN: (BuildContext context) => LoginScreen(),
     Routes.REGISTER: (BuildContext context) => RegisterPage(),
     Routes.HOME: (BuildContext context) => HomeScreen(),
+    Routes.OnBoarding: (BuildContext context) => OnboardingScreen(),
   };
 }
 
@@ -108,4 +110,5 @@ class Routes {
   static const String LOGIN = "/login";
   static const String REGISTER = "/register";
   static const String HOME = "/home";
+  static const String OnBoarding = "/OnBoarding";
 }

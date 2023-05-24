@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:newsports/utils/default_state_widget.dart';
 
 import '../../Language/appLocalizations.dart';
 import '../../constance/constance.dart';
@@ -20,7 +21,8 @@ class PasswordReset extends StatefulWidget {
 class _PasswordResetState extends StateMVC<PasswordReset> {
 
   TextEditingController _passwordController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
+  TextEditingController _mobileController = TextEditingController();
+  TextEditingController _otpController = TextEditingController();
   TextEditingController _conformPasswordController = TextEditingController();
   String errorString = "";
 
@@ -41,7 +43,7 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
     return true;
   }
   bool validateEmail() {
-    final email = _emailController.text;
+    final email = _mobileController.text;
     if (email.isEmpty) {
       setError("Please provide an email or mobile");
       return false;
@@ -70,7 +72,6 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
   /// not send =0
   /// send = 1
   /// verified = 2
-
   int otpStatus = 0;
 
 
@@ -148,15 +149,24 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
                                       children: [
                                         Expanded(
                                           child: CustomTextField(
-                                            controller: _emailController,
-                                            hintText: AppLocalizations.of('email'),
+                                            controller: _mobileController,
+                                            hintText: AppLocalizations.of('phone'),
                                           ),
                                         ),
-                                        if(false)
                                           InkWell(
-                                          onTap: (){
-                                            if(validateEmail())
-                                            _con.sendEmailOTP(_emailController.text);
+                                          onTap: () async {
+                                            if(validateEmail()) {
+                                              setState((){
+                                                _con.loading = true;
+                                              });
+                                              final otpSent = await _con.sendMobileOTP(context, _mobileController.text);
+                                              if(otpSent) setState(() {
+                                                otpStatus = 1;
+                                              });
+                                              setState((){
+                                                _con.loading = false;
+                                              });
+                                            }
                                           },
                                           child: Card(
                                             elevation: 8,
@@ -187,7 +197,7 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
                                               borderRadius: BorderRadius.circular(30),
                                             ),
                                             child: TextFormField(
-                                              controller: _emailController,
+                                              controller: _otpController,
                                               maxLines: 1,
                                               maxLength: 4,
                                               buildCounter: (context, {currentLength =0, isFocused= false, maxLength}) {},
@@ -207,17 +217,31 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
                                             ),
                                           ),
                                         ),
-                                        Card(
-                                          elevation: 8,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(30),
-                                          ),
-                                          color: Colors.black,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(12.0),
-                                            child: Text('Validate OTP',style: TextStyle(
-                                              color: Colors.white
-                                            ),),
+                                        InkWell(
+                                          onTap: () async{
+                                            setState((){
+                                              _con.loading = true;
+                                            });
+                                            final otpVerified = await _con.validatePhoneOTP(context, _mobileController.text,_otpController.text);
+                                            if(otpVerified) setState(() {
+                                              otpStatus = 2;
+                                            });
+                                            setState((){
+                                              _con.loading = false;
+                                            });
+                                          },
+                                          child: Card(
+                                            elevation: 8,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(30),
+                                            ),
+                                            color: Colors.black,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(12.0),
+                                              child: Text('Validate OTP',style: TextStyle(
+                                                color: Colors.white
+                                              ),),
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -226,7 +250,7 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
                                     SizedBox(
                                       height: 15,
                                     ),
-                                    if(otpStatus==2 || true)
+                                    if(otpStatus==2)
                                       CustomTextField(
                                       controller: _passwordController,
                                       hintText: AppLocalizations.of('Password'),
@@ -234,7 +258,7 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
                                     SizedBox(
                                       height: 15,
                                     ),
-                                    if(otpStatus==2 || true)
+                                    if(otpStatus==2 )
                                       CustomTextField(
                                       controller: _conformPasswordController,
                                       hintText: 'conform Password',
@@ -256,14 +280,20 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
                                     SizedBox(
                                       height: 16,
                                     ),
-                                    Padding(
+                                    if(otpStatus==2 ) Padding(
                                       padding: const EdgeInsets.only(
                                           left: 5, right: 5),
                                       child: CustomButton(
                                         text: AppLocalizations.of('Reset Password'),
                                         onTap: () async {
                                          if(validateData()){
-
+                                           setState((){
+                                             _con.loading = true;
+                                           });
+                                           await _con.reSetPassword(context,_mobileController.text,_passwordController.text);
+                                           setState((){
+                                             _con.loading = false;
+                                           });
                                          }
                                         },
                                       ),

@@ -20,7 +20,7 @@ class NetworkAPIService extends BaseApiServices {
     try {
       if(kDebugMode) print("GET API call $url");
       final response = await http.get(Uri.parse(url),headers: headers).timeout(const Duration(seconds: 10));
-      if(kDebugMode)responseList.add([url.replaceAll("https://admin.winable11.com/", ""),response.body.trim()]);
+      if(kDebugMode) responseList.add([url.replaceAll("https://admin.winable11.com/", ""),response.body.trim()]);
       responseJson = returnResponse(response);
 
     }on SocketException {
@@ -35,9 +35,7 @@ class NetworkAPIService extends BaseApiServices {
 
 
   @override
-  Future getPostApiResponse(String url , dynamic data, {Map<String,String>? headers = const {
-    'Accept':'application/json'
-  },bool printJsonString = false}) async{
+  Future getPostApiResponse(String url , dynamic data, {Map<String,String>? headers ,bool printJsonString = false}) async{
 
     dynamic responseJson ;
     try {

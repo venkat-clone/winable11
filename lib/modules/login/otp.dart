@@ -2,8 +2,7 @@
 
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/main.dart';
@@ -82,39 +81,39 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
     //   options: DefaultFirebaseOptions.currentPlatform,
     // );
 
-    await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: mobile,
-        verificationCompleted: (cred){
-          stopLoading();
-          print("credential $cred");
-          Navigator.of(context).pushNamed(Routes.LOGIN);
-
-        },
-        verificationFailed: (exception){
-          stopLoading();
-
-          if (exception.code == 'invalid-phone-number') {
-            _con.errorSnackBar('The provided phone number is not valid.',context);
-          }
-          else if (exception.code == 'too-many-requests') {
-            _con.errorSnackBar('To Many requests are being made.',context);
-          }
-          else{
-            print("verification Failed:${exception.code}");
-            _con.errorSnackBar('Verification failed',context);
-          }
-
-        },
-        codeSent: (id,token){
-          stopLoading();
-          verificationId =id;
-          updateToken(token??-1);
-          startTimer();
-        },
-        codeAutoRetrievalTimeout: (id){
-          print("time Out");
-        }
-    );
+    // await FirebaseAuth.instance.verifyPhoneNumber(
+    //     phoneNumber: mobile,
+    //     verificationCompleted: (cred){
+    //       stopLoading();
+    //       print("credential $cred");
+    //       Navigator.of(context).pushNamed(Routes.LOGIN);
+    //
+    //     },
+    //     verificationFailed: (exception){
+    //       stopLoading();
+    //
+    //       if (exception.code == 'invalid-phone-number') {
+    //         _con.errorSnackBar('The provided phone number is not valid.',context);
+    //       }
+    //       else if (exception.code == 'too-many-requests') {
+    //         _con.errorSnackBar('To Many requests are being made.',context);
+    //       }
+    //       else{
+    //         print("verification Failed:${exception.code}");
+    //         _con.errorSnackBar('Verification failed',context);
+    //       }
+    //
+    //     },
+    //     codeSent: (id,token){
+    //       stopLoading();
+    //       verificationId =id;
+    //       updateToken(token??-1);
+    //       startTimer();
+    //     },
+    //     codeAutoRetrievalTimeout: (id){
+    //       print("time Out");
+    //     }
+    // );
 
   }
 
@@ -143,22 +142,22 @@ class _OTPScreenState extends StateMVC<OTPScreen> {
   validateOTP() async {
     startLoading();
     print("$otp:$token");
-    try{
-      final credential =
-          PhoneAuthProvider.credential(verificationId: verificationId, smsCode: otp);
-      await FirebaseAuth.instance.signInWithCredential(credential);
-      print(credential.asMap());
-      Navigator.of(context).pushReplacementNamed(Routes.LOGIN);
-    }on FirebaseException catch(e,s){
-      Navigator.of(context).pushReplacementNamed(Routes.LOGIN);
-      // if(e.code=='invalid-credential'){
-      //   _con.errorSnackBar("Invalid OTP ", context);
-      // }else if(e.code=='session-expired'){
-      //   _con.errorSnackBar("OTP Time OUT", context);
-      // }
-
-      print(e.code);
-    }
+    // try{
+    //   final credential =
+    //       PhoneAuthProvider.credential(verificationId: verificationId, smsCode: otp);
+    //   await FirebaseAuth.instance.signInWithCredential(credential);
+    //   print(credential.asMap());
+    //   Navigator.of(context).pushReplacementNamed(Routes.LOGIN);
+    // }on FirebaseException catch(e,s){
+    //   Navigator.of(context).pushReplacementNamed(Routes.LOGIN);
+    //   // if(e.code=='invalid-credential'){
+    //   //   _con.errorSnackBar("Invalid OTP ", context);
+    //   // }else if(e.code=='session-expired'){
+    //   //   _con.errorSnackBar("OTP Time OUT", context);
+    //   // }
+    //
+    //   print(e.code);
+    // }
     stopLoading();
   }
 

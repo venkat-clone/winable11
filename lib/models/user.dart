@@ -58,7 +58,7 @@ class AppUser{
   Map<String,dynamic> toJson()=>{
     "id": user_id,
     "name": name,
-    "mobile": mobile,
+    "mobile": mobile.startsWith('+91')?mobile:'+91$mobile',
     "email": email,
     "dob": dob,
     "gender": gender,
