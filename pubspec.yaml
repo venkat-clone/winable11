@@ -89,7 +89,7 @@ flutter:
     - jsonFile/languagetext.json
     - assets/cfg/
     - assets/img/
-    - assets/audio/
+  #- assets/audio/
     - assets/icons/
     - assets/html/
     - assets/mock_jsons/
