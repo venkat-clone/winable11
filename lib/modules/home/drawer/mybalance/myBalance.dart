@@ -40,8 +40,8 @@ class _MyBalancePageState extends StateMVC<MyBalancePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _walletController.scaffoldKey,
-     // backgroundColor: Theme.of(context).appBarTheme.color,
-      backgroundColor:Color.fromARGB(255, 52, 78, 68),
+      // backgroundColor: Theme.of(context).appBarTheme.color,
+      backgroundColor: Color.fromARGB(255, 52, 78, 68),
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
@@ -92,25 +92,24 @@ class _MyBalancePageState extends StateMVC<MyBalancePage> {
                   Padding(
                     padding: const EdgeInsets.all(25.0),
                     child: CircleAvatar(
-                        radius: 50,
-                        backgroundImage:  currentUser.value.photo !="" ?NetworkImage(
-                                currentUser.value.photo ?? ""):null,
-                       ),
-                   
+                      radius: 50,
+                      backgroundImage: currentUser.value.photo != ""
+                          ? NetworkImage(currentUser.value.photo ?? "")
+                          : null,
+                    ),
                   ),
-                      SizedBox(width: 10,),
-                        Text(
-                            currentUser.value.name,
-                            style:
-                                Theme.of(context).textTheme.bodyText2!.copyWith(
-                                      color: Theme.of(context)
-                                          .textTheme.bodyLarge!
-                                          .color,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 0.6,
-                                      fontSize: 20,
-                                    ),
-                          ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    currentUser.value.name,
+                    style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                          color: Theme.of(context).textTheme.bodyLarge!.color,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.6,
+                          fontSize: 20,
+                        ),
+                  ),
                 ],
               ),
             ),
@@ -137,7 +136,8 @@ class _MyBalancePageState extends StateMVC<MyBalancePage> {
                             ),
                           ),
                         Card(
-                          shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Column(
@@ -167,14 +167,13 @@ class _MyBalancePageState extends StateMVC<MyBalancePage> {
                                       .textTheme
                                       .caption!
                                       .copyWith(
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .headline6!
-                                            .color,
-                                        letterSpacing: 0.6,
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.bold
-                                      ),
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .headline6!
+                                              .color,
+                                          letterSpacing: 0.6,
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(
                                   height: 10,
@@ -221,7 +220,7 @@ class _MyBalancePageState extends StateMVC<MyBalancePage> {
                                 SizedBox(
                                   height: 10,
                                 ),
-                                Divider(),
+                                Divider(thickness: 2,color:Colors.black,),
                                 Row(
                                   children: [
                                     Column(
@@ -229,7 +228,8 @@ class _MyBalancePageState extends StateMVC<MyBalancePage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          AppLocalizations.of('Unutilized Balance '),
+                                          AppLocalizations.of(
+                                              'Unutilized Balance '),
                                           style: Theme.of(context)
                                               .textTheme
                                               .caption!
@@ -247,72 +247,63 @@ class _MyBalancePageState extends StateMVC<MyBalancePage> {
                                           height: 5,
                                         ),
                                         Text(
-                                          "₹${_walletController.totalBalance}",
+                                          "₹ ${_walletController.totalBalance}",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .caption!
+                                              .copyWith(
+                                                  color: Theme.of(context)
+                                                      .textTheme
+                                                      .headline6!
+                                                      .color,
+                                                  letterSpacing: 0.6,
+                                                  fontSize: 19,
+                                                  fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                    Expanded(child: SizedBox()),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of('Winnings'),
                                           style: Theme.of(context)
                                               .textTheme
                                               .caption!
                                               .copyWith(
                                                 color: Theme.of(context)
                                                     .textTheme
-                                                    .headline6!
+                                                    .bodyText2!
                                                     .color,
                                                 letterSpacing: 0.6,
-                                                fontSize: 19,
-                                                fontWeight: FontWeight.bold
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
                                               ),
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(
+                                          "₹ 0",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .caption!
+                                              .copyWith(
+                                                  color: Theme.of(context)
+                                                      .textTheme
+                                                      .headline6!
+                                                      .color,
+                                                  letterSpacing: 0.6,
+                                                  fontSize: 19,
+                                                  fontWeight: FontWeight.bold),
                                         ),
                                       ],
                                     ),
                                     Expanded(child: SizedBox()),
-                                   
-                                  
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        AppLocalizations.of('Winnings'),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .caption!
-                                            .copyWith(
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText2!
-                                                  .color,
-                                              letterSpacing: 0.6,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        "₹0",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .caption!
-                                            .copyWith(
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .headline6!
-                                                  .color,
-                                              letterSpacing: 0.6,
-                                              fontSize: 19,
-                                               fontWeight: FontWeight.bold
-                                            ),
-                                      ),
-                                    ],
-                                  ),
-                                  Expanded(child: SizedBox()),
-                                 
-
                                   ],
-
-                                 
                                 ),
-                               
                               ],
                             ),
                           ),
@@ -325,205 +316,148 @@ class _MyBalancePageState extends StateMVC<MyBalancePage> {
                               //margin: ,
                               height: 40,
                               width: 90,
-                             decoration: BoxDecoration(
-                              color:Theme.of(context).primaryColor,
-                               borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(10),
-                      bottomRight: Radius.circular(10)),
-                             ),
-                             child:Center(
-                                      child: InkWell(
-                                        onTap: () async {
-                                          // _walletController.initiatePayment("909090909090", "session_tU6-n4GMmVLqxBiljnoy-bF-aI1W_ualmioxJqoGP75pAl9KlT-8BZCxjpu52I8ppFaGAD8Yf1bGmL1AL0ceDM4on8abuANfDhGowUtV8afj");
-                                          // return;
-                                          // final result = await _walletController.createTransaction(_walletController.createMocOrder());
-                                          // if(result!=null && result.paymentSessionId!=null){
-                                          //   _walletController.initiatePayment(result.orderId, result.paymentSessionId!);
-                                          // }else if(result!=null && result.paymentSessionId==null){
-                                          //   // display error
-                                          // }
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      AddCashPage()));
-                                        },
-                                        child: Text(
-                                          AppLocalizations.of('Add Cash'),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .caption!
-                                              .copyWith(
-                                                color: Colors.white,
-                                                letterSpacing: 0.6,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(10),
+                                    bottomRight: Radius.circular(10)),
+                              ),
+                              child: Center(
+                                child: InkWell(
+                                  onTap: () async {
+                                    // _walletController.initiatePayment("909090909090", "session_tU6-n4GMmVLqxBiljnoy-bF-aI1W_ualmioxJqoGP75pAl9KlT-8BZCxjpu52I8ppFaGAD8Yf1bGmL1AL0ceDM4on8abuANfDhGowUtV8afj");
+                                    // return;
+                                    // final result = await _walletController.createTransaction(_walletController.createMocOrder());
+                                    // if(result!=null && result.paymentSessionId!=null){
+                                    //   _walletController.initiatePayment(result.orderId, result.paymentSessionId!);
+                                    // }else if(result!=null && result.paymentSessionId==null){
+                                    //   // display error
+                                    // }
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AddCashPage()));
+                                  },
+                                  child: Text(
+                                    AppLocalizations.of('Add Cash'),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption!
+                                        .copyWith(
+                                          color: Colors.white,
+                                          letterSpacing: 0.6,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                      ),
-                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                             Container(
                               height: 40,
                               width: 90,
-                             decoration: BoxDecoration(
-                             borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(10),
-                      bottomRight: Radius.circular(10)),
-                              color: Colors.red
-                             ),
-                             child: Center(
-                               child: InkWell(
-                                          onTap: () async {
-                                            // _walletController.initiatePayment("909090909090", "session_tU6-n4GMmVLqxBiljnoy-bF-aI1W_ualmioxJqoGP75pAl9KlT-8BZCxjpu52I8ppFaGAD8Yf1bGmL1AL0ceDM4on8abuANfDhGowUtV8afj");
-                                            // return;
-                                            // final result = await _walletController.createTransaction(_walletController.createMocOrder());
-                                            // if(result!=null && result.paymentSessionId!=null){
-                                            //   _walletController.initiatePayment(result.orderId, result.paymentSessionId!);
-                                            // }else if(result!=null && result.paymentSessionId==null){
-                                            //   // display error
-                                            // }
-                                            // Navigator.of(context).push(
-                                            //     MaterialPageRoute(
-                                            //         builder: (context) =>
-                                            //             AddCashPage()));
-                                          },
-                                          child: Text(
-                                            AppLocalizations.of('Withdraw'),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption!
-                                                .copyWith(
-                                                  color: Colors.white,
-                                                  letterSpacing: 0.6,
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                          ),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(10),
+                                      bottomRight: Radius.circular(10)),
+                                  color: Colors.red),
+                              child: Center(
+                                child: InkWell(
+                                  onTap: () async {
+                                    // _walletController.initiatePayment("909090909090", "session_tU6-n4GMmVLqxBiljnoy-bF-aI1W_ualmioxJqoGP75pAl9KlT-8BZCxjpu52I8ppFaGAD8Yf1bGmL1AL0ceDM4on8abuANfDhGowUtV8afj");
+                                    // return;
+                                    // final result = await _walletController.createTransaction(_walletController.createMocOrder());
+                                    // if(result!=null && result.paymentSessionId!=null){
+                                    //   _walletController.initiatePayment(result.orderId, result.paymentSessionId!);
+                                    // }else if(result!=null && result.paymentSessionId==null){
+                                    //   // display error
+                                    // }
+                                    // Navigator.of(context).push(
+                                    //     MaterialPageRoute(
+                                    //         builder: (context) =>
+                                    //             AddCashPage()));
+                                  },
+                                  child: Text(
+                                    AppLocalizations.of('Withdraw'),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption!
+                                        .copyWith(
+                                          color: Colors.white,
+                                          letterSpacing: 0.6,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
                                         ),
-                             ),
+                                  ),
+                                ),
+                              ),
                             )
                           ],
                         ),
                         SizedBox(
                           height: 10,
                         ),
-
-                        Row(
-                          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Expanded(child: SizedBox(width: 20,)),
-                             Card(
-                              child: SizedBox(width: 150,height: 100,
-                              
-                              child:   Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Column(
-                                  
-                                  children: [
-                                    Text(
-                                      AppLocalizations.of('Cash Bonus'),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .caption!
-                                          .copyWith(
-                                            color: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2!
-                                                .color,
-                                            letterSpacing: 0.6,
-                                            fontSize: 19,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                      "₹0",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .caption!
-                                          .copyWith(
-                                            color: Theme.of(context)
-                                                .textTheme
-                                                .headline6!
-                                                .color,
-                                            letterSpacing: 0.6,
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                    ),
-                                  ],
-                                ),
+                        Card(
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            //height: 100,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    AppLocalizations.of('Cash Bonus'),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption!
+                                        .copyWith(
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .bodyText2!
+                                              .color,
+                                          letterSpacing: 0.6,
+                                          fontSize: 19,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    "₹ 0",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption!
+                                        .copyWith(
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .headline6!
+                                              .color,
+                                          letterSpacing: 0.6,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
+                                ],
                               ),
-                              
-                              ),
-                             ),
-                             Expanded(child: SizedBox(width: 20,)),
-                             Card(
-                              child: SizedBox(width: 155,height: 100,
-                              
-                              child:   Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Column(
-                                  
-                                  children: [
-                                    Text(
-                                      AppLocalizations.of('Fantasy Coins'),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .caption!
-                                          .copyWith(
-                                            color: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2!
-                                                .color,
-                                            letterSpacing: 0.6,
-                                            fontSize: 19,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                      "0.0",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .caption!
-                                          .copyWith(
-                                            color: Color.fromARGB(255, 241, 162, 26),
-                                            letterSpacing: 0.6,
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              
-                              ),
-                             ),
-                             Expanded(child: SizedBox(width: 20,)),
-                            
-                          ],
-                        ),
-                        container(AppLocalizations.of('My Recent Transactions'),
-                            () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => TransactionPage(),
                             ),
-                          );
-                        },
-                        
+                          ),
+                        ),
+                        container(
+                          AppLocalizations.of('My Recent Transactions'),
+                          () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TransactionPage(),
+                              ),
+                            );
+                          },
                         ),
                         container(
                           AppLocalizations.of('Refer and Earn'),
                           () {},
                         ),
-                    
                       ],
                     ),
                   ),
