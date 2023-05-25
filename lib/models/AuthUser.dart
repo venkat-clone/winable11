@@ -47,6 +47,25 @@ class AuthUser extends AppUser{
   }
 
 
+  Map<String,dynamic> toJsonForProfileUpdate()=>{
+    "email": email,
+    "new_password": password,
+    "new_mobile": mobile,
+    "allow_sms_notifications": true,
+    "make_me_discoverable": false,
+    "address": {
+      "street": address,
+      "city": city,
+      "state": state,
+      "country": country
+    },
+    "city": city,
+    "pin_code": pincode,
+    "state": state,
+    "country": country
+  };
+
+
 }
 
 

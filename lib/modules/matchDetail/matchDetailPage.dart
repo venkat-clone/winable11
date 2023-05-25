@@ -1,4 +1,5 @@
 
+import 'package:intl/intl.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/controllers/ContestController.dart';
@@ -112,13 +113,19 @@ class _MatchDetailPageState extends StateMVC<MatchDetailPage> {
                                         fontSize: 16,
                                       ),
                             ),
-                            TimeLeftText(
+                            (widget.match.matchStatus=='Fixture')? TimeLeftText(
                               widget.match.matchDateTime,
                               style: Theme.of(context).textTheme.caption!.copyWith(
                                         color: Colors.white,
                                         fontSize: 12,
                                       ),
-                            ),
+                            ) : Text(
+                              DateFormat('d MMM y').format(DateTime.parse(widget.match.matchDateTime)),
+                              style: Theme.of(context).textTheme.caption!.copyWith(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            )
                           ],
                         ),
                       ),

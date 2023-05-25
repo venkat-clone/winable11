@@ -156,9 +156,14 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Icon(
-                                      Icons.close,
-                                      color: Colors.white,
+                                    InkWell(
+                                      onTap:(){
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Icon(
+                                        Icons.close,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ],
                                 ),

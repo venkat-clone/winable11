@@ -2,6 +2,7 @@
 
 import 'dart:async';
 
+import 'package:intl/intl.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/models/Team.dart';
@@ -287,7 +288,7 @@ class _CreateTeamPageState extends StateMVC<CreateTeamPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ChooseCaptainPage(team: _con.cricketTeam,matchDateTime:widget.match.matchDateTime,teamPlayers: widget.teamPlayers,),
+                      builder: (context) => ChooseCaptainPage(team: _con.cricketTeam,teamPlayers: widget.teamPlayers,match: widget.match),
                     ),
                   );
                 },
@@ -569,15 +570,23 @@ class _CreateTeamPageState extends StateMVC<CreateTeamPage> {
                           ),
                         ),
                         Expanded(child: SizedBox()),
-                        TimeLeftText(
+
+
+                        (widget.match.matchStatus=='Fixture')? TimeLeftText(
                           widget.match.matchDateTime,
                           style: Theme.of(context).textTheme.caption!.copyWith(
-                                color: Theme.of(context).textTheme.headline6!.color,
-                                letterSpacing: 0.6,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 22,
-                              ),
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
+                        ) : Text(
+                          DateFormat('d MMM y').format(DateTime.parse(widget.match.matchDateTime)),
+                          style: Theme.of(context).textTheme.caption!.copyWith(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
                         ),
+
+
                         Expanded(child: SizedBox()),
                         Icon(
                           Icons.help,

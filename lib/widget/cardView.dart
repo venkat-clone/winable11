@@ -174,12 +174,17 @@ class _CardViewState extends State<CardView> {
                                   Expanded(child: SizedBox()),
                                   Column(
                                     children: [
-                                      TimeLeftText(
-                                        match.matchDateTime,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.green,
-                                          fontWeight: FontWeight.bold,
+                                      (widget.match.matchStatus=='Fixture')? TimeLeftText(
+                                        widget.match.matchDateTime,
+                                        style: Theme.of(context).textTheme.caption!.copyWith(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                        ),
+                                      ) : Text(
+                                        DateFormat('d MMM y').format(DateTime.parse(widget.match.matchDateTime)),
+                                        style: Theme.of(context).textTheme.caption!.copyWith(
+                                          color: Colors.white,
+                                          fontSize: 12,
                                         ),
                                       ),
                                       Text(Utils.getDaySpecificDate(DateTime.parse(match.matchDateTime)),

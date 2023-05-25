@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../controllers/AuthController.dart';
+import '../../../models/AuthUser.dart';
 import '../../../models/user.dart';
 import '../../../utils/shared_preference_services.dart';
 import '../../../utils/utils.dart';
@@ -678,7 +679,8 @@ class _SettingPageState extends StateMVC<SettingPage> {
                         text: AppLocalizations.of('Update Profile'),
                         onTap: () async {
                           print("userID,${currentUser.value.user_id}");
-                          final user = AppUser(
+                          final user = AuthUser(
+                            password: _passwordController.text,
                             user_id: currentUser.value.user_id,
                             name: _nameController.value.text,
                             email: _emailController.value.text,

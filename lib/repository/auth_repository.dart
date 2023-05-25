@@ -85,12 +85,10 @@ class AuthRepository{
     }
   }
 
-  Future updateProfile(AppUser appUser) async {
+  Future updateProfile(AuthUser appUser) async {
     try{
-      final response = await _apiService.getPostApiResponse("https://admin.winable11.com/User/register/kyc", appUser.toJson());
-      final user = AppUser.formJson(_apiService.getData(response));
+      final response = await _apiService.getPostApiResponse("https://admin.winable11.com/User/update", appUser.toJsonForProfileUpdate());
 
-      return AppUser.formJson(_apiService.getData(response));
     }catch(e,s){
       rethrow;
     }

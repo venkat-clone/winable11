@@ -248,7 +248,7 @@ class AuthController extends BaseController {
     }
   }
 
-  upDateProfile(BuildContext context,AppUser user) async{
+  upDateProfile(BuildContext context,AuthUser user) async{
     try{
       await _repository.updateProfile(user);
       SharedPreferenceService.setUser(user);

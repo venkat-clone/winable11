@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:intl/intl.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/constance/constance.dart';
@@ -450,14 +451,22 @@ class _ContestDetailPageState extends StateMVC<ContestDetailPage> {
                         fontSize: 22,
                       ),
                 ),
-                TimeLeftText(
+
+                (widget.match.matchStatus=='Fixture')? TimeLeftText(
                   widget.match.matchDateTime,
                   style: Theme.of(context).textTheme.caption!.copyWith(
-                        color: Colors.white,
-                        letterSpacing: 0.6,
-                        fontSize: 14,
-                      ),
-                ),
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                ) : Text(
+                  DateFormat('d MMM y').format(DateTime.parse(widget.match.matchDateTime)),
+                  style: Theme.of(context).textTheme.caption!.copyWith(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                )
+
+
               ],
             ),
           ),

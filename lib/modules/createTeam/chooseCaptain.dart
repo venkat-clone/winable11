@@ -1,11 +1,13 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:intl/intl.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:newsports/Language/appLocalizations.dart';
 import 'package:newsports/constance/constance.dart';
 import 'package:flutter/material.dart';
 import 'package:newsports/controllers/TeamController.dart';
 
+import '../../models/MatchModel.dart';
 import '../../models/team_players.dart';
 import '../../models/player.dart';
 
@@ -18,7 +20,8 @@ class ChooseCaptainPage extends StatefulWidget {
   TeamPlayers team;
   String matchDateTime ="";
   TeamPlayers? teamPlayers;
-  ChooseCaptainPage({required this.team,required this.matchDateTime,this.teamPlayers});
+  MatchModel match;
+  ChooseCaptainPage({required this.team,required this.match,this.teamPlayers});
 
   @override
   _ChooseCaptainPageState createState() => _ChooseCaptainPageState();
@@ -494,13 +497,19 @@ class _ChooseCaptainPageState extends StateMVC<ChooseCaptainPage> {
             ),
           ),
           Expanded(child: SizedBox()),
-          TimeLeftText(
-            widget.matchDateTime,
+
+          (widget.match.matchStatus=='Fixture') ? TimeLeftText(
+            widget.match.matchDateTime,
             style: Theme.of(context).textTheme.caption!.copyWith(
-                  color: Colors.white,
-                  letterSpacing: 0.6,
-                  fontSize: 22,
-                ),
+              color: Colors.white,
+              fontSize: 12,
+            ),
+          ) : Text(
+            DateFormat('d MMM y').format(DateTime.parse(widget.match.matchDateTime)),
+            style: Theme.of(context).textTheme.caption!.copyWith(
+              color: Colors.white,
+              fontSize: 12,
+            ),
           ),
           Expanded(child: SizedBox()),
           Icon(
