@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -205,10 +205,10 @@ class AuthController extends BaseController {
     await _repository.registerUser(user).then((value) {});
   }
 
-  Future<bool> sendMobileOTP(BuildContext context,String mobile) async {
+  Future<bool> sendMobileOTP(BuildContext context,String mobile,String action) async {
     bool OTPSend = false;
     try{
-      final response = await _repository.sendOtp(mobile);
+      final response = await _repository.sendOtp(mobile,action);
       OTPSend = (response['type']=='success');
       if(!OTPSend) errorSnackBar(response['message'], context);
     }catch(e){
@@ -218,10 +218,10 @@ class AuthController extends BaseController {
   }
 
 
-  Future<bool> validatePhoneOTP(BuildContext context,String mobile, String otp) async {
+  Future<bool> validatePhoneOTP(BuildContext context,String mobile, String otp,String action) async {
     bool OTPVerified = false;
     try{
-      final response = await _repository.verifyOtp(mobile,otp);
+      final response = await _repository.verifyOtp(mobile,otp,action);
       OTPVerified = (response['type']=='success');
       if(!OTPVerified) errorSnackBar(response['message'], context);
     }catch(e){
@@ -248,13 +248,41 @@ class AuthController extends BaseController {
     }
   }
 
-  upDateProfile(BuildContext context,AuthUser user) async{
+  upDateAuthProfile(BuildContext context,AuthUser user) async{
     try{
-      await _repository.updateProfile(user);
+      final result = await _repository.updateAuthProfile(user);
+
+      final newUser = currentUser.value.copyWith(
+        mobile: user.mobile,
+      );
+
+      SharedPreferenceService.setUser(newUser);
+      setState(() {
+        currentUser.value = newUser;
+      });
+      if(result['success']==true){
+        successSnackBar('profile updated successfully', context);
+      }else{
+        successSnackBar(result['message']??'failed to update profile details', context);
+      }
+    }catch(e,s){
+      print("$e\n$s");
+      errorSnackBar("something went wrong", context);
+    }
+  }
+
+  upDateProfile(BuildContext context,AppUser user) async{
+    try{
+      final result = await _repository.updateProfile(user);
       SharedPreferenceService.setUser(user);
       setState(() {
         currentUser.value = user;
       });
+      if(result['success']==true){
+        successSnackBar('profile updated successfully', context);
+      }else{
+        successSnackBar(result['message']??'failed to update profile details', context);
+      }
 
     }catch(e,s){
       print("$e\n$s");
