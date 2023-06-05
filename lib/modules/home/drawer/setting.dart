@@ -143,6 +143,10 @@ class _SettingPageState extends StateMVC<SettingPage> {
                       CustomTextField(
                         hintText: AppLocalizations.of('Enter Email'),
                         controller: _emailController,
+                        readOnly: true,
+                        onTap: (){
+                          _con.infoSnackBar('Email cannot be edited',context);
+                        },
                       ),
                       SizedBox(
                         height: 15,
@@ -164,19 +168,167 @@ class _SettingPageState extends StateMVC<SettingPage> {
                       CustomTextField(
                         hintText: AppLocalizations.of('Enter password'),
                         controller: _passwordController,
+                        passwordType: true,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Text(
+                          AppLocalizations.of('Mobile Number'),
+                          style: Theme.of(context).textTheme.caption!.copyWith(
+                            letterSpacing: 0.6,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Card(
+                        elevation: 8,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: IntlPhoneField(
+                          initialValue: Utils.removeCountryCode(currentUser.value.mobile),
+                          decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(left: 14, right: 14),
+                              hintText: "Mobile No",
+                              hintStyle: Theme.of(context).textTheme.headline6!.copyWith(
+                                color: Theme.of(context).textTheme.caption!.color,
+                                letterSpacing: 0.6,
+                                fontSize: 14,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              counterText: ""
+                          ),
+                          initialCountryCode: 'IN',
+
+                          onChanged: (phone) {
+                            print('phoneNumber:${phone.number}');
+                            _numberController.text = phone.number;
+                            code = phone.countryCode;
+                          },
+                        ),
                       ),
                       SizedBox(
                         height: 15,
                       ),
+                      CustomButton(
+                        text: AppLocalizations.of('Update'),
+                        onTap: () async {
+                          print("userID,${currentUser.value.user_id}");
+
+                          final user = AuthUser(
+                            mobile: code+_numberController.value.text,
+                            password: _passwordController.text,
+                          );
+
+
+                          startLoading();
+                          await _con.upDateAuthProfile(context, user);
+
+                          stopLoading();
+                          SharedPreferenceService.setAllowSmsNotification(isSwitched1);
+                          SharedPreferenceService.setDiscoverable(isSwitched1);
+
+                        },
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+
+
+
+
+
+
+                    ],
+                  ),
+                ),
+
+                // Card(
+                //   elevation: 5,
+                //   margin: EdgeInsets.zero,
+                //   child: Container(
+                //     height: 50,
+                //     color: Theme.of(context).disabledColor.withOpacity(0.5),
+                //     child: Padding(
+                //       padding: const EdgeInsets.only(left: 20, right: 20),
+                //       child: Row(
+                //         children: [
+                //           Text(
+                //             AppLocalizations.of('Privacy Settings'),
+                //             style:
+                //                 Theme.of(context).textTheme.caption!.copyWith(
+                //                       color: Theme.of(context)
+                //                           .textTheme
+                //                           .headline6!
+                //                           .color,
+                //                       letterSpacing: 0.6,
+                //                       fontSize: 14,
+                //                       fontWeight: FontWeight.bold,
+                //                     ),
+                //           ),
+                //           Expanded(child: SizedBox()),
+                //           Icon(Icons.arrow_forward_ios)
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                // SizedBox(
+                //   height: 15,
+                // ),
+                // Container(
+                //   height: 50,
+                //   color: Theme.of(context).appBarTheme.color,
+                //   child: Padding(
+                //     padding: const EdgeInsets.only(left: 20, right: 20),
+                //     child: Row(
+                //       children: [
+                //         Text(
+                //           AppLocalizations.of('Allow SMS notifications'),
+                //           style: Theme.of(context).textTheme.caption!.copyWith(
+                //                 color: Theme.of(context)
+                //                     .textTheme
+                //                     .headline6!
+                //                     .color,
+                //                 letterSpacing: 0.6,
+                //                 fontSize: 14,
+                //                 fontWeight: FontWeight.bold,
+                //               ),
+                //         ),
+                //         Expanded(child: SizedBox()),
+                //         CupertinoSwitch(
+                //           value: isSwitched1,
+                //           onChanged: (value) {
+                //             setState(() {
+                //               isSwitched1 = value;
+                //             });
+                //           },
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
+                // SizedBox(
+                //   height: 15,
+                // ),
+                Divider(),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
                         child: Text(
                           AppLocalizations.of('Date of Birth'),
                           style: Theme.of(context).textTheme.caption!.copyWith(
-                                letterSpacing: 0.6,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            letterSpacing: 0.6,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -231,14 +383,14 @@ class _SettingPageState extends StateMVC<SettingPage> {
                         child: Text(
                           AppLocalizations.of('Gender'),
                           style: Theme.of(context).textTheme.caption!.copyWith(
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2!
-                                    .color,
-                                letterSpacing: 0.6,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            color: Theme.of(context)
+                                .textTheme
+                                .bodyText2!
+                                .color,
+                            letterSpacing: 0.6,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -251,86 +403,86 @@ class _SettingPageState extends StateMVC<SettingPage> {
                           children: [
                             isMale == true
                                 ? Icon(
-                                    FontAwesomeIcons.dotCircle,
-                                    color: Theme.of(context).primaryColor,
-                                  )
+                              FontAwesomeIcons.dotCircle,
+                              color: Theme.of(context).primaryColor,
+                            )
                                 : InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        isMale = true;
-                                        isFemale = false;
-                                      });
-                                    },
-                                    child: Container(
-                                      height: 25,
-                                      width: 25,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Theme.of(context)
-                                              .disabledColor
-                                              .withOpacity(0.5),
-                                        ),
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ),
+                              onTap: () {
+                                setState(() {
+                                  isMale = true;
+                                  isFemale = false;
+                                });
+                              },
+                              child: Container(
+                                height: 25,
+                                width: 25,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Theme.of(context)
+                                        .disabledColor
+                                        .withOpacity(0.5),
                                   ),
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                            ),
                             SizedBox(
                               width: 15,
                             ),
                             Text(
                               AppLocalizations.of('Male'),
                               style:
-                                  Theme.of(context).textTheme.caption!.copyWith(
-                                        color: Theme.of(context)
-                                            .disabledColor
-                                            .withOpacity(0.5),
-                                        letterSpacing: 0.6,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                              Theme.of(context).textTheme.caption!.copyWith(
+                                color: Theme.of(context)
+                                    .disabledColor
+                                    .withOpacity(0.5),
+                                letterSpacing: 0.6,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             SizedBox(
                               width: 80,
                             ),
                             isFemale == true
                                 ? Icon(
-                                    FontAwesomeIcons.dotCircle,
-                                    color: Theme.of(context).primaryColor,
-                                  )
+                              FontAwesomeIcons.dotCircle,
+                              color: Theme.of(context).primaryColor,
+                            )
                                 : InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        isMale = false;
-                                        isFemale = true;
-                                      });
-                                    },
-                                    child: Container(
-                                      height: 25,
-                                      width: 25,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Theme.of(context)
-                                              .disabledColor
-                                              .withOpacity(0.5),
-                                        ),
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ),
+                              onTap: () {
+                                setState(() {
+                                  isMale = false;
+                                  isFemale = true;
+                                });
+                              },
+                              child: Container(
+                                height: 25,
+                                width: 25,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Theme.of(context)
+                                        .disabledColor
+                                        .withOpacity(0.5),
                                   ),
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                            ),
                             SizedBox(
                               width: 15,
                             ),
                             Text(
                               AppLocalizations.of('Female'),
                               style:
-                                  Theme.of(context).textTheme.caption!.copyWith(
-                                        color: Theme.of(context)
-                                            .disabledColor
-                                            .withOpacity(0.5),
-                                        letterSpacing: 0.6,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                              Theme.of(context).textTheme.caption!.copyWith(
+                                color: Theme.of(context)
+                                    .disabledColor
+                                    .withOpacity(0.5),
+                                letterSpacing: 0.6,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
@@ -338,135 +490,6 @@ class _SettingPageState extends StateMVC<SettingPage> {
                       SizedBox(
                         height: 15,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Text(
-                          AppLocalizations.of('Mobile Number'),
-                          style: Theme.of(context).textTheme.caption!.copyWith(
-                                letterSpacing: 0.6,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-
-                      Card(
-                        elevation: 8,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: IntlPhoneField(
-                          initialValue: Utils.removeCountryCode(currentUser.value.mobile),
-                          decoration: InputDecoration(
-                              contentPadding: EdgeInsets.only(left: 14, right: 14),
-                              hintText: "Mobile No",
-                              hintStyle: Theme.of(context).textTheme.headline6!.copyWith(
-                                color: Theme.of(context).textTheme.caption!.color,
-                                letterSpacing: 0.6,
-                                fontSize: 14,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              counterText: ""
-                          ),
-                          initialCountryCode: 'IN',
-
-                          onChanged: (phone) {
-                            print('phoneNumber:${phone.number}');
-                            _numberController.text = phone.number;
-                            code = phone.countryCode;
-                          },
-                        ),
-                      ),
-
-
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Card(
-                  elevation: 5,
-                  margin: EdgeInsets.zero,
-                  child: Container(
-                    height: 50,
-                    color: Theme.of(context).disabledColor.withOpacity(0.5),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: Row(
-                        children: [
-                          Text(
-                            AppLocalizations.of('Privacy Settings'),
-                            style:
-                                Theme.of(context).textTheme.caption!.copyWith(
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .headline6!
-                                          .color,
-                                      letterSpacing: 0.6,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                          ),
-                          Expanded(child: SizedBox()),
-                          Icon(Icons.arrow_forward_ios)
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Container(
-                  height: 50,
-                  color: Theme.of(context).appBarTheme.color,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: Row(
-                      children: [
-                        Text(
-                          AppLocalizations.of('Allow SMS notifications'),
-                          style: Theme.of(context).textTheme.caption!.copyWith(
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .headline6!
-                                    .color,
-                                letterSpacing: 0.6,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                        Expanded(child: SizedBox()),
-                        CupertinoSwitch(
-                          value: isSwitched1,
-                          onChanged: (value) {
-                            setState(() {
-                              isSwitched1 = value;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-
-                SizedBox(
-                  height: 15,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
                         child: Text(
@@ -549,9 +572,9 @@ class _SettingPageState extends StateMVC<SettingPage> {
                         AppLocalizations.of("State"),
                         citySearchPlaceholder:
                         AppLocalizations.of("City"),
-                        countryDropdownLabel: AppLocalizations.of(_countryName ?? "Country"),
+                        countryDropdownLabel: AppLocalizations.of(_countryName.isNotEmpty ?_countryName: "Country"),
                         stateDropdownLabel: AppLocalizations.of((_stateName.isNotEmpty )? _stateName : "State"),
-                        cityDropdownLabel: AppLocalizations.of((_cityName.isNotEmpty )? _cityName : "City"),
+                        cityDropdownLabel: AppLocalizations.of((_cityName.isNotEmpty)? _cityName : "City"),
                         defaultCountry: CscCountry.India,
                         selectedItemStyle: Theme.of(context)
                             .textTheme
@@ -589,7 +612,6 @@ class _SettingPageState extends StateMVC<SettingPage> {
                         dropdownDialogRadius: 10.0,
                         searchBarRadius: 30.0,
                         onCountryChanged: (value) {
-                          print("countryName:${value.split(' ').last.trim()}");
                           setState(() {
                             _countryName = value.split(' ').last.trim();
 
@@ -628,13 +650,9 @@ class _SettingPageState extends StateMVC<SettingPage> {
                         hintText: AppLocalizations.of('Enter pin code'),
                         controller: _pinCodeController,
                       ),
+                      
                       SizedBox(
-                        height: 15,
-                      ),
-
-
-                      SizedBox(
-                        height: 25,
+                        height: 10,
                       ),
                       Row(
                         children: [
@@ -673,25 +691,21 @@ class _SettingPageState extends StateMVC<SettingPage> {
                         ],
                       ),
                       SizedBox(
-                        height: 30,
+                        height: 10,
                       ),
                       CustomButton(
                         text: AppLocalizations.of('Update Profile'),
                         onTap: () async {
                           print("userID,${currentUser.value.user_id}");
-                          final user = AuthUser(
-                            password: _passwordController.text,
+                          final user = currentUser.value.copyWith(
                             user_id: currentUser.value.user_id,
-                            name: _nameController.value.text,
-                            email: _emailController.value.text,
                             dob: _birthDateController.value.text,
-                            mobile: code+_numberController.value.text,
                             address: _addressController.value.text,
                             city: _cityName??'',
                             pincode: _pinCodeController.value.text,
                             state: _stateName??'',
                             country: _countryName??'',
-                            gender: isMale ? "male" : "female",
+                            gender: isMale ? "male" : isFemale? "female":"",
                           );
                           startLoading();
                           await _con.upDateProfile(context, user);

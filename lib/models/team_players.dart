@@ -17,6 +17,7 @@ class TeamPlayers{
   List<UserTeamPlayer> players4 =[];
 
   String teamId="";
+  String teamCount="";
   String teamName="";
   String captainId ="";
   String viceCaptainId ="";

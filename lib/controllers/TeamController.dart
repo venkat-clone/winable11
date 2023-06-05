@@ -93,7 +93,7 @@ class TeamController extends BaseController {
         errorSnackBar("Please check you internet connection", context);
       } on InvalidResponseException {
         setState(() {});
-        workingSnackBar("No Contest found For this Match", context);
+        worningSnackBar("No Contest found For this Match", context);
       } catch (e, s) {
         errorSnackBar("Something went Wrong please try again later", context);
         if (kDebugMode) {
@@ -164,7 +164,7 @@ class TeamController extends BaseController {
         errorSnackBar("Please check you internet connection", context);
       } on InvalidResponseException {
         setState(() {});
-        workingSnackBar("No Contest found For this Match", context);
+        worningSnackBar("No Contest found For this Match", context);
       } catch (e, s) {
         errorSnackBar("Something went Wrong please try again later", context);
         if (kDebugMode) {

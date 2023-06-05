@@ -41,10 +41,17 @@ class BaseController extends ControllerMVC {
             content: Text(message ))
     );
   }
-  workingSnackBar(String message,BuildContext context){
+  worningSnackBar(String message,BuildContext context){
     return ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             backgroundColor: Colors.orange,
+            content: Text(message ))
+    );
+  }
+  infoSnackBar(String message,BuildContext context){
+    return ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            // backgroundColor: Colors.orange,
             content: Text(message ))
     );
   }

@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../constance/constance.dart';
+import '../login/loginPage.dart';
 import '../navigationBar/myMatches/myMatches.dart';
 import '../register/passwordReset.dart';
 import '../register/registerPage.dart';
@@ -95,7 +96,7 @@ class _CricketPageState extends StateMVC<CricketPage> {
             if(kDebugMode)
               InkWell(
                 onTap: (){
-                  Navigator.of(context).push(MaterialPageRoute(builder: (c)=>PasswordReset()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (c)=>LoginScreen()));
                 },
                 child: Container(
                   width: 100,

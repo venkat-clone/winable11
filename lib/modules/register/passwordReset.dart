@@ -164,7 +164,7 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
                                               setState((){
                                                 _con.loading = true;
                                               });
-                                              final otpSent = await _con.sendMobileOTP(context, _mobileController.text);
+                                              final otpSent = await _con.sendMobileOTP(context, _mobileController.text,"forgot_password");
                                               if(otpSent) setState(() {
                                                 otpStatus = 1;
                                               });
@@ -227,7 +227,7 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
                                             setState((){
                                               _con.loading = true;
                                             });
-                                            final otpVerified = await _con.validatePhoneOTP(context, _mobileController.text,_otpController.text);
+                                            final otpVerified = await _con.validatePhoneOTP(context, _mobileController.text,_otpController.text,"forgot_password_otp");
                                             if(otpVerified) setState(() {
                                               otpStatus = 2;
                                             });
@@ -259,6 +259,7 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
                                       CustomTextField(
                                       controller: _passwordController,
                                       hintText: AppLocalizations.of('Password'),
+                                        passwordType: true,
                                     ),
                                     SizedBox(
                                       height: 15,
@@ -267,6 +268,7 @@ class _PasswordResetState extends StateMVC<PasswordReset> {
                                       CustomTextField(
                                       controller: _conformPasswordController,
                                       hintText: 'conform Password',
+                                        passwordType: true,
                                     ),
                                     SizedBox(
                                       height: 6,

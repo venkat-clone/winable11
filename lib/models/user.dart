@@ -2,6 +2,8 @@
 
 import 'package:flutter/foundation.dart';
 
+import '../utils/value_notifiers.dart';
+
 class AppUser{
   String user_id = "";
   String name = "";
@@ -47,7 +49,7 @@ class AppUser{
     this.email = json['email']??"";
     this.dob = json['dob']??"";
     this.gender = json['gender']??"";
-    // this.address = json['address']??"";
+    this.address = json['address']??"";
     this.city = json['city']??"";
     this.pincode = json['pincode']??"";
     this.state = json['state']??"";
@@ -76,7 +78,14 @@ class AppUser{
       return "";
     else return name[0].toUpperCase();
   }
-
+  Map<String,dynamic> toJsonForProfileUpdateDetails()=>{
+    "user_id": currentUser.value.user_id,
+    "address": address,
+    "city": city,
+    "pincode": pincode,
+    "state": state,
+    "country": country
+  };
 
   get getAddress {
 
@@ -94,5 +103,34 @@ class AppUser{
   }
 
   get isAddressPresent => (city+state+country+pincode+address).isNotEmpty;
+
+
+  copyWith({
+    String? user_id ,
+    String? name ,
+    String? mobile ,
+    String? email ,
+    String? dob ,
+    String? gender ,
+    String? address ,
+    String? city ,
+    String? pincode ,
+    String? state ,
+    String? country ,
+    String? authId ,
+    String? photo ,
+})=>AppUser(
+    user_id :user_id??this.user_id,
+    name :name??this.name,
+    mobile :mobile??this.mobile,
+    email :email??this.email,
+    dob :dob??this.dob,
+    gender :gender??this.gender,
+    address :address??this.address,
+    city :city??this.city,
+    pincode :pincode??this.pincode,
+    state :state??this.state,
+    country :country??this.country,
+  );
 
 }

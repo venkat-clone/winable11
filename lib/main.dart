@@ -1,4 +1,4 @@
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:newsports/constance/constance.dart';
 import 'package:newsports/constance/themes.dart';
 import 'package:newsports/modules/home/home.dart';
@@ -19,9 +19,9 @@ void main() {
     DeviceOrientation.portraitDown,
   ]).then((_) {
 
-    Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    // Firebase.initializeApp(
+    //   options: DefaultFirebaseOptions.currentPlatform,
+    // );
 
     runApp(new MyApp());
   });

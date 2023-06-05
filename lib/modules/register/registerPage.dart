@@ -243,7 +243,7 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                                 setState(() {
                                                   otpStatus = 2;
                                                 });
-                                                final status = await _con.sendMobileOTP(context,_mobileController.text);
+                                                final status = await _con.sendMobileOTP(context,_mobileController.text,"register");
                                                 setState(() {
                                                   otpStatus = (status)?1:0;
                                                 });
@@ -288,7 +288,7 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                                 setState(() {
                                                   otpStatus = 4;
                                                 });
-                                                final response = await _con.validatePhoneOTP(context,_mobileController.text,_otpController.text);
+                                                final response = await _con.validatePhoneOTP(context,_mobileController.text,_otpController.text,"register_otp");
                                                 setState(() {
                                                   otpStatus = response?3:1;
                                                 });
@@ -475,6 +475,7 @@ class _RegisterPageState extends StateMVC<RegisterPage> {
                                           CustomTextField(
                                             controller: _passwordController,
                                             hintText: AppLocalizations.of('Password'),
+                                            passwordType: true,
                                           ),
                                         ],
                                       ),

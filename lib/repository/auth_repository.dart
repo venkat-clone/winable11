@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:newsports/models/user.dart';
 import 'package:newsports/utils/app_execptions.dart';
+import 'package:newsports/utils/value_notifiers.dart';
 import '../base_classes/networkAPIService.dart';
 import '../models/AuthUser.dart';
 import '../utils/constants.dart';
@@ -85,19 +86,28 @@ class AuthRepository{
     }
   }
 
-  Future updateProfile(AuthUser appUser) async {
+  Future<Map<String,dynamic>> updateAuthProfile(AuthUser appUser) async {
     try{
-      final response = await _apiService.getPostApiResponse("https://admin.winable11.com/User/update", appUser.toJsonForProfileUpdate());
-
+        final authResponse = await _apiService.getPostApiResponse("https://admin.winable11.com/User/update/auth", appUser.toJsonForProfileUpdateAuth());
+        return authResponse;
+    }catch(e,s){
+      rethrow;
+    }
+  }
+  Future<Map<String,dynamic>> updateProfile(AppUser appUser) async {
+    try{
+        final detailsResponse = await _apiService.getPostApiResponse("https://admin.winable11.com/User/update/details", appUser.toJsonForProfileUpdateDetails());
+        return detailsResponse;
     }catch(e,s){
       rethrow;
     }
   }
 
-  Future<Map> sendOtp(String mobile) async{
+  Future<Map> sendOtp(String mobile,String action) async{
     try{
       final result = await _apiService.getPostApiResponse('https://admin.winable11.com/otp/send_otp',{
-        "mobile_no":mobile
+        "mobile_no":mobile,
+        "action": action
       });
       return result;
     }catch(e,s){
@@ -108,11 +118,12 @@ class AuthRepository{
     }
   }
 
-  Future<Map> verifyOtp(String mobile,String otp) async{
+  Future<Map> verifyOtp(String mobile,String otp,String action) async{
     try{
       final result = await _apiService.getPostApiResponse('https://admin.winable11.com/otp/verify_otp',{
         "user_otp":otp,
-        "mobile":mobile
+        "mobile":mobile,
+        "action":action
       });
       return result;
     }catch(e,s){

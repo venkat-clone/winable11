@@ -80,7 +80,7 @@ class ContestController extends BaseController{
       setState(() {
         cricketContests = ValueState(value: []);
       });
-      workingSnackBar("No Contest found For this Match", context);
+      worningSnackBar("No Contest found For this Match", context);
     }
     catch(e,s){
       if(kDebugMode){
@@ -105,7 +105,7 @@ class ContestController extends BaseController{
       setState(() {
         footballContests = ValueState(value: []);
       });
-      workingSnackBar("No Contest found For this Match", context);
+      worningSnackBar("No Contest found For this Match", context);
     }
     catch(e,s){
       if(kDebugMode){
@@ -140,7 +140,7 @@ class ContestController extends BaseController{
       setState(() {
         myCricketContests = ValueState(value: []);
       });
-      workingSnackBar("No Contest found For this Match", context);
+      worningSnackBar("No Contest found For this Match", context);
     }
     catch(e,s){
       if(kDebugMode){
@@ -165,7 +165,7 @@ class ContestController extends BaseController{
       setState(() {
         myFootballContests = ValueState(value: []);
       });
-      workingSnackBar("No Contest found For this Match", context);
+      worningSnackBar("No Contest found For this Match", context);
     }
     catch(e,s){
       if(kDebugMode){

@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
         await DefaultAssetBundle.of(myContext).loadString("jsonFile/languagetext.json"),
       ),
     );
-    setState(() {});
+
   }
 
   @override

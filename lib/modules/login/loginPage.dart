@@ -203,6 +203,7 @@ class _LoginScreenState extends StateMVC<LoginScreen> {
                                     CustomTextField(
                                       controller: _passwordController,
                                       hintText: AppLocalizations.of('Password'),
+                                      passwordType: true,
                                     ),
                                     SizedBox(
                                       height: 10,

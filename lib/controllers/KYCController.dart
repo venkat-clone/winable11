@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -49,24 +49,7 @@ class KYCController extends BaseController {
 
 
 
-  setKYCStatus(authID, status) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection("user")
-          .doc(authID)
-          .get()
-          .then((value) async {
-        if (value.exists) {
-          getKYCStatus(authID);
-        } else {
-          await FirebaseFirestore.instance.collection("user").doc(authID).set(
-              {"kycStatus": status}).whenComplete(() => getKYCStatus(authID));
-        }
-      });
-    } catch (e) {
-      print(e.toString());
-    }
-  }
+
 
   getKYCStatus(BuildContext context) async {
     try {
