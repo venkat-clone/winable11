@@ -3,6 +3,8 @@
 
 import 'package:newsports/models/user.dart';
 
+import '../utils/value_notifiers.dart';
+
 class AuthUser extends AppUser{
 
   String password="";
@@ -65,6 +67,55 @@ class AuthUser extends AppUser{
     "country": country
   };
 
+
+
+
+  Map<String,dynamic> toJsonForProfileUpdateAuth(){
+    final json = {
+      "user_id": currentUser.value.user_id,
+    };
+
+    if(password!=""){
+      json["new_password"] = password;
+    }
+    if(mobile!=currentUser.value.mobile){
+     json["new_mobile"]= mobile;
+    }
+
+    return json;
+  }
+
+
+  copyWith({
+    String? user_id ,
+    String? name ,
+    String? mobile ,
+    String? email ,
+    String? dob ,
+    String? gender ,
+    String? address ,
+    String? city ,
+    String? pincode ,
+    String? state ,
+    String? country ,
+    String? authId ,
+    String? photo ,
+    String? password,
+  })=>AuthUser(
+    user_id :user_id??this.user_id,
+    name :name??this.name,
+    mobile :mobile??this.mobile,
+    email :email??this.email,
+    dob :dob??this.dob,
+    gender :gender??this.gender,
+    address :address??this.address,
+    city :city??this.city,
+    pincode :pincode??this.pincode,
+    state :state??this.state,
+    country :country??this.country,
+    password :password??this.password,
+
+  );
 
 }
 
