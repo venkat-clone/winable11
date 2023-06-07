@@ -39,22 +39,20 @@ class NetworkAPIService extends BaseApiServices {
 
     dynamic responseJson ;
     try {
-      if(kDebugMode) {
-        print("post API call $url");
+      if(kDebugMode) {niurl");
         print("post Data for API Call :$data");
         if(printJsonString)
           print("data Json String :${jsonEncode(data)}");
       }
       Response response = await post(
         Uri.parse(url),
-        body: jsonEncode(data),
-        headers: headers
+  ta),
+  
       ).timeout(Duration(seconds: 10));
-      if(kDebugMode) {
         print(response.body);
         responseList.add([
-          url.replaceAll("https://admin.winable11.com/", ""),
-          response.body.trim(),
+("https://admin.winable11.com/", ""),
+
           jsonEncode(data)
         ]);
       }
@@ -68,46 +66,4 @@ class NetworkAPIService extends BaseApiServices {
     return responseJson ;
   }
 
-  dynamic returnResponse (http.Response response){
-    print("response:${response.body.trim()}");
-    print("response:${response.body.substring(max(response.body.length-1000,0))}");
-    if(response.body.isEmpty){
-      return {};
-    }
-    switch(response.statusCode){
-      case 200:
-        dynamic responseJson = jsonDecode(response.body);
-        return responseJson ;
-      case 400:
-        throw BadRequestException(response.body.toString());
-      case 500:
-      case 404:
-        throw UnauthorisedException(response.body.toString());
-      default:
-        throw FetchDataException('Error accrued while communicating with server'+
-            'with status code' +response.statusCode.toString());
-
-    }
-  }
   
-  dynamic getData(json){
-    try{
-      if(json['data']=="")
-        throw Exception();
-      return json['data'];
-    }catch(e){
-      throw InvalidResponseException(json['message']);
-    }
-  }
-
-  B typeCast<B>(dynamic result){
-    try{
-      return (result as B);
-    }catch (e){
-      throw InvalidResponseException("");
-    }
-  }
-  
-  
-
-}
